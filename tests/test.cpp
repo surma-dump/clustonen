@@ -2,34 +2,20 @@
 #include <cstdlib>
 #include "ModuleManager.h"
 #include "ClustonenModule.h"
-#include "ServerSocket.h"
-#include "ClientSocket.h"
+#include "Socket.h"
 
 int main()
 {
-	ServerSocket s(12121) ;
-	ClientSocket p ;
-	s.accept(p) ;
-        std::string data ;
-	
-	//p << da ;
-	printf("Da: %s", p.receive().c_str()) ;
-// 	ModuleManager mm ;
-// 	std::string ident ;
-// 	if((ident = mm.loadModule ("libclustonen_testmodule.so")) == "")
-// 	{
-// 		mm.lastError() ;
-// 		return 1 ;
-// 	}
-// 	else
-// 		printf ("Loaded Library: %s\n", ident.c_str()) ;
-// 	ClustonenModule *cm = mm.getModule(ident) ;
-// 	if (cm == NULL)
-// 	{
-// 		mm.lastError() ;
-// 		return 2 ;
-// 	}
-// 	printf ("Loaded Module: %s\n", cm->getName()) ;
-// 	free (cm) ;
-// 	return 0 ;
+	Socket p;
+	Socket c;
+	try{p.bind(22000) ;}
+	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
+	try{p.listen() ;}
+	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
+	try{c = p.accept() ;}
+	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
+	try{printf("%s", p.read().c_str()) ;}
+	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
+	c.close() ;
+	p.close() ;
 }

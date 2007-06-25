@@ -20,6 +20,7 @@ class Socket
 		void			bind(int port) ; // bind socket to port
 		void			listen(int pendings = 1) ; // listen for connections
 		Socket			accept() ; // accept incoming connections
+		void			connect(std::string ip, int port) ; // connect socket to host
 		void			close(); // close socket
 
 		void			write(std::string msg) ; // write message to connected host

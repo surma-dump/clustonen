@@ -79,6 +79,22 @@ Socket Socket::accept()
 }
 
 /**
+ * Connects the socket to a host
+ * @param ip Ip as a string
+ * @param port Port to connect to
+ */
+void Socket::connect(std::string ip, int port)
+{
+	struct sockaddr_in dst;
+	memset (&dst, 0, sizeof (dst)) ;
+	dst.sin_family = AF_INET ;
+	dst.sin_addr.s_addr = inet_addr(ip.c_str()) ;
+	dst.sin_port = htons (port) ;
+	if (::connect(sockethandle, (struct sockaddr *)&dst, sizeof (struct sockaddr)) != 0)
+		throw new Exception ("Could not connect to host") ;
+}
+
+/**
  * Closes the socket and frees everything
  */
 void Socket::close()
