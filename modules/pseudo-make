@@ -1,0 +1,8 @@
+#!/bin/sh
+
+for file in `find . -maxdepth 1 -regex "[^/]+/[^.]+" -type d `
+do
+	cd $file
+	make $@
+	cd ..
+done
