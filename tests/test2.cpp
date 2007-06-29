@@ -1,24 +1,16 @@
 #include <cstdio>
 #include <cstdlib>
+#include "ModuleManager.h"
 #include "ClustonenModule.h"
 #include "Socket.h"
 
 int main()
 {
-	Socket p;
-	Socket c;
-	try{p.bind(22001) ;}
+	Socket p = Socket() ;
+	try {p.connect ("127.0.0.1", 22000) ;}
 	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
-
-	try{p.listen() ;}
+	try {p.write ("Neger!\0") ;}
 	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
-
-	try{p.accept() ;}
+	try{p.close() ;}
 	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
-
-	//try{printf("%s", p.read().c_str()) ;}
-	//catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
-	p.write("nigga") ;
-
-	p.close() ;
 }

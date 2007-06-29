@@ -25,8 +25,8 @@ objects:
 	$(CXX) $(CXXFLAGS) -c test.cpp $(addprefix -I, $(INCLUDES))
 	$(CXX) $(CXXFLAGS) -c test2.cpp $(addprefix -I, $(INCLUDES))  
 linking:
-	$(LD) $(LDFLAGS) test.o $(ADDITIONALOBJS) -o test $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )
-	$(LD) $(LDFLAGS) test2.o $(ADDITIONALOBJS) -o test2 $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )  
+	$(LD) $(LDFLAGS) test.cpp $(ADDITIONALOBJS) -o test $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )
+	$(LD) $(LDFLAGS) test2.cpp $(ADDITIONALOBJS) -o test2 $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )  
 
 clean:
 	-@rm *.o 2> /dev/null

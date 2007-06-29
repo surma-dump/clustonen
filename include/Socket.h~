@@ -29,7 +29,7 @@ class Socket
 
 	private:
 		int			sockethandle ; 
-		int			opponenthandle;
+		int			clienthandle;
 		struct sockaddr_in 	srv ;
 } ;
 

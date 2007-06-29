@@ -13,7 +13,7 @@ int main()
 	try{p.listen() ;}
 	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
 
-	try{p.accept() ;}
+	try{c = p.accept() ;}
 	catch (Exception e) { printf ("%s", e.getMessage().c_str()) ; }
 
 	//try{printf("%s", p.read().c_str()) ;}
