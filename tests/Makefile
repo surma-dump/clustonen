@@ -7,8 +7,8 @@ CC := gcc
 CXX := g++
 LD := g++
 
-CCFLAGS := -Werror
-CXXFLAGS := -Werror 
+CCFLAGS := -Wall
+CXXFLAGS := -Wall -pedantic
 LDFLAGS := 
 
 CPPS := $(wildcard *.cpp)
