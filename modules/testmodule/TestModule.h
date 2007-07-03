@@ -14,16 +14,16 @@
  */
 class TestModule : ClustonenModule
 {
-	public:
-		TestModule() ; // Constructor
-		virtual ~TestModule() ; // Destructor
+public:
+	TestModule() ; // Constructor
+	virtual ~TestModule() ; // Destructor
 		
-		const char*	getName(); // returns plugin's name
-		int		getHookPosition(); // returns the desired hook to chain the module to
+	const char* getName(); // returns plugin's name
+	int getHookPosition(); // returns the desired hook to chain the module to
 
-		int		processEvent(ClustonenEvent& event); // Called when a appropitate event hits chain
-	protected:
-	private:
+	int processEvent(ClustonenEvent& event); // Called when a appropitate event hits chain
+protected:
+private:
 } ;
 
 #endif

@@ -7,14 +7,14 @@
 
 class Exception
 {
-	public:
-		Exception (std::string _msg) ; // Constructor
-		virtual ~Exception () ; // Destructor
+public:
+	Exception (std::string _msg) ; // Constructor
+	virtual ~Exception () ; // Destructor
 		
-		std::string getMessage() ; // Delivers the message of the exception
+	std::string getMessage() ; // Delivers the message of the exception
 	
-	private:
-		std::string msg ;
+private:
+	std::string msg ;
 } ;
 
 #endif
