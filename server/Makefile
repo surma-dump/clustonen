@@ -1,14 +1,14 @@
 MAINVERSION=0
 RELEASEVERSION=0
 PATCHVERSION=1
-NAME=clustonen-server
+NAME=clustonenserver
 
 CC := gcc
 CXX := g++
 LD := g++
 
-CCFLAGS := -Werror
-CXXFLAGS := -Werror 
+CCFLAGS := -Wall
+CXXFLAGS := -Wall
 LDFLAGS := 
 
 CPPS := $(wildcard *.cpp)
@@ -23,17 +23,22 @@ PWD := $(shell pwd)
 all: objects linking
 objects:
 	$(CXX) $(CXXFLAGS) -c $(CPPS) $(addprefix -I, $(INCLUDES)) 
+
 linking:
 	$(LD) $(LDFLAGS) $(OBJS) $(ADDITIONALOBJS) -o $(NAME) $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) ) 
 
-clean:
-	-@rm *.o 2> /dev/null
-	-@rm $(NAME) 2> /dev/null
-	-@rm *~ 2> /dev/null
+clean: binary-clean backup-clean object-clean
 
-post-clean:
-	-@rm *.o 2> /dev/null
-	-@rm *~ 2> /dev/null
+binary-clean:
+	-@rm server 2> /dev/null
+
+
+backup-clean:
+	find . -name "*~" -exec rm {} \;
+
+
+object-clean:
+	find . -name "*.o" -exec rm {} \;
 
 run:
-	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(PWD)/../lib ./clustonen-server $(PARAM)
+	@LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(PWD)/../lib ./$(NAME) $(PARAM)

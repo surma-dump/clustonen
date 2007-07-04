@@ -10,7 +10,6 @@ public:
 	virtual ~ServerSocket() ; // Destructor
 		
 	void waitForConnection() ; // accept incoming connections
-	void disconnect() ; // disconnects from opponent
 
 protected:
 	void bind(int port) ; // bind socket to port

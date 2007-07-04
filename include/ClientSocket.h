@@ -10,7 +10,7 @@ public:
 	virtual ~ClientSocket() ; // Destructor
 		
 protected:
-	void connect(std::string host, int port) ; 
+	void connect(std::string host, int port) ; // Connect Socket to host
 
 private:
 } ;

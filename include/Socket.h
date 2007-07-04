@@ -16,6 +16,7 @@ public:
 	Socket() ; // Constructor
 	virtual ~Socket() ; // Destructor
 		
+	void disconnect() ; // disconnects from opponent
 	void close(); // close socket
 
 	void write(const char* msg, int len) ; // write message to connected host
@@ -29,8 +30,10 @@ public:
 protected:
 	int sockethandle ; 
 	int opponenthandle;
+	int transmissionhandle ;
 	struct sockaddr_in serversocket ;
 	struct sockaddr_in opponentsocket;
+	bool connected ;
 	char msg[MAXLEN + 1] ;
 
 private:
