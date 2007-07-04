@@ -30,7 +30,7 @@ linking:
 clean: binary-clean backup-clean object-clean
 
 binary-clean:
-	-@rm server 2> /dev/null
+	-@rm $(NAME) 2> /dev/null
 
 
 backup-clean:
