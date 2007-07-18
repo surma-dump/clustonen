@@ -20,7 +20,7 @@ ModuleManager::~ModuleManager()
 /**
  * Loads a module
  * @param filename Either a absolute path or a simple filename which is supposed to be found in $LD_LIBRARY_PATH, the folders in /etc/ld.so.cache, /lib or /usr/lib (in that order)
- * @returns an empty string if: - module could not be loaded, - identifier could not be obtained, - identifier was not unique (i.e. already used). Otherwise the identifier-string of the plugin. In an error, you should call lastError() for details
+ * @return an empty string if: - module could not be loaded, - identifier could not be obtained, - identifier was not unique (i.e. already used). Otherwise the identifier-string of the plugin. In an error, you should call lastError() for details
  */
 std::string ModuleManager::loadModule(std::string filename)
 {

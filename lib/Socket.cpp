@@ -52,7 +52,7 @@ void Socket::write(const char* msg, int len)
 
 /**
  * Receives a string from the connected host
- * @returns Number of bytes received 
+ * @return Number of bytes received 
  */
 int Socket::read()
 {
@@ -65,7 +65,7 @@ int Socket::read()
 
 /**
  * Returns the char array conatining sequence received in previous transmissions
- * @returns previous transmissions
+ * @return previous transmissions
  */
 const char* Socket::getMessage()
 {
@@ -74,7 +74,7 @@ const char* Socket::getMessage()
 
 /**
  * checks whether this socket is part of a connection
- * @returns true if it is, false otherwise
+ * @return true if it is, false otherwise
  */
 bool Socket::isConnected()
 {
@@ -83,7 +83,7 @@ bool Socket::isConnected()
 
 /**
  * Gives IP of connected opponent
- * @returns IP of connected opponent, NULL if none
+ * @return IP of connected opponent, NULL if none
  */
 std::string Socket::getOpponent()
 {

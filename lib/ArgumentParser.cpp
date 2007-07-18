@@ -45,7 +45,7 @@ void ArgumentParser::addFlagOption(arg_lit* arg)
  * @param short_desc Short name for the flag (e.g. "v" for "-v" as argument)
  * @param long_desc Long name for the flag (e.g. "version" for "--version" as argument)
  * @param full_desc Description for the parameter, printed in the help message
- * @returns the pointer to the arg_lit struct (see Argtable2 documentation)
+ * @return the pointer to the arg_lit struct (see Argtable2 documentation)
  */
 arg_lit* ArgumentParser::createFlagOption(const char* short_desc, const char* long_desc, const char* full_desc)
 {
@@ -79,7 +79,7 @@ void ArgumentParser::addIntegerOption(arg_int* arg)
  * @param short_desc Short name for the option (e.g. "v" for "-v" as argument)
  * @param long_desc Long name for the integer (e.g. "version" for "--version" as argument)
  * @param full_desc Description for the parameter, printed in the help message
- * @returns the pointer to the arg_int struct (see Argtable2 documentation)
+ * @return the pointer to the arg_int struct (see Argtable2 documentation)
  */
 arg_int* ArgumentParser::createIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc)
 {
@@ -89,7 +89,7 @@ arg_int* ArgumentParser::createIntegerOption(const char* short_desc, const char*
 /**
  * The value of an integer option 
  * @param long_desc LONG description of the argument
- * @returns the value of an integer options, if it is no integer or there is no option with that description, -1 is returned
+ * @return the value of an integer options, if it is no integer or there is no option with that description, -1 is returned
  */
 int ArgumentParser::getIntegerValue(const char* long_desc)
 {
@@ -149,7 +149,7 @@ ArgumentParser& ArgumentParser::operator<<(arg_int* intopt)
  * Parses the arguments with the saved argumentlist
  * @param argc Number of arguments passed
  * @param argv Array of char-pointers to the arguments themselves
- * @returns see ArgTable Documentation, arg_parse(), -1 if table could not be initialized
+ * @return see ArgTable Documentation, arg_parse(), -1 if table could not be initialized
  */
 int ArgumentParser::parse(int argc, char** argv)
 {
@@ -167,7 +167,7 @@ int ArgumentParser::parse(int argc, char** argv)
 /**
  * Checks whether a flag is set or not. 
  * @param long_desc LONG description of the argument
- * @returns true if the flag is set, false if not or if it does not exist
+ * @return true if the flag is set, false if not or if it does not exist
  */
 bool ArgumentParser::isFlagSet(const char* long_desc)
 {

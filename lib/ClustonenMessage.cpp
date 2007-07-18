@@ -36,7 +36,7 @@ ClustonenMessage::~ClustonenMessage()
 
 /**
  * Get name of message
- * @returns Name of the message as a string
+ * @return Name of the message as a string
  */
 std::string ClustonenMessage::getName()
 {
@@ -46,7 +46,7 @@ std::string ClustonenMessage::getName()
 /**
  * get value of a data filed
  * @param field  name of the field
- * @returns value of the field with the name defined above
+ * @return value of the field with the name defined above
  */
 std::string ClustonenMessage::getField(const std::string& field)
 {
@@ -55,7 +55,7 @@ std::string ClustonenMessage::getField(const std::string& field)
 
 /**
  * Formats the saved data as a string
- * @returns data as a string
+ * @return data as a string
  */
 std::string ClustonenMessage::getData()
 {
@@ -112,7 +112,7 @@ void ClustonenMessage::delField(const std::string& field)
 
 /**
  * Converts the message to a string usable by the 3rd constructor
- * @returns string representing the message
+ * @return string representing the message
  */
 std::string ClustonenMessage::toString()
 {
