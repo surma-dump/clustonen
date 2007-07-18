@@ -31,14 +31,16 @@ symlinks:
 	-@ln -fs $(NAME).$(MAINVERSION).$(RELEASEVERSION).$(PATCHVERSION) $(NAME).$(MAINVERSION)
 	-@ln -fs $(NAME).$(MAINVERSION).$(RELEASEVERSION).$(PATCHVERSION) $(NAME)
 
-clean:
-	-@rm *.o 2> /dev/null
+clean: binary-clean backup-clean object-clean
+
+binary-clean:
 	-@rm $(NAME).$(MAINVERSION).$(RELEASEVERSION).$(PATCHVERSION) 2> /dev/null
 	-@rm $(NAME).$(MAINVERSION).$(RELEASEVERSION) 2> /dev/null
 	-@rm $(NAME).$(MAINVERSION) 2> /dev/null
 	-@rm $(NAME) 2> /dev/null
-	-@rm *~ 2> /dev/null
 
-post-clean:
-	-@rm *.o 2 >/dev/null
-	-@rm *~ 2> /dev/null
+backup-clean:
+	find . -name "*~" -exec rm {} \;
+
+object-clean:
+	find . -name "*.o" -exec rm {} \;

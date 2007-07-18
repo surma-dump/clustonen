@@ -11,12 +11,12 @@ int main(int argc, char* argv[])
 			<< ArgumentParser::createIntegerOption(	"p","port",	"Bind daemon to listen to this port[=23505]") ;
 
 	int error_indicator = arguments.parse(argc, argv) ; // parse and look for unknown arguments
-	if (arguments.isFlagSet("help")) // but even if there were unknown arguments, help take precedence
+	if (arguments.isFlagSet("help")) // but even if there were unknown arguments, help takes precedence
 	{
 		arguments.printUsage() ;
 		exit(SUCCESS) ;
 	}
-	else if (arguments.isFlagSet("version")) // but even if there were unknown arguments, version take precedence if help was not set
+	else if (arguments.isFlagSet("version")) // but even if there were unknown arguments, version takes precedence if help was not set
 	{
 		printf("%s version: %s\n", PROGNAME, VERSION) ;
 		printf("Build: %s\n", __DATE__) ;
@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 	// TODO 
 	// Load Modules
 	// Open Socket (Port 23505)
+	
 	// Queue
 }
 
@@ -48,10 +49,10 @@ int main(int argc, char* argv[])
 void daemonize()
 {
 	pid_t pid ;
-	if ((pid = fork()) < 0)
-		fprintf (stderr, "%s: could not daemonize\n", PROGNAME) ;
-	else if (pid)
-		exit (0) ;
-	chdir("/") ;
+	if ((pid = fork()) < 0) // Save ProcessID of the child and check if the fork failed
+		fprintf (stderr, "%s: could not daemonize\n", PROGNAME) ; // if it did, tell us about it
+	else if (pid) // if this is the motherthread
+		exit (0) ; // kill it
+	chdir("/") ; // the childthread changes to / for compatibility reasons
 }
 

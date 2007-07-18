@@ -1,34 +1,14 @@
 #include "Socket.h"
 
 /**
- * Standard constructor, creates a socket
+ * Creates a socket
  */
-Socket::Socket() 
+Socket::Socket()
 {
-	if ((sockethandle = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-		throw new Exception ("Could not initialize Socket") ;
-		
-}
-
-/**
- * Creates a socket and binds it to a port
- * @param port Port to bind to
- */
-Socket::Socket(int port)
-{
-	Socket();
-	bind(port) ;
-}
-
-/**
- * Creates a socket from a struckt
- * @param handle handle of a Socket
- * @param data Socketstruckt
- */
-Socket::Socket(int handle, struct sockaddr_in data)
-{
-	sockethandle = handle ;
-	srv=data;
+	sockethandle = socket(AF_INET, SOCK_STREAM, 0) ; // Create socket in store its handle
+	memset (msg, 0, MAXLEN) ;
+	connected = false ;
+	transmissionhandle = -1 ;
 }
 
 /**
@@ -40,71 +20,74 @@ Socket::~Socket()
 }
 
 /**
- * Binds the socket to a port
- * @param port Port to bind to
+ * Closes the connection to opponent, if connected
  */
-void Socket::bind(int port)
+void Socket::disconnect()
 {
-	memset (&srv, 0, sizeof(srv)) ;
-	srv.sin_family = AF_INET;
-	srv.sin_addr.s_addr = INADDR_ANY ;
-	srv.sin_port = htons(port) ;
-	
-	if (::bind(sockethandle, (struct sockaddr *)&srv, sizeof (struct sockaddr)) != 0)
-		throw new Exception ("Could not bind to Socket") ;
+	if (isConnected()) // if there's an actual connection
+		::close(opponenthandle) ; // close it
+	connected = false ;
 }
 
 /**
- * Sets the socket to listening mode
- * @param pendings Allow this number of pending connections 
- */
-void Socket::listen(int pendings)
-{
-	if (::listen(sockethandle, pendings) != 0)
-		throw new Exception ("Could not switch to listening mode") ;
-}
-
-/**
- * Accept incoming connection and return its socket
- * @return Socket incoming connection
- */
-Socket Socket::accept()
-{
-	
-	int clienthandle;
-	socklen_t socksize = sizeof(struct sockaddr_in) ;
-	struct sockaddr_in cl;
-	clienthandle = ::accept(sockethandle, (struct sockaddr *) &cl, &socksize) ;
-	return Socket(clienthandle, cl) ;	
-}
-
-/**
- * Closes the socket and frees everything
+ * Closes the connection, if present, and destroys socket
  */
 void Socket::close()
 {
-	::close(sockethandle) ;
+	disconnect() ; // close opponent's socket
+	::close(sockethandle) ; // and after that yourself
+	connected = false ;
+	transmissionhandle = -1 ;
 }
 
 /**
- * Sends a string to the connected host
- * @param msg String to send
+ * Sends a bytesequence to the connected host
+ * @param msg bytesequence to send
  */
-void Socket::write(std::string msg)
+void Socket::write(const char* msg, int len)
 {
-	if (::send(sockethandle,msg.c_str(),msg.length(),0) != 0)
-		throw new Exception ("Could not send string") ;
+	if (::send(transmissionhandle,msg,len,0) < 0) // Write sequence to socket
+		throw  Exception ("ClustonenLib: Could not send string. \n") ; // and throw exception if it failed
 }
 
 /**
  * Receives a string from the connected host
- * @returns the received string
+ * @returns Number of bytes received 
  */
-std::string Socket::read()
+int Socket::read()
 {
-	char msg[MAXLEN + 1] ;
-	if (::recv(sockethandle, msg, MAXLEN, 0) < 0)
-		throw new Exception ("Could not receive string") ;
-	msg[MAXLEN]='\0' ;
-	return std::string(msg) ;
+	memset(msg, 0, MAXLEN+1); // Zero out buffer
+	int num = ::recv(transmissionhandle, msg, MAXLEN, 0) ; // Receive sequence and save length
+	if (num < 0) // if it failed, num will be -1
+		throw Exception ("ClustonenLib: Could not receive byte sequence. \n") ;  // and therefore an exception will be thrown
+	return num ;
+}
+
+/**
+ * Returns the char array conatining sequence received in previous transmissions
+ * @returns previous transmissions
+ */
+const char* Socket::getMessage()
+{
+	return msg ;
+}
+
+/**
+ * checks whether this socket is part of a connection
+ * @returns true if it is, false otherwise
+ */
+bool Socket::isConnected()
+{
+	return connected ; // Opponenhandle is -1 if no connection is present
+}
+
+/**
+ * Gives IP of connected opponent
+ * @returns IP of connected opponent, NULL if none
+ */
+std::string Socket::getOpponent()
+{
+	if (!isConnected())
+		return NULL ;
+	return inet_ntoa(opponentsocket.sin_addr) ;
 }

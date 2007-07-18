@@ -7,8 +7,8 @@ CC := gcc
 CXX := g++
 LD := g++
 
-CCFLAGS := -Werror
-CXXFLAGS := -Werror 
+CCFLAGS := -Wall
+CXXFLAGS := -Wall -pedantic
 LDFLAGS := 
 
 CPPS := $(wildcard *.cpp)
@@ -22,9 +22,11 @@ PWD := $(shell pwd)
 
 all: objects linking
 objects:
-	$(CXX) $(CXXFLAGS) -c $(CPPS) $(addprefix -I, $(INCLUDES)) 
+	$(CXX) $(CXXFLAGS) -c test.cpp $(addprefix -I, $(INCLUDES))
+	$(CXX) $(CXXFLAGS) -c test2.cpp $(addprefix -I, $(INCLUDES))  
 linking:
-	$(LD) $(LDFLAGS) $(OBJS) $(ADDITIONALOBJS) -o $(NAME) $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) ) 
+	$(LD) $(LDFLAGS) test.o $(ADDITIONALOBJS) -o test $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )
+	$(LD) $(LDFLAGS) test2.o $(ADDITIONALOBJS) -o test2 $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) )  
 
 clean:
 	-@rm *.o 2> /dev/null

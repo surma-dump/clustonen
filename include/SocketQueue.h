@@ -12,12 +12,12 @@
  */
 class SocketQueue
 {
-	public:
-			SocketQueue(int port) ; // Constructor
-		virtual	~SocketQueue() ; // Destructor
-	protected:
-	private:
-// 		std::queue connection_queue ;
+public:
+	SocketQueue(int port) ; // Constructor
+	virtual	~SocketQueue() ; // Destructor
+protected:
+private:
+//std::queue connection_queue ;
 } ;
 
 

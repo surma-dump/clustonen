@@ -1,56 +1,30 @@
-#compiles everything
-all: library-target server-target modules-target tests-target
+# compiles everything
+all: library-target server-target
 
-#compiles just the library
+# compiles just the library
 library-target: 
-	make lib
+	make -C lib
 
-#compiles just the server
+# compiles just the server
 server-target:
-	make server
+	make -C server
 
-modules-target:
-	@cd modules; \
-	sh pseudo-make
+# deletes all modules, librarys, executables and backup files
+clean: object-clean binary-clean backup-clean
 
-#compiles test programs
-tests-target:
-	make tests
+# delete all object files
+# FIXME: add modules and test
+object-clean:
+	find . -name "*.o" -exec rm {} \;
 
-#deletes all modules, librarys, executables and backup files
-clean:
-	-@rm *~ 2> /dev/null
-	-@cd include; \
-	rm *~ 2> /dev/null
-	-@cd modules; \
-	rm *~ 2> /dev/null; \
-	sh pseudo-make clean
-	-@cd lib; \
-	make clean
-	-@cd server; \
-	make clean
-	-@cd tests; \
-	make clean
+# just delete binaries
+binary-clean:
+	make -C lib binary-clean
+	make -C server binary-clean
 
-#like clean, but leaves the library and executables 
-post-clean:
-	-@rm *~ 2> /dev/null
-	-@cd include; \
-	rm *~ 2> /dev/null
-	-@cd modules; \
-	rm *~ 2> /dev/null; \
-	sh ./pseudo-make post-clean
-	-@cd lib; \
-	make post-clean
-	-@cd server; \
-	make post-clean
-	-@cd modules; \
-	make post-clean
-	-@cd tests; \
-	make post-clean
-run:
-	@cd server; \
-	make run
+# delete all backupfiles
+backup-clean:
+	find . -name "*~" -exec rm {} \;
 
 me:
 	@echo -n "do "
