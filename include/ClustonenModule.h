@@ -5,8 +5,7 @@
 
 #include <cstdio>
 #include <cstdlib>
-#include "ClustonenEvent.h"
-
+#include "ClustonenMessage.h"
 
 
 /**
@@ -20,26 +19,11 @@ public:
 		
 	//TODO Module information methods
 	virtual const char* getName() = 0; // returns plugin's name
-	virtual int getHookPosition() = 0; // returns the desired hook to chain the module to
 
 	// TODO Module handling
-	virtual int processEvent(ClustonenEvent& event) = 0; // Called when a appropitate event hits chain
+	virtual int processMessage(ClustonenMessage* msg) = 0; // Called when a message is processed, the module is hooked for
 protected:
 private:
 } ;
-
-enum HOOK_POSITION 
-{
-	MODULE_LOADING_REQUEST = 0,
-	MODULE_LOADING_FINISHED	
-};
-
-enum HOOK_RETURN
-{
-	CHAIN_PROCEED = 0,
-	CHAIN_DISMISS,
-	CHAIN_STALL,
-	CHAIN_RESTART
-};
 
 #endif
