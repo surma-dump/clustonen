@@ -41,7 +41,27 @@ ClustonenMessage::ClustonenMessage(const std::string& _name, const std::string& 
  */
 ClustonenMessage::ClustonenMessage(const std::string& pack)
 {
-	parse (pack) ;
+	int len ;
+	char *buf ;
+	char _name[MAXFIELDNAME] ;
+	regex_t regex ; // Compilated RegEx
+	regmatch_t matches[2] ; // Buffer for matches. 1 for the expression and 3 subexpressions
+	buf = (char *) malloc (pack.length() * sizeof(char)) ;
+	memcpy (buf, pack.c_str(), pack.length()) ;
+
+	if (regcomp (&regex, "\\s*([-_a-zA-Z0-9]+)\\s*|", REG_EXTENDED) != 0) // compile regex and chech if it succeeded
+		throw Exception ("Could not parse data, error while compiling regular expression. \n") ; // if not, throw an exception
+	if(regexec (&regex, buf, 2, matches, 0) != 0) // If there's no name-definition, the message is invalid
+		throw Exception ("Message has no name") ;
+
+	memset (_name, 0, MAXFIELDNAME) ; // Fill with zero, so we don't have to set it manually afterwards
+	memcpy (_name, &buf[matches[1].rm_so], matches[1].rm_eo - matches[1].rm_so) ; // copy <length of match> chars from <beginning of match> to name
+	name = _name ; // Save isolated name
+	regfree(&regex) ; 
+	len = strlen (buf) ; // save old length of buffer
+	memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo], pack.length() - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten). 
+	buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end
+	parse (buf) ; // and let the rest be done by parse()
 }
 
 /**
@@ -61,9 +81,9 @@ std::string ClustonenMessage::getName()
 }
 
 /**
- * get value of a data filed
- * @param field  name of the field
- * @return value of the field with the name defined above
+ * Get value of a data filed
+ * @param field  Name of the field
+ * @return Value of the field with the name defined above
  */
 std::string ClustonenMessage::getField(const std::string& field)
 {
@@ -79,6 +99,7 @@ std::string ClustonenMessage::getData()
 	std::string ret = "" ;
 	for (std::map<std::string, std::string>::iterator dataseg=data.begin(); dataseg != data.end(); dataseg++) // Run through every data segment
 		ret += dataseg->first+"="+dataseg->second+";" ; // and append it formatted to the string
+	return ret ;
 }
 
 /**
@@ -109,7 +130,7 @@ void ClustonenMessage::addData (const std::string& _data)
 }
 
 /**
- * Adds a single field with value to the data
+* Adds a single field with value to the data
  * @param field Name of the field to add
  * @param value Value to assign to the field
  */
@@ -133,8 +154,37 @@ void ClustonenMessage::delField(const std::string& field)
  */
 std::string ClustonenMessage::toString()
 {
-	std::string ret = "name|" ;
-	for (std::map<std::string, std::string>::iterator dataseg=data.begin(); dataseg != data.end(); dataseg++) // Run through every data segment
-		ret+=dataseg->first+"="+dataseg->second+";" ; // and append it formatted to the string
-	return ret ;
+	return name+"|"+getData() ;
+}
+
+/**
+ * Parses the given string and fills it into the data map
+ * @param _data string to parse
+ */
+void ClustonenMessage::parse(const std::string& _data)
+{
+	int len ;
+	char *buf ;
+	char field[MAXFIELDNAME], value[MAXFIELDVALUE] ;
+	regex_t regex ; // Compilated RegEx
+	regmatch_t matches[4] ; // Buffer for matches. 1 for the expression and 3 subexpressions
+
+	buf = (char *) malloc (_data.length() * sizeof(char)) ;
+	memcpy (buf, _data.c_str(), _data.length()) ;
+
+	if (regcomp (&regex, "([-_a-zA-Z0-9]+)\\s*=\\s*'(([^\\']|\\\\.)+)'\\s*;", REG_EXTENDED) != 0) // compile regex and chech if it succeeded
+		throw Exception ("Could not parse data, error while compiling regular expression. \n") ; // if not, throw an exception
+	while (regexec (&regex, buf, 4, matches, 0) == 0) // As long as there are matches, fill them into the matches-struct-array...
+	{
+		memset (field, 0, MAXFIELDNAME) ; // Fill with zero, so we don't have to set it manually afterwards
+		memset (value, 0, MAXFIELDVALUE) ; // -- " --
+		memcpy (field, &buf[matches[1].rm_so], matches[1].rm_eo - matches[1].rm_so) ; // copy <length of match> chars from <beginning of match> to field
+		memcpy (value, &buf[matches[2].rm_so], matches[2].rm_eo - matches[2].rm_so) ; // -- " -- to value
+		data[std::string(field)] = std::string(value) ; // Add the field and the value to the map
+		len = strlen(buf) ; // save old length of buffer
+		memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo], strlen(buf) - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten). 
+		buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end
+	}
+	
+	regfree(&regex) ;
 }

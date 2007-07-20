@@ -19,6 +19,12 @@
 #define FOOCLUSTONENMESSAGEFOO
 #include <map> 
 #include <string>
+#include <string.h>
+#include <regex.h>
+#include "Exception.h" 
+
+#define MAXFIELDNAME 255
+#define MAXFIELDVALUE 65535
 
 /**
  * Represents a message exchanged between e.g clients and server 
@@ -44,7 +50,7 @@ public:
 	void delField(const std::string& field) ; // deletes a field
 	std::string toString() ; // converts the instance into a representing string
 protected:
-	void parse(const std::string& _data) ; // parses a string and fills values into name and data
+	void parse(const std::string& _data) ; // parses a string and fills values into data
 private:
 	std::string name ;
 	std::map<std::string, std::string> data ;
