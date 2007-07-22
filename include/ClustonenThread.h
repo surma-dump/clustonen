@@ -33,7 +33,6 @@ public:
 	void start(void* _param) ; // starts the thread with given parameter
 	void join() ; // waits until thread terminates
 	void* getParameter() ; // Returns saved parameter
-//	void setHandler(pthread_t handler) ; // Sets internal handler, do not call manually!
 	virtual void run(void* _param) {}; // run in spawned process
 protected:
 private:
