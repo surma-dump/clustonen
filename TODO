@@ -1,0 +1,8 @@
+What still has to be implemented:
+
+Well, basically everything, but here are the things which came to mind:
+
+- Transfer of required modules via direct connection, not other protocols.
+- Write basic modules (Protocolsupport, Clientinformation,...)
+- Mapping of Clients to IP
+- Maybe write an own LibArgtabe? For performance and dependecie struggle reasons?

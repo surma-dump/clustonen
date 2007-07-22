@@ -14,7 +14,7 @@ LDFLAGS := --shared
 
 CPPS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(CPPS) )
-LIBS := argtable2 c 
+LIBS := argtable2 c pthread
 
 LIBPATHS :=
 
