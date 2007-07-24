@@ -26,6 +26,8 @@ void trim(std::string& str, const std::string& ws)
 	int pos = str.find_last_not_of(ws);
 	if(pos != std::string::npos)
 		str.erase(pos+1);
+	else
+		str = "";
 	
 	pos = str.find_first_not_of(ws);
 	if(pos != std::string::npos)

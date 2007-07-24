@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "ConfigFileParser.h"
 
-#define spitoutconfigparam(x) std::cout << x << " = " << cfp->getValue(x) << std::endl
-
 int main(int argc, char** argv)
 {
 	ConfigFileParser* cfp;
@@ -17,9 +15,14 @@ int main(int argc, char** argv)
 		return EXIT_FAILURE;
 	}
 	
-	spitoutconfigparam("foo");
-	spitoutconfigparam("sense_of_life");
-	spitoutconfigparam("linux");
+	std::cout << "Number of entries found in configfile: " << cfp->getNumValues() << std::endl;
+	std::map<std::string,std::string> vals = cfp->getValues();
+	for(std::map<std::string,std::string>::iterator iter = vals.begin();
+		iter != vals.end();
+		++iter)
+	{
+		std::cout << "\"" << iter->first << "\" = \"" << iter->second << "\"" << std::endl;
+	}
 	
 	delete cfp;
 	
