@@ -19,8 +19,6 @@
 #define FOOCLUSTONENTHREADFOO
 
 #include <pthread.h>
-#include <tr1/functional>
-#include <tr1/memory> 
 /**
  * Represents a thread and simplifies handling. Basically a C++-wrapper for pthreads.
  */
