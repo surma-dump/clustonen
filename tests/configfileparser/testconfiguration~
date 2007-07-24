@@ -1,0 +1,12 @@
+# This is a sample configuration file
+# whose purpose is to act as test data for
+# the ConfigFileParser test
+
+foo bar
+sense_of_life 42 #I'm tired of those jokes
+
+# the above line is blank
+                  # also a blank line (but with comment)
+		#indented with tabs
+#line with more whitespace between key and value
+  	linux              	great ###################
