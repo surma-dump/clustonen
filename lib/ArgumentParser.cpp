@@ -24,8 +24,6 @@
 ArgumentParser::ArgumentParser(const char* prog_name)
 {
 	this->prog_name = prog_name ;
-	arg_list = std::map<int, void*>::map() ;
-	type_list = std::map<int, int>::map() ;
 }
 
 /**
