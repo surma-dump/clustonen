@@ -37,9 +37,10 @@ INCLUDES := ../include
 
 PWD := $(shell pwd)
 
-all: objects linking
-objects:
-	$(CXX) $(CXXFLAGS) -c $(CPPS) $(addprefix -I, $(INCLUDES)) 
+all: $(OBJS) linking
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c $< $(addprefix -I, $(INCLUDES) ) -o $@
 
 linking:
 	$(LD) $(LDFLAGS) $(OBJS) $(ADDITIONALOBJS) -o $(NAME) $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) ) 

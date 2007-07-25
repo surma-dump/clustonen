@@ -37,9 +37,11 @@ INCLUDES := ../../include
 
 PWD := $(shell pwd)
 
-all: objects server client
-objects:
-	$(CXX) $(CXXFLAGS) -c $(CPPS) $(addprefix -I, $(INCLUDES)) 
+all: $(OBJS) server client
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c $< $(addprefix -I, $(INCLUDES) ) -o $@
+
 server:
 	$(LD) $(LDFLAGS) server.o $(ADDITIONALOBJS) -o server $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) ) 
 

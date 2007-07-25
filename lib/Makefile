@@ -37,9 +37,11 @@ LIBPATHS :=
 
 INCLUDES := ../include
 
-all: objects linking symlinks
-objects:
-	$(CXX) $(CXXFLAGS) -c $(CPPS) $(addprefix -I, $(INCLUDES) ) 
+all: $(OBJS) linking symlinks
+
+.cpp.o:
+	$(CXX) $(CXXFLAGS) -c $< $(addprefix -I, $(INCLUDES) ) -o $@
+
 linking:
 	$(LD) $(LDFLAGS) $(OBJS) -o $(NAME).$(MAINVERSION).$(RELEASEVERSION).$(PATCHVERSION) $(addprefix -L, $(LIBPATHS) ) $(addprefix -l, $(LIBS) ) 
 
