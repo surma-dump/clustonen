@@ -86,7 +86,7 @@ void ArgumentParser::addIntegerOption(const char* short_desc, const char* long_d
 void ArgumentParser::addIntegerOption(arg_int* arg)
 {
 	arg_list[arg_list.size()] = arg ; // just save the option
-	type_list[type_list.size()] = ARGTYPE_FLAG ; // save type
+	type_list[type_list.size()] = ARGTYPE_INTEGER ; // save type
 }
 
 /**
