@@ -22,6 +22,7 @@
 
 #include <cstdio> 
 #include <cstdlib> 
+#include <string>
 #include <argtable2.h> // Library headers
 #include <map> // map
 
@@ -48,10 +49,15 @@ public:
 	void addFlagOption(arg_lit* arg) ; // adds a flag  
 	ArgumentParser&	operator<<(arg_lit* flag) ; // "Append"-Operator for flags
 
-	void addIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc) ; // adds a flag
-	void addIntegerOption(arg_int* arg) ; // adds a flag  
-	ArgumentParser&	operator<<(arg_int* flag) ; // "Append"-Operator for flags
+	void addIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc) ;
+	void addIntegerOption(arg_int* arg) ;
+	ArgumentParser&	operator<<(arg_int* flag) ;
 	int getIntegerValue (const char* long_desc) ;
+	
+	void addStringOption(const char* short_desc, const char* long_desc, const char* full_desc) ;
+	void addStringOption(arg_str* arg) ;
+	ArgumentParser&	operator<<(arg_str* flag) ;
+	std::string getStringValue (const char* long_desc) ;
 
 	int parse(int argc, char** argv) ; // parses arguments, maybe even output
 	bool isFlagSet(const char* long_desc) ; // checks whether a flag is set
@@ -61,6 +67,7 @@ public:
 	//Statics
 	static arg_lit* createFlagOption(const char* short_desc, const char* long_desc, const char* full_desc) ; // Creates a flag (for usage with << operator)
 	static arg_int* createIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc) ; // Creates a option which takes in integer (for usage with << operator)
+	static arg_str* createStringOption(const char* short_desc, const char* long_desc, const char* full_desc) ;
 
 protected:
 private:

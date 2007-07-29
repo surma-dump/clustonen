@@ -120,6 +120,70 @@ int ArgumentParser::getIntegerValue(const char* long_desc)
 	return -2; // if there was no item found with the given description, return the error flag
 }
 
+/**
+ * Adds a string option to the optionlist
+ * @param short_desc Short name for the option (e.g. "v" for "-v" as argument)
+ * @param long_desc Long name for the option (e.g. "version" for "--version" as argument)
+ * @param full_desc Description for the parameter, printed in the help message
+ */
+void ArgumentParser::addStringOption(const char* short_desc, const char* long_desc, const char* full_desc)
+{
+	arg_list[arg_list.size()] = arg_str0(short_desc, long_desc, NULL, full_desc) ; //create and save option-pointer
+	type_list[type_list.size()] = ARGTYPE_STRING ; // save type
+}
+
+/**
+ * Adds a string option to the optionlist
+ * @param arg pointer to a arg_int structure (see ArgTable2 documentation)
+ */
+void ArgumentParser::addStringOption(arg_str* arg)
+{
+	arg_list[arg_list.size()] = arg ; // just save the option
+	type_list[type_list.size()] = ARGTYPE_STRING ; // save type
+}
+
+/**
+ * Returns a string option for the optionlist
+ * @param short_desc Short name for the option (e.g. "v" for "-v" as argument)
+ * @param long_desc Long name for the integer (e.g. "version" for "--version" as argument)
+ * @param full_desc Description for the parameter, printed in the help message
+ * @return the pointer to the arg_int struct (see Argtable2 documentation)
+ */
+arg_str* ArgumentParser::createStringOption(const char* short_desc, const char* long_desc, const char* full_desc)
+{
+	return arg_str0(short_desc, long_desc, NULL, full_desc) ; // create option with library funcion and return pointer
+}
+
+/**
+ * The value of an integer option 
+ * @param long_desc LONG description of the argument
+ * @return the value of a string option, or "" if an error occured
+ */
+std::string ArgumentParser::getStringValue(const char* long_desc)
+{
+	for (int i = 0; i < arg_list.size(); i++)
+	{
+		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc) == 0)
+		{
+			if (type_list.at(i) != ARGTYPE_STRING)
+				return "";
+			return ((struct arg_str*)arg_list.at(i))->sval[0] ;
+		}
+	}
+	return "";
+}
+
+/**
+ * Adds a string option to the optionlist
+ * @param intopt integer option to add
+ */
+ArgumentParser& ArgumentParser::operator<<(arg_str* intopt)
+{
+	arg_list[arg_list.size()] = intopt ; // Save integer-pointer
+	type_list[type_list.size()] = ARGTYPE_STRING ; //save type 
+	return *this ;
+}
+
 void ArgumentParser::addEnd(int i) // Appends end mark to the optionlist
 {
 	if (type_list[type_list.size()-1] != ARGTYPE_END) // only if there's no end already...yay
