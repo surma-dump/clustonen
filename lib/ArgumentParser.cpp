@@ -21,9 +21,9 @@
  * Standard constructor
  * @param prog_name Name of the program (for proper error messages)
  */
-ArgumentParser::ArgumentParser(const char* prog_name)
+ArgumentParser::ArgumentParser(const std::string& prog_name)
 {
-	this->prog_name = prog_name ;
+	this->prog_name = prog_name;
 }
 
 /**
@@ -39,9 +39,9 @@ ArgumentParser::~ArgumentParser()
  * @param long_desc Long name for the flag (e.g. "version" for "--version" as argument)
  * @param full_desc Description for the parameter, printed in the help message
  */
-void ArgumentParser::addFlagOption(const char* short_desc, const char* long_desc, const char* full_desc)
+void ArgumentParser::addFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_lit0(short_desc, long_desc, full_desc) ; //create and save flag-pointer
+	arg_list[arg_list.size()] = arg_lit0(short_desc.c_str(), long_desc.c_str(), full_desc.c_str()) ; //create and save flag-pointer
 	type_list[type_list.size()] = ARGTYPE_FLAG ; // save type
 }
 
@@ -62,9 +62,9 @@ void ArgumentParser::addFlagOption(arg_lit* arg)
  * @param full_desc Description for the parameter, printed in the help message
  * @return the pointer to the arg_lit struct (see Argtable2 documentation)
  */
-arg_lit* ArgumentParser::createFlagOption(const char* short_desc, const char* long_desc, const char* full_desc)
+arg_lit* ArgumentParser::createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_lit0(short_desc, long_desc, full_desc) ; // create flag with library funcion and return pointer
+	return arg_lit0(short_desc.c_str(), long_desc.c_str(), full_desc.c_str()) ; // create flag with library funcion and return pointer
 }
 
 /**
@@ -73,9 +73,9 @@ arg_lit* ArgumentParser::createFlagOption(const char* short_desc, const char* lo
  * @param long_desc Long name for the option (e.g. "version" for "--version" as argument)
  * @param full_desc Description for the parameter, printed in the help message
  */
-void ArgumentParser::addIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc)
+void ArgumentParser::addIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_int0(short_desc, long_desc, NULL, full_desc) ; //create and save option-pointer
+	arg_list[arg_list.size()] = arg_int0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; //create and save option-pointer
 	type_list[type_list.size()] = ARGTYPE_INTEGER ; // save type
 }
 
@@ -96,9 +96,9 @@ void ArgumentParser::addIntegerOption(arg_int* arg)
  * @param full_desc Description for the parameter, printed in the help message
  * @return the pointer to the arg_int struct (see Argtable2 documentation)
  */
-arg_int* ArgumentParser::createIntegerOption(const char* short_desc, const char* long_desc, const char* full_desc)
+arg_int* ArgumentParser::createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_int0(short_desc, long_desc, NULL, full_desc) ; // create option with library funcion and return pointer
+	return arg_int0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; // create option with library funcion and return pointer
 }
 
 /**
@@ -106,11 +106,11 @@ arg_int* ArgumentParser::createIntegerOption(const char* short_desc, const char*
  * @param long_desc LONG description of the argument
  * @return the value of an integer options, if it is no integer or there is no option with that description, -1 is returned
  */
-int ArgumentParser::getIntegerValue(const char* long_desc)
+int ArgumentParser::getIntegerValue(const std::string&  long_desc)
 {
 	for (int i = 0; i < arg_list.size(); i++) // Walk through every item...
 	{
-		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc) == 0) // ... and if the long description are a match
+		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc.c_str()) == 0) // ... and if the long description are a match
 		{
 			if (type_list.at(i) != ARGTYPE_INTEGER) // check whether it is NOT integer type
 				return -1 ;			// and return error flag
@@ -126,9 +126,9 @@ int ArgumentParser::getIntegerValue(const char* long_desc)
  * @param long_desc Long name for the option (e.g. "version" for "--version" as argument)
  * @param full_desc Description for the parameter, printed in the help message
  */
-void ArgumentParser::addStringOption(const char* short_desc, const char* long_desc, const char* full_desc)
+void ArgumentParser::addStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_str0(short_desc, long_desc, NULL, full_desc) ; //create and save option-pointer
+	arg_list[arg_list.size()] = arg_str0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; //create and save option-pointer
 	type_list[type_list.size()] = ARGTYPE_STRING ; // save type
 }
 
@@ -149,9 +149,9 @@ void ArgumentParser::addStringOption(arg_str* arg)
  * @param full_desc Description for the parameter, printed in the help message
  * @return the pointer to the arg_int struct (see Argtable2 documentation)
  */
-arg_str* ArgumentParser::createStringOption(const char* short_desc, const char* long_desc, const char* full_desc)
+arg_str* ArgumentParser::createStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_str0(short_desc, long_desc, NULL, full_desc) ; // create option with library funcion and return pointer
+	return arg_str0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; // create option with library funcion and return pointer
 }
 
 /**
@@ -159,11 +159,11 @@ arg_str* ArgumentParser::createStringOption(const char* short_desc, const char* 
  * @param long_desc LONG description of the argument
  * @return the value of a string option, or "" if an error occured
  */
-std::string ArgumentParser::getStringValue(const char* long_desc)
+std::string ArgumentParser::getStringValue(const std::string&  long_desc)
 {
 	for (int i = 0; i < arg_list.size(); i++)
 	{
-		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc) == 0)
+		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc.c_str()) == 0)
 		{
 			if (type_list.at(i) != ARGTYPE_STRING)
 				return "";
@@ -248,13 +248,13 @@ int ArgumentParser::parse(int argc, char** argv)
  * @param long_desc LONG description of the argument
  * @return true if the flag is set, false if not or if it does not exist
  */
-bool ArgumentParser::isFlagSet(const char* long_desc)
+bool ArgumentParser::isFlagSet(const std::string&  long_desc)
 {
 	for (int i = 0; i < type_list.size(); i++) // Look through typelist until ...
 	{
 		if (type_list.at(i) == ARGTYPE_FLAG) // ... you find a flag and ...
 		{
-			if(strncmp(((struct arg_lit*)arg_list.at(i))->hdr.longopts, long_desc,25) == 0) // .. check if it is the desired one and ...
+			if(strncmp(((struct arg_lit*)arg_list.at(i))->hdr.longopts, long_desc.c_str(),25) == 0) // .. check if it is the desired one and ...
 				return (((struct arg_lit*)arg_list.at(i))->count>0) ; // ... return status ...
 			
 		} // ... or ...
@@ -269,7 +269,7 @@ bool ArgumentParser::isFlagSet(const char* long_desc)
 void ArgumentParser::printUsage(FILE* f)
 {
 	void** argtable = createArgtable() ; // get Argtable
-	fprintf (f,"Usage: %s", prog_name) ; // print program name
+	fprintf (f,"Usage: %s", prog_name.c_str()) ; // print program name
 	arg_print_syntax(f,argtable,"\n"); // why reinvent the wheel?
 	arg_print_glossary(f,argtable,"  %-25s %s\n"); // dito
 }
@@ -280,7 +280,7 @@ void ArgumentParser::printUsage(FILE* f)
  */
 void ArgumentParser::lastError(FILE* f)
 {
-	arg_print_errors(f, getEnd(), prog_name) ; // get Argtable and print it with library function
+	arg_print_errors(f, getEnd(), prog_name.c_str()) ; // get Argtable and print it with library function
 }
 
 struct arg_end* ArgumentParser::getEnd()
