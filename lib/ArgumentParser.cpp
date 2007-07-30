@@ -39,7 +39,7 @@ ArgumentParser::~ArgumentParser()
 	arg_freetable(argtable, arg_list.size());
 	
 	//delete the temporary argtable
-	free(argtable);
+	delete [] argtable;
 	
 	//delete all c-buffers
 	for(std::vector<char*>::iterator it = c_buffers.begin();
@@ -253,7 +253,7 @@ void ArgumentParser::addEnd(int i) // Appends end mark to the optionlist
 
 void** ArgumentParser::createArgtable() 
 {
-	void** argtable = (void**)malloc(sizeof(void*)*arg_list.size()) ;// initialize array
+	void** argtable = new void*[arg_list.size()] ;// initialize array
 	for (int i = 0; i < arg_list.size(); i++) // every argument pointer in the map 
 		argtable[i] = arg_list.at(i) ; // is put in to a field in the array
 	return argtable ; // and the array is returned, as the library function needs it
@@ -296,7 +296,7 @@ int ArgumentParser::parse(int argc, char** argv)
 
 	
 	int ret =  arg_parse(argc,argv,argtable); // parse with library function	
-	free (argtable) ;
+	delete [] argtable;
 	return ret ;
 }
 
