@@ -22,5 +22,6 @@
 #include <vector>
 
 void trim(std::string& str, const std::string& ws = "\t ");
+char* copystr(const std::string& str);
 
 #endif //STRHELPER_H
