@@ -16,6 +16,7 @@
  */
 
 #include "strhelper.h"
+#include <malloc.h>
 
 /**
  * Trims a string (deletes leading and trailing whitespace)
@@ -26,4 +27,19 @@ void trim(std::string& str, const std::string& ws)
 {	
 	str.erase(str.find_last_not_of(ws)+1);
 	str.erase(0,str.find_first_not_of(ws));
+}
+
+/**
+ * Takes a string as an argument and copies it's content to
+ * a newly allocated buffer. The buffer will be allocated with
+ * the operator new. This function should only be used for compatibility
+ * with c libraries. DO NOT OMIT THE RETURN VALUE!
+ * @param str The string to be copied
+ * @return a newly allocated buffer
+ */
+char* copystr(const std::string& str)
+{
+	char* buffer = new char[str.length()];
+	strcpy(buffer, str.c_str());
+	return buffer;
 }

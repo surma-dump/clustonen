@@ -22,10 +22,10 @@
 int main(int argc, char* argv[])
 {
 	ArgumentParser arguments (PROGNAME) ;
-	arguments	<< ArgumentParser::createFlagOption(	"h","help",	"Shows this help") 
-			<< ArgumentParser::createFlagOption(	"v","version",	"Shows version information") 
-			<< ArgumentParser::createFlagOption(	"d","daemon",	"Start as daemon")
-			<< ArgumentParser::createIntegerOption(	"p","port",	"Bind daemon to listen to this port[=23505]") ;
+	arguments	<< arguments.createFlagOption("h","help",	"Shows this help") 
+			<< arguments.createFlagOption("v","version",	"Shows version information") 
+			<< arguments.createFlagOption("d","daemon",	"Start as daemon")
+			<< arguments.createIntegerOption("p","port",	"Bind daemon to listen to this port[=23505]") ;
 
 	int error_indicator = arguments.parse(argc, argv) ; // parse and look for unknown arguments
 	if (arguments.isFlagSet("help")) // but even if there were unknown arguments, help takes precedence
@@ -50,7 +50,6 @@ int main(int argc, char* argv[])
 	int port = arguments.getIntegerValue("port") ; // get port number
 	if(port < 0) // if there was no port specified...
 		port = 23505 ; // ...use standard port
-	
 	
 	// TODO 
 	// Load Modules

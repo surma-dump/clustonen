@@ -16,6 +16,7 @@
  */
 
 #include "ArgumentParser.h"
+#include "strhelper.h"
 
 /**
  * Standard constructor
@@ -31,6 +32,22 @@ ArgumentParser::ArgumentParser(const std::string& prog_name)
  */
 ArgumentParser::~ArgumentParser()
 {
+	//create temporary argtable
+	void** argtable = createArgtable() ;
+	
+	//Free the argtable structures
+	arg_freetable(argtable, arg_list.size());
+	
+	//delete the temporary argtable
+	free(argtable);
+	
+	//delete all c-buffers
+	for(std::vector<char*>::iterator it = c_buffers.begin();
+		it != c_buffers.end();
+		++it)
+	{
+		delete [] (*it);
+	}
 }
 
 /**
@@ -41,7 +58,14 @@ ArgumentParser::~ArgumentParser()
  */
 void ArgumentParser::addFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_lit0(short_desc.c_str(), long_desc.c_str(), full_desc.c_str()) ; //create and save flag-pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	
+	arg_list[arg_list.size()] = arg_lit0(short_desc_c, long_desc_c, full_desc_c) ; //create and save flag-pointer
 	type_list[type_list.size()] = ARGTYPE_FLAG ; // save type
 }
 
@@ -64,7 +88,13 @@ void ArgumentParser::addFlagOption(arg_lit* arg)
  */
 arg_lit* ArgumentParser::createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_lit0(short_desc.c_str(), long_desc.c_str(), full_desc.c_str()) ; // create flag with library funcion and return pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	return arg_lit0(short_desc_c, long_desc_c, full_desc_c) ; // create flag with library funcion and return pointer
 }
 
 /**
@@ -75,7 +105,14 @@ arg_lit* ArgumentParser::createFlagOption(const std::string&  short_desc, const 
  */
 void ArgumentParser::addIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_int0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; //create and save option-pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	
+	arg_list[arg_list.size()] = arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ; //create and save option-pointer
 	type_list[type_list.size()] = ARGTYPE_INTEGER ; // save type
 }
 
@@ -98,7 +135,14 @@ void ArgumentParser::addIntegerOption(arg_int* arg)
  */
 arg_int* ArgumentParser::createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_int0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; // create option with library funcion and return pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	
+	return arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ; // create option with library funcion and return pointer
 }
 
 /**
@@ -128,7 +172,14 @@ int ArgumentParser::getIntegerValue(const std::string&  long_desc)
  */
 void ArgumentParser::addStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	arg_list[arg_list.size()] = arg_str0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; //create and save option-pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	
+	arg_list[arg_list.size()] = arg_str0(short_desc_c, long_desc_c, NULL, full_desc_c) ; //create and save option-pointer
 	type_list[type_list.size()] = ARGTYPE_STRING ; // save type
 }
 
@@ -151,7 +202,14 @@ void ArgumentParser::addStringOption(arg_str* arg)
  */
 arg_str* ArgumentParser::createStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc)
 {
-	return arg_str0(short_desc.c_str(), long_desc.c_str(), NULL, full_desc.c_str()) ; // create option with library funcion and return pointer
+	char* short_desc_c = copystr(short_desc);
+	char* long_desc_c = copystr(long_desc);
+	char* full_desc_c = copystr(full_desc);
+	c_buffers.push_back(short_desc_c);
+	c_buffers.push_back(long_desc_c);
+	c_buffers.push_back(full_desc_c);
+	
+	return arg_str0(short_desc_c, long_desc_c, NULL, full_desc_c) ; // create option with library funcion and return pointer
 }
 
 /**
@@ -195,7 +253,6 @@ void ArgumentParser::addEnd(int i) // Appends end mark to the optionlist
 
 void** ArgumentParser::createArgtable() 
 {
-// 	return arg_list.toArray() ; // sadly, this does not exist
 	void** argtable = (void**)malloc(sizeof(void*)*arg_list.size()) ;// initialize array
 	for (int i = 0; i < arg_list.size(); i++) // every argument pointer in the map 
 		argtable[i] = arg_list.at(i) ; // is put in to a field in the array

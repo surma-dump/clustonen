@@ -25,6 +25,7 @@
 #include <string>
 #include <argtable2.h> // Library headers
 #include <map> // map
+#include <vector>
 
 enum ARGTYPES
 {
@@ -64,10 +65,9 @@ public:
 	void printUsage(FILE* f = stdout) ; // generates typical helpscreen
 	void lastError(FILE* f = stderr) ; // generate errormsg with last error
 
-	//Statics
-	static arg_lit* createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a flag (for usage with << operator)
-	static arg_int* createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a option which takes in integer (for usage with << operator)
-	static arg_str* createStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
+	arg_lit* createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a flag (for usage with << operator)
+	arg_int* createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a option which takes in integer (for usage with << operator)
+	arg_str* createStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
 
 protected:
 private:
@@ -77,6 +77,7 @@ private:
 	std::string  prog_name ; // program name
 	std::map <int, void*> arg_list ; //Contains map index=>argument struct pointer
 	std::map <int, int> type_list ; //Contains map index=>ARGTYPE (for typecast when reading)
+	std::vector<char*> c_buffers; //Contains all buffers allocated with copystr
 } ;
 
 #endif
