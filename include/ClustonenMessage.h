@@ -30,7 +30,7 @@
  * Represents a message exchanged between e.g clients and server 
  *
  * Messagedata can be defined in the following format:
- * FIELNAME1='FIELDVALUE1';FIELDNAME2='FIELDVALUE2';...
+ * FIELDNAME1='FIELDVALUE1';FIELDNAME2='FIELDVALUE2';...
  * If you need to type ' in the Value, you can do this by backslashing it
  */
 class ClustonenMessage
