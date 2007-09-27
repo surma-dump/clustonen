@@ -1,0 +1,29 @@
+#/**
+# * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
+# * 
+# * This program is free software; you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License version 2 as published
+# * by the Free Software Foundation.
+# *
+# * This program is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with this program; if not, write to the Free Software
+# * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# */
+
+# This is a sample configuration file
+# whose purpose is to act as test data for
+# the ConfigFileParser test
+
+foo bar
+sense_of_life 42 #I'm tired of those jokes
+
+# the above line is blank
+                  # also a blank line (but with comment)
+		#indented with tabs
+#line with more whitespace between key and value
+  	linux              	great ###################
