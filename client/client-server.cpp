@@ -19,6 +19,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <unistd.h>
+#include <iostream>
 
 #include "ArgumentParser.h"
 #include "ServerSocket.h"
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
 	if(port < 0) // if there was no port specified...
 		port = 23505 ; // ...use standard port
 	
-	
+	std::cout << "Server: " <<arguments.getStringValue("server") << std::endl;
 }
 
 
