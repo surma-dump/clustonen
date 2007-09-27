@@ -15,6 +15,8 @@
 # * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # */
 
+.PHONY: tests
+
 # compiles everything
 all: library-target server-target
 
@@ -25,6 +27,10 @@ library-target:
 # compiles just the server
 server-target:
 	make -C server
+
+# compiles the testsuites
+tests: all
+	make -C ./tests
 
 # deletes all modules, librarys, executables and backup files
 clean: object-clean binary-clean backup-clean
@@ -38,6 +44,7 @@ object-clean:
 binary-clean:
 	make -C lib binary-clean
 	make -C server binary-clean
+	make -C tests binary-clean
 
 # delete all backupfiles
 backup-clean:
