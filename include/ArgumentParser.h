@@ -25,7 +25,7 @@
 #include <cstdlib> 
 #include <string>
 #include <argtable2.h> // Library headers
-#include <map> // map
+#include <map>
 #include <vector>
 
 enum ARGTYPES
@@ -44,12 +44,20 @@ enum ARGTYPES
 class ArgumentParser
 {
 public:
-	ArgumentParser(const std::string& prog_name) ; // Constructor
-	virtual	~ArgumentParser() ; // Destructor
+	// Constructor
+	ArgumentParser(const std::string& prog_name) ;
+	
+	// Destructor
+	virtual	~ArgumentParser() ;
 
-	void addFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // adds a flag
-	void addFlagOption(arg_lit* arg) ; // adds a flag  
-	ArgumentParser&	operator<<(arg_lit* flag) ; // "Append"-Operator for flags
+	// adds a flag
+	void addFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
+	
+	// adds a flag  
+	void addFlagOption(arg_lit* arg) ;
+	
+	// "Append"-Operator for flags
+	ArgumentParser&	operator<<(arg_lit* flag) ;
 
 	void addIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
 	void addIntegerOption(arg_int* arg) ;
@@ -61,24 +69,47 @@ public:
 	ArgumentParser&	operator<<(arg_str* flag) ;
 	std::string getStringValue (const std::string&  long_desc) ;
 
-	int parse(int argc, char** argv) ; // parses arguments, maybe even output
-	bool isFlagSet(const std::string&  long_desc) ; // checks whether a flag is set
-	void printUsage(FILE* f = stdout) ; // generates typical helpscreen
-	void lastError(FILE* f = stderr) ; // generate errormsg with last error
+	// parses arguments, maybe even output
+	int parse(int argc, char** argv) ;
+	
+	// checks whether a flag is set
+	bool isFlagSet(const std::string&  long_desc) ;
+	
+	// generates typical helpscreen
+	void printUsage(FILE* f = stdout) ;
+	
+	 // generate errormsg with last error
+	void lastError(FILE* f = stderr) ;
 
-	arg_lit* createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a flag (for usage with << operator)
-	arg_int* createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ; // Creates a option which takes in integer (for usage with << operator)
+	// Creates a flag (for usage with << operator)
+	arg_lit* createFlagOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
+	
+	// Creates a option which takes in integer (for usage with << operator)
+	arg_int* createIntegerOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
 	arg_str* createStringOption(const std::string&  short_desc, const std::string&  long_desc, const std::string&  full_desc) ;
 
 protected:
 private:
-	void addEnd(int = 20) ; //adds end to the option list
-	void** createArgtable() ; // creates an array from the arg vektor
-	struct arg_end* getEnd() ; // get the end option
-	std::string  prog_name ; // program name
-	std::map <int, void*> arg_list ; //Contains map index=>argument struct pointer
-	std::map <int, int> type_list ; //Contains map index=>ARGTYPE (for typecast when reading)
-	std::vector<char*> c_buffers; //Contains all buffers allocated with copystr
+	//adds end to the option list
+	void addEnd(int = 20) ;
+	
+	// creates an array from the arg vector
+	void** createArgtable() ;
+	
+	// get the end option
+	struct arg_end* getEnd() ;
+	
+	 // program name
+	std::string  prog_name ;
+	
+	//Contains map index=>argument struct pointer
+	std::map <int, void*> arg_list ;
+	
+	//Contains map index=>ARGTYPE (for typecast when reading)
+	std::map <int, int> type_list ;
+	
+	//Contains all buffers allocated with copystr
+	std::vector<char*> c_buffers;
 } ;
 
 #endif

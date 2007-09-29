@@ -66,8 +66,10 @@ void ArgumentParser::addFlagOption(const std::string&  short_desc, const std::st
 	c_buffers.push_back(long_desc_c);
 	c_buffers.push_back(full_desc_c);
 	
-	arg_list[arg_list.size()] = arg_lit0(short_desc_c, long_desc_c, full_desc_c) ; //create and save flag-pointer
-	type_list[type_list.size()] = ARGTYPE_FLAG ; // save type
+	//create and save flag-pointer
+	arg_list[arg_list.size()] = arg_lit0(short_desc_c, long_desc_c, full_desc_c) ;
+	// save type
+	type_list[type_list.size()] = ARGTYPE_FLAG ;
 }
 
 /**
@@ -76,8 +78,10 @@ void ArgumentParser::addFlagOption(const std::string&  short_desc, const std::st
  */
 void ArgumentParser::addFlagOption(arg_lit* arg)
 {
-	arg_list[arg_list.size()] = arg ; // just save the flag
-	type_list[type_list.size()] = ARGTYPE_FLAG ; // save type
+	// just save the flag
+	arg_list[arg_list.size()] = arg ;
+	// save type
+	type_list[type_list.size()] = ARGTYPE_FLAG ; 
 }
 
 /**
@@ -95,7 +99,8 @@ arg_lit* ArgumentParser::createFlagOption(const std::string&  short_desc, const 
 	c_buffers.push_back(short_desc_c);
 	c_buffers.push_back(long_desc_c);
 	c_buffers.push_back(full_desc_c);
-	return arg_lit0(short_desc_c, long_desc_c, full_desc_c) ; // create flag with library funcion and return pointer
+	// create flag with library funcion and return pointer
+	return arg_lit0(short_desc_c, long_desc_c, full_desc_c) ;
 }
 
 /**
@@ -113,8 +118,10 @@ void ArgumentParser::addIntegerOption(const std::string&  short_desc, const std:
 	c_buffers.push_back(long_desc_c);
 	c_buffers.push_back(full_desc_c);
 	
-	arg_list[arg_list.size()] = arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ; //create and save option-pointer
-	type_list[type_list.size()] = ARGTYPE_INTEGER ; // save type
+	//create and save option-pointer
+	arg_list[arg_list.size()] = arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ;
+	// save type
+	type_list[type_list.size()] = ARGTYPE_INTEGER ;
 }
 
 /**
@@ -123,8 +130,10 @@ void ArgumentParser::addIntegerOption(const std::string&  short_desc, const std:
  */
 void ArgumentParser::addIntegerOption(arg_int* arg)
 {
-	arg_list[arg_list.size()] = arg ; // just save the option
-	type_list[type_list.size()] = ARGTYPE_INTEGER ; // save type
+	// just save the option
+	arg_list[arg_list.size()] = arg ;
+	// save type
+	type_list[type_list.size()] = ARGTYPE_INTEGER ;
 }
 
 /**
@@ -143,7 +152,8 @@ arg_int* ArgumentParser::createIntegerOption(const std::string&  short_desc, con
 	c_buffers.push_back(long_desc_c);
 	c_buffers.push_back(full_desc_c);
 	
-	return arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ; // create option with library funcion and return pointer
+	// create option with library funcion and return pointer
+	return arg_int0(short_desc_c, long_desc_c, NULL, full_desc_c) ;
 }
 
 /**
@@ -210,7 +220,8 @@ arg_str* ArgumentParser::createStringOption(const std::string&  short_desc, cons
 	c_buffers.push_back(long_desc_c);
 	c_buffers.push_back(full_desc_c);
 	
-	return arg_str0(short_desc_c, long_desc_c, NULL, full_desc_c) ; // create option with library funcion and return pointer
+	// create option with library funcion and return pointer
+	return arg_str0(short_desc_c, long_desc_c, NULL, full_desc_c) ;
 }
 
 /**
@@ -238,26 +249,41 @@ std::string ArgumentParser::getStringValue(const std::string&  long_desc)
  */
 ArgumentParser& ArgumentParser::operator<<(arg_str* intopt)
 {
-	arg_list[arg_list.size()] = intopt ; // Save integer-pointer
-	type_list[type_list.size()] = ARGTYPE_STRING ; //save type 
+	// Save integer-pointer
+	arg_list[arg_list.size()] = intopt ;
+	//save type
+	type_list[type_list.size()] = ARGTYPE_STRING ;
 	return *this ;
 }
 
-void ArgumentParser::addEnd(int i) // Appends end mark to the optionlist
+/**
+ * Appends end mark to the optionlist
+ */
+void ArgumentParser::addEnd(int i)
 {
-	if (type_list[type_list.size()-1] != ARGTYPE_END) // only if there's no end already...yay
+	// only if there's no end already...yay
+	if (type_list[type_list.size()-1] != ARGTYPE_END)
 	{
-		arg_list[arg_list.size()] = arg_end(i) ; // Append end mark
-		type_list[type_list.size()] = ARGTYPE_END ; // save type for continuity reasons
+		// Append end mark
+		arg_list[arg_list.size()] = arg_end(i) ;
+		// save type for continuity reasons
+		type_list[type_list.size()] = ARGTYPE_END ;
 	}
 }
 
 void** ArgumentParser::createArgtable() 
 {
-	void** argtable = new void*[arg_list.size()] ;// initialize array
-	for (int i = 0; i < arg_list.size(); i++) // every argument pointer in the map 
-		argtable[i] = arg_list.at(i) ; // is put in to a field in the array
-	return argtable ; // and the array is returned, as the library function needs it
+	// initialize array
+	void** argtable = new void*[arg_list.size()] ;
+	
+	// every argument pointer in the map 
+	for (int i = 0; i < arg_list.size(); i++) {
+		// is put in to a field in the array
+		argtable[i] = arg_list.at(i) ; 
+	}
+	
+	// and the array is returned, as the library function needs it
+	return argtable ;
 }
 
 /**
@@ -266,8 +292,10 @@ void** ArgumentParser::createArgtable()
  */
 ArgumentParser& ArgumentParser::operator<<(arg_lit* flag) 
 {
-	arg_list[arg_list.size()] = flag ; // Save flag-pointer
-	type_list[type_list.size()] = ARGTYPE_FLAG ; //save type 
+	// Save flag-pointer
+	arg_list[arg_list.size()] = flag ;
+	//save type 
+	type_list[type_list.size()] = ARGTYPE_FLAG ;
 	return *this ;
 }
 
@@ -277,8 +305,10 @@ ArgumentParser& ArgumentParser::operator<<(arg_lit* flag)
  */
 ArgumentParser& ArgumentParser::operator<<(arg_int* intopt)
 {
-	arg_list[arg_list.size()] = intopt ; // Save integer-pointer
-	type_list[type_list.size()] = ARGTYPE_INTEGER ; //save type 
+	// Save integer-pointer
+	arg_list[arg_list.size()] = intopt ;
+	//save type 
+	type_list[type_list.size()] = ARGTYPE_INTEGER ;
 	return *this ;
 }
 
@@ -291,12 +321,16 @@ ArgumentParser& ArgumentParser::operator<<(arg_int* intopt)
 int ArgumentParser::parse(int argc, char** argv)
 {
 	addEnd() ;
-	void** argtable = createArgtable() ; // Create array of argument structure pointers
-	if (arg_nullcheck(argtable) != 0) // if argtable could not be initialized...
-		return -1 ; // return
+	// Create array of argument structure pointers
+	void** argtable = createArgtable() ;
+	
+	// if argtable could not be initialized...
+	if (arg_nullcheck(argtable) != 0)
+		return -1 ;
 
 	
-	int ret =  arg_parse(argc,argv,argtable); // parse with library function	
+	// parse with library function
+	int ret =  arg_parse(argc,argv,argtable);
 	delete [] argtable;
 	return ret ;
 }
@@ -308,12 +342,17 @@ int ArgumentParser::parse(int argc, char** argv)
  */
 bool ArgumentParser::isFlagSet(const std::string&  long_desc)
 {
-	for (int i = 0; i < type_list.size(); i++) // Look through typelist until ...
+	// Look through typelist until ...
+	for (int i = 0; i < type_list.size(); i++)
 	{
-		if (type_list.at(i) == ARGTYPE_FLAG) // ... you find a flag and ...
+		// ... you find a flag and ...
+		if (type_list.at(i) == ARGTYPE_FLAG)
 		{
-			if(strncmp(((struct arg_lit*)arg_list.at(i))->hdr.longopts, long_desc.c_str(),25) == 0) // .. check if it is the desired one and ...
-				return (((struct arg_lit*)arg_list.at(i))->count>0) ; // ... return status ...
+			// .. check if it is the desired one and ...
+			if(strncmp(((struct arg_lit*)arg_list.at(i))->hdr.longopts, long_desc.c_str(),25) == 0) {
+				// ... return status ...
+				return (((struct arg_lit*)arg_list.at(i))->count>0) ;
+			}
 			
 		} // ... or ...
 	} // ... you reach the end and ...
@@ -326,10 +365,14 @@ bool ArgumentParser::isFlagSet(const std::string&  long_desc)
  */
 void ArgumentParser::printUsage(FILE* f)
 {
-	void** argtable = createArgtable() ; // get Argtable
-	fprintf (f,"Usage: %s", prog_name.c_str()) ; // print program name
-	arg_print_syntax(f,argtable,"\n"); // why reinvent the wheel?
-	arg_print_glossary(f,argtable,"  %-25s %s\n"); // dito
+	// get Argtable
+	void** argtable = createArgtable() ;
+	// print program name
+	fprintf (f,"Usage: %s", prog_name.c_str()) ;
+	// why reinvent the wheel?
+	arg_print_syntax(f,argtable,"\n");
+	// dito
+	arg_print_glossary(f,argtable,"  %-25s %s\n");
 }
 
 /**
@@ -338,11 +381,13 @@ void ArgumentParser::printUsage(FILE* f)
  */
 void ArgumentParser::lastError(FILE* f)
 {
-	arg_print_errors(f, getEnd(), prog_name.c_str()) ; // get Argtable and print it with library function
+	// get Argtable and print it with library function
+	arg_print_errors(f, getEnd(), prog_name.c_str()) ;
 }
 
 struct arg_end* ArgumentParser::getEnd()
 {
-	if (type_list[type_list.size()-1] == ARGTYPE_END) // check if there is an end just for security reasons
+	// check if there is an end just for security reasons
+	if (type_list[type_list.size()-1] == ARGTYPE_END)
 		return (struct arg_end*)arg_list[arg_list.size()-1] ;
 }
