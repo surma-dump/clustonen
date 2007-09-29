@@ -62,7 +62,7 @@ void ClustonenMessageTest::initTest(void)
 	ClustonenMessage *msg = new ClustonenMessage("a_message", "foo='bar'; "
 		"longer='baz doz'; "
 		"fieldwithapostroph='apostroph\\''; "
-		"moreapostrophes='\'\'\'';");
+		"moreapostrophes='\\'\\'\\'';");
 	
 	CPPUNIT_ASSERT(msg->getName() == "a_message");
 	CPPUNIT_ASSERT(msg->getField("foo") == "bar");

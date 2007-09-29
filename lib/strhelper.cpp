@@ -43,3 +43,16 @@ char* copystr(const std::string& str)
 	strcpy(buffer, str.c_str());
 	return buffer;
 }
+
+/**
+ * Replaces each occurence of needle in haystack with replacement.
+ * @param needle The string to search within haystack
+ * @param haystack The string which might contain occurences of needle
+ * @param replacement The replacement string for each occurence of needle
+ */
+void replacestr(const std::string& needle, const std::string& replacement, std::string& haystack)
+{
+	std::string::size_type pos = 0;
+	while((pos = haystack.find(needle, pos)) != std::string::npos)
+		haystack.replace(pos, needle.length(), replacement, 0, replacement.length());
+}

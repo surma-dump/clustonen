@@ -16,6 +16,7 @@
  */
 
 #include "ClustonenMessage.h"
+#include "strhelper.h"
 
 /**
  * Standardconstructor
@@ -88,6 +89,11 @@ std::string ClustonenMessage::getName()
 std::string ClustonenMessage::getField(const std::string& field)
 {
 	return data[field] ;
+}
+
+void ClustonenMessage::unescapeData(std::string& _data)
+{
+	replacestr("\\'", "'", _data);
 }
 
 /**
@@ -181,6 +187,7 @@ void ClustonenMessage::parse(const std::string& _data)
 		memcpy (field, &buf[matches[1].rm_so], matches[1].rm_eo - matches[1].rm_so) ; // copy <length of match> chars from <beginning of match> to field
 		memcpy (value, &buf[matches[2].rm_so], matches[2].rm_eo - matches[2].rm_so) ; // -- " -- to value
 		data[std::string(field)] = std::string(value) ; // Add the field and the value to the map
+		unescapeData(data[std::string(field)]);
 		len = strlen(buf) ; // save old length of buffer
 		memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo], strlen(buf) - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten). 
 		buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end

@@ -51,6 +51,7 @@ public:
 	std::string toString() ; // converts the instance into a representing string
 protected:
 	void parse(const std::string& _data) ; // parses a string and fills values into data
+	void unescapeData(std::string& _data);
 private:
 	std::string name ;
 	std::map<std::string, std::string> data ;
