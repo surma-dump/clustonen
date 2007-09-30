@@ -45,7 +45,7 @@ ClustonenMessage::ClustonenMessage(const std::string& pack)
 	int len ;
 	char *buf ;
 	char _name[MAXFIELDNAME] ;
-	regex_t regex ; // Compilated RegEx
+	regex_t regex ; // Compiled RegEx
 	regmatch_t matches[2] ; // Buffer for matches. 1 for the expression and 3 subexpressions
 	buf = (char *) malloc (pack.length() * sizeof(char)) ;
 	memcpy (buf, pack.c_str(), pack.length()) ;
