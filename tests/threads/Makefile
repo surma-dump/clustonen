@@ -28,6 +28,11 @@ CCFLAGS := -Wall
 CXXFLAGS := -Wall
 LDFLAGS := 
 
+ifdef DEBUG
+	CCFLAGS := $(CCFLAGS) -g
+	CXXFLAGS := $(CXXFLAGS) -g
+endif
+
 CPPS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(CPPS) )
 LIBS := stdc++ clustonen c dl
