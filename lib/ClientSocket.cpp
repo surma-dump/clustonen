@@ -24,7 +24,8 @@
  */
 ClientSocket::ClientSocket(std::string host, int port) : Socket()
 {
-	connect(host, port) ; // connect to host
+	// connect to host
+	connect(host, port) ;
 }
 
 /**
@@ -32,7 +33,8 @@ ClientSocket::ClientSocket(std::string host, int port) : Socket()
  */
 ClientSocket::~ClientSocket()
 {
-	close() ; // shut everything down
+	// shut everything down
+	close() ;
 }
 
 /**
@@ -43,14 +45,21 @@ ClientSocket::~ClientSocket()
 
 void ClientSocket::connect(std::string host, int port)
 {
-	memset(&opponentsocket, 0, sizeof (opponenthandle)) ; // Zero out struct
-	opponentsocket.sin_family = AF_INET ; // TCP/IP-Socket
-	opponentsocket.sin_addr.s_addr = inet_addr(host.c_str()) ; // Connecto to where?
-	opponentsocket.sin_port = htons(port) ; // On which port?
+	// Zero out struct
+	memset(&opponentsocket, 0, sizeof (opponenthandle)) ;
+	// TCP/IP-Socket
+	opponentsocket.sin_family = AF_INET ;
+	// Connect to where?
+	opponentsocket.sin_addr.s_addr = inet_addr(host.c_str()) ;
+	// On which port?
+	opponentsocket.sin_port = htons(port) ;
 	
-	opponenthandle = ::connect (sockethandle, (struct sockaddr*)&opponentsocket, sizeof (opponentsocket)) ; // actually connect
-	if (opponenthandle < 0) // and if it failed...
-		throw Exception ("Could not connect to host. \n") ; // throw exception
+	// actually connect
+	opponenthandle = ::connect (sockethandle, (struct sockaddr*)&opponentsocket, sizeof (opponentsocket)) ;
+	if (opponenthandle < 0) {
+		// throw exception
+		throw Exception ("Could not connect to host. \n") ;
+	}
 	connected = true ;
 	transmissionhandle = sockethandle ;
 }

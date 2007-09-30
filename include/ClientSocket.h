@@ -23,11 +23,15 @@
 class ClientSocket : public Socket
 {
 public:
-	ClientSocket(std::string host, int port) ; // Constructor
-	virtual ~ClientSocket() ; // Destructor
+	// Constructor
+	ClientSocket(std::string host, int port) ;
+	
+	// Destructor
+	virtual ~ClientSocket() ;
 		
 protected:
-	void connect(std::string host, int port) ; // Connect Socket to host
+	// Connect Socket to host
+	void connect(std::string host, int port) ;
 
 private:
 } ;
