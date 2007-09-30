@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -16,6 +17,11 @@
  */
 
 #include "Socket.h"
+#include <string>
+#include <string.h>
+#include <errno.h>
+#include <netdb.h>
+#include <sys/socket.h>
 
 /**
  * Creates a socket
@@ -55,6 +61,61 @@ void Socket::disconnect()
 }
 
 /**
+ * Binds the socket to a port
+ * @param port Port to bind to
+ */
+void Socket::bind(int port)
+{
+	// zero out the struct
+	memset (&serversocket, 0, sizeof(serversocket)) ;
+	
+	// set TCP,...
+	serversocket.sin_family = AF_INET;
+	// No special interface (yet)
+	serversocket.sin_addr.s_addr = INADDR_ANY ;
+	// port
+	serversocket.sin_port = htons(port) ;
+	
+	int opt = 1;
+	if(setsockopt(sockethandle, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
+		throw  Exception (strerror(errno)) ;
+	} 
+	
+	// Try to bind the socket to the port
+	if (::bind(sockethandle, (struct sockaddr *)&serversocket, sizeof (struct sockaddr)) != 0) {
+		// and throw an exception if it failed
+		throw  Exception (strerror(errno)) ;
+	}
+}
+
+/**
+ * Sets the socket to listening mode
+ * @param pendings Allow this number of pending connections 
+ */
+void Socket::listen()
+{
+	// set it to listen
+	if (::listen(sockethandle, 1) != 0) {
+		// and throw an exception if it failed
+		throw  Exception ("ClustonenLib: Could not switch to listening mode. \n") ;
+	}
+}
+
+/**
+ * Waits for an connection request and accepts it
+ */
+void Socket::waitForConnection()
+{
+	socklen_t socksize = sizeof(struct sockaddr_in) ; 
+	// just wait and save sockethandle of the incoming connection
+	opponenthandle = ::accept(sockethandle, (struct sockaddr *) &opponentsocket, &socksize) ;
+	if (opponenthandle < 0)
+		throw Exception ("Could not accept connection. \n") ;
+	connected = true;
+	transmissionhandle = opponenthandle ;
+}
+
+/**
  * Closes the connection, if present, and destroys socket
  */
 void Socket::close()
@@ -65,6 +126,38 @@ void Socket::close()
 	::close(sockethandle) ;
 	connected = false ;
 	transmissionhandle = -1 ;
+}
+
+/**
+ * Connect to a host
+ * @host The hosts address or name
+ * @port The port number
+ */
+void Socket::connect(const std::string& host, unsigned int port)
+{
+	struct sockaddr_in host_addr;
+	struct hostent *hostinfo;
+	
+	transmissionhandle = socket (AF_INET, SOCK_STREAM, 0);
+
+	// get the host's address
+	memset( &host_addr, 0, sizeof (host_addr));
+	host_addr.sin_family = AF_INET;
+	host_addr.sin_port = htons (port);
+	host_addr.sin_addr.s_addr = inet_addr (host.c_str());
+	
+	if (host_addr.sin_addr.s_addr == INADDR_NONE) {
+		//A Host name rather than an address was specified
+		hostinfo = gethostbyname (host.c_str());
+		memcpy((char*) &host_addr.sin_addr.s_addr, hostinfo->h_addr, hostinfo->h_length);
+	}
+	
+	if(::connect(transmissionhandle, (struct sockaddr *) &host_addr, sizeof(struct sockaddr)) < 0)
+	{
+		throw  Exception (strerror(errno)) ;
+	}
+	
+	connected = true;
 }
 
 /**
@@ -94,12 +187,14 @@ int Socket::read(size_t num_bytes, bool reset_buffer)
 	// Receive sequence and save length
 	ssize_t bytes_received = ::recv(transmissionhandle,
 					(reset_buffer) ? buffer : buffer + bytes_in_buffer,
-					num_bytes, 0) ;
+					(reset_buffer)
+						? ((num_bytes > buffer_size) ? buffer_size : num_bytes)
+						: ((num_bytes+bytes_in_buffer > buffer_size) ? buffer_size-bytes_in_buffer : num_bytes), 0) ;
 		
 	// if it failed, num will be -1
 	if (bytes_received < 0) {
 		// and therefore an exception will be thrown
-		throw Exception ("ClustonenLib: Could not receive byte sequence. \n") ;
+		throw  Exception (strerror(errno)) ;
 	}
 	
 	bytes_in_buffer = (reset_buffer) ? bytes_received : bytes_in_buffer + bytes_received;

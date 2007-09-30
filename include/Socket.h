@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -35,13 +36,16 @@ public:
 	
 	// disconnects from opponent
 	void disconnect() ;
+	
+	void connect(const std::string& host, unsigned int port);
+	
 	// close socket
 	void close();
 
 	// write message to connected host
 	void write(const char* msg, int len) ;
 	// read incoming message
-	int read(size_t num_bytes, bool reset_buffer = false) ;
+	int read(size_t num_bytes, bool reset_buffer = true) ;
 
 	// returns saved message
 	const char* getBuffer() ;
@@ -53,6 +57,10 @@ public:
 	size_t getBufferSize();
 	size_t getNumBytesInBuffer();
 	void resetBuffer();
+	
+	void bind(int port);
+	void listen();
+	void waitForConnection();
 
 protected:
 	int sockethandle ; 

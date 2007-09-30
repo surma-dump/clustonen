@@ -21,7 +21,6 @@ all:
 	make -C unit-tests
 	make -C configfileparser
 	make -C messageclass
-	make -C socketclass
 	#make -C threads
 
 binary-clean:

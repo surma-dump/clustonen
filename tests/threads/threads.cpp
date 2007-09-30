@@ -15,6 +15,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 #include <cstdio>
+#include <unistd.h>
 #include "ClustonenThread.h" 
 
 class TestThread : public ClustonenThread

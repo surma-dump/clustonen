@@ -16,6 +16,7 @@
  */
 
 #include "clustonen-server.h"
+// #include "ServerSocket.h"
 
 #define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
 
@@ -53,7 +54,8 @@ int main(int argc, char* argv[])
 	
 	// TODO 
 	// Load Modules
-	// Open Socket (Port 23505)
+	
+	
 	
 	// Queue
 }
