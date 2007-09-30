@@ -19,13 +19,18 @@
 
 /**
  * Creates a socket
+ * @param buffer_size The size of the receive buffer
  */
-Socket::Socket()
+Socket::Socket(size_t buffer_size)
+	: buffer_size(buffer_size), bytes_in_buffer(0),
+	  transmissionhandle(-1), connected(false)
 {
 	sockethandle = socket(AF_INET, SOCK_STREAM, 0) ; // Create socket in store its handle
-	memset (msg, 0, MAXLEN) ;
-	connected = false ;
-	transmissionhandle = -1 ;
+	
+	buffer = new char[buffer_size];
+	
+	if(buffer == NULL)
+		throw  Exception ("ClustonenLib: Could not allocate buffer. \n") ;
 }
 
 /**
@@ -33,6 +38,7 @@ Socket::Socket()
  */
 Socket::~Socket()
 {
+	delete [] buffer;
 	close() ;
 }
 
@@ -68,25 +74,62 @@ void Socket::write(const char* msg, int len)
 }
 
 /**
- * Receives a string from the connected host
+ * Receives a sequence of bytes from the connected host. Note that the
+ * maximum number of bytes that can be received depends on the size of
+ * the buffer. The total number of bytes received in this call will be returned.
+ * @param num_bytes The number of bytes to receive
+ * @param reset_buffer If set to true, the buffer's content will be overwritten.
+ 			If set to false, the received bytes will be appended to the buffer.
  * @return Number of bytes received 
  */
-int Socket::read()
+int Socket::read(size_t num_bytes, bool reset_buffer)
 {
-	memset(msg, 0, MAXLEN+1); // Zero out buffer
-	int num = ::recv(transmissionhandle, msg, MAXLEN, 0) ; // Receive sequence and save length
-	if (num < 0) // if it failed, num will be -1
+	// Receive sequence and save length
+	ssize_t bytes_received = ::recv(transmissionhandle,
+					(reset_buffer) ? buffer : buffer + bytes_in_buffer,
+					num_bytes, 0) ;
+		
+	if (bytes_received < 0) // if it failed, num will be -1
 		throw Exception ("ClustonenLib: Could not receive byte sequence. \n") ;  // and therefore an exception will be thrown
-	return num ;
+	
+	bytes_in_buffer = (reset_buffer) ? bytes_received : bytes_in_buffer + bytes_received;
+	
+	return bytes_received;
+}
+
+/**
+ * Returns the receive-buffer's size in bytes.
+ */
+size_t Socket::getBufferSize()
+{
+	return buffer_size;
+}
+
+/**
+ * Returns the number of bytes currently held in the
+ * receive-buffer.
+ */
+size_t Socket::getNumBytesInBuffer()
+{
+	return bytes_in_buffer;
+}
+
+/**
+ * Empties the receive-buffer
+ */
+void Socket::resetBuffer()
+{
+	memset(buffer, 0, buffer_size);
+	bytes_in_buffer = 0;
 }
 
 /**
  * Returns the char array conatining sequence received in previous transmissions
  * @return previous transmissions
  */
-const char* Socket::getMessage()
+const char* Socket::getBuffer()
 {
-	return msg ;
+	return buffer ;
 }
 
 /**
