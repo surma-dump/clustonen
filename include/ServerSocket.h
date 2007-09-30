@@ -23,14 +23,19 @@
 class ServerSocket : public Socket
 {
 public:
-	ServerSocket(int port) ; // Constructor
-	virtual ~ServerSocket() ; // Destructor
-		
-	void waitForConnection() ; // accept incoming connections
+	// Constructor
+	ServerSocket(int port) ;
+	// Destructor
+	virtual ~ServerSocket() ;
+	
+	// accept incoming connections
+	void waitForConnection() ;
 
 protected:
-	void bind(int port) ; // bind socket to port
-	void listen() ; // listen for connections
+	// bind socket to port
+	void bind(int port) ;
+	// listen for connections
+	void listen() ;
 
 private:
 } ;

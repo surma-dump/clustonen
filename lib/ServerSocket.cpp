@@ -23,8 +23,10 @@
  */
 ServerSocket::ServerSocket(int port) : Socket()
 {
-	bind(port) ; // Bind it to a port
-	listen() ; // and make it listen to it
+	// Bind it to a port
+	bind(port) ;
+	// and make it listen to it
+	listen() ;
 }
 
 /**
@@ -32,7 +34,8 @@ ServerSocket::ServerSocket(int port) : Socket()
  */
 ServerSocket::~ServerSocket()
 {
-	close() ; // shut everything down
+	// shut everything down
+	close() ;
 }
 
 /**
@@ -41,13 +44,21 @@ ServerSocket::~ServerSocket()
  */
 void ServerSocket::bind(int port)
 {
-	memset (&serversocket, 0, sizeof(serversocket)) ; // zero out the struct
-	serversocket.sin_family = AF_INET; // set TCP,...
-	serversocket.sin_addr.s_addr = INADDR_ANY ; // No special interface (yet)
-	serversocket.sin_port = htons(port) ; // port
+	// zero out the struct
+	memset (&serversocket, 0, sizeof(serversocket)) ;
 	
-	if (::bind(sockethandle, (struct sockaddr *)&serversocket, sizeof (struct sockaddr)) != 0) // Try to bind the socket to the port
-		throw  Exception ("ClustonenLib: Could not bind to Socket. \n") ; // and throw an exception if it failed
+	// set TCP,...
+	serversocket.sin_family = AF_INET;
+	// No special interface (yet)
+	serversocket.sin_addr.s_addr = INADDR_ANY ;
+	// port
+	serversocket.sin_port = htons(port) ;
+	
+	// Try to bind the socket to the port
+	if (::bind(sockethandle, (struct sockaddr *)&serversocket, sizeof (struct sockaddr)) != 0) {
+		// and throw an exception if it failed
+		throw  Exception ("ClustonenLib: Could not bind to Socket. \n") ;
+	}
 }
 
 /**
@@ -56,8 +67,11 @@ void ServerSocket::bind(int port)
  */
 void ServerSocket::listen()
 {
-	if (::listen(sockethandle, 1) != 0) // set it to listen
-		throw  Exception ("ClustonenLib: Could not switch to listening mode. \n") ; // and throw an exception if it failed
+	// set it to listen
+	if (::listen(sockethandle, 1) != 0) {
+		// and throw an exception if it failed
+		throw  Exception ("ClustonenLib: Could not switch to listening mode. \n") ;
+	}
 }
 
 /**
@@ -66,7 +80,8 @@ void ServerSocket::listen()
 void ServerSocket::waitForConnection()
 {
 	socklen_t socksize = sizeof(struct sockaddr_in) ; 
-	opponenthandle = ::accept(sockethandle, (struct sockaddr *) &opponentsocket, &socksize) ; // just wait and save sockethandle of the incoming connection
+	// just wait and save sockethandle of the incoming connection
+	opponenthandle = ::accept(sockethandle, (struct sockaddr *) &opponentsocket, &socksize) ;
 	if (opponenthandle < 0)
 		throw Exception ("Could not accept connection. \n") ;
 	connected = true;
