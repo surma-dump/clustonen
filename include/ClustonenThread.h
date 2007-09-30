@@ -31,7 +31,7 @@ public:
 	void start(void* _param) ; // starts the thread with given parameter
 	void join() ; // waits until thread terminates
 	void* getParameter() ; // Returns saved parameter
-	virtual void run(void* _param) {}; // run in spawned process
+	virtual void run(void* _param) = 0; // run in spawned process
 protected:
 private:
 	pthread_t threadhandler ;
