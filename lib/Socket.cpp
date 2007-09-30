@@ -25,7 +25,8 @@ Socket::Socket(size_t buffer_size)
 	: buffer_size(buffer_size), bytes_in_buffer(0),
 	  transmissionhandle(-1), connected(false)
 {
-	sockethandle = socket(AF_INET, SOCK_STREAM, 0) ; // Create socket in store its handle
+	// Create socket in store its handle
+	sockethandle = socket(AF_INET, SOCK_STREAM, 0) ;
 	
 	buffer = new char[buffer_size];
 	
@@ -47,7 +48,8 @@ Socket::~Socket()
  */
 void Socket::disconnect()
 {
-	if (isConnected()) // if there's an actual connection
+	// if there's an actual connection
+	if (isConnected())
 		::close(opponenthandle) ; // close it
 	connected = false ;
 }
@@ -57,8 +59,10 @@ void Socket::disconnect()
  */
 void Socket::close()
 {
-	disconnect() ; // close opponent's socket
-	::close(sockethandle) ; // and after that yourself
+	// close opponent's socket
+	disconnect() ;
+	// and after that yourself
+	::close(sockethandle) ;
 	connected = false ;
 	transmissionhandle = -1 ;
 }
@@ -69,8 +73,11 @@ void Socket::close()
  */
 void Socket::write(const char* msg, int len)
 {
-	if (::send(transmissionhandle,msg,len,0) < 0) // Write sequence to socket
-		throw  Exception ("ClustonenLib: Could not send string. \n") ; // and throw exception if it failed
+	// Write sequence to socket
+	if (::send(transmissionhandle,msg,len,0) < 0) {
+		// and throw exception if it failed
+		throw  Exception ("ClustonenLib: Could not send string. \n") ;
+	}
 }
 
 /**
@@ -89,8 +96,11 @@ int Socket::read(size_t num_bytes, bool reset_buffer)
 					(reset_buffer) ? buffer : buffer + bytes_in_buffer,
 					num_bytes, 0) ;
 		
-	if (bytes_received < 0) // if it failed, num will be -1
-		throw Exception ("ClustonenLib: Could not receive byte sequence. \n") ;  // and therefore an exception will be thrown
+	// if it failed, num will be -1
+	if (bytes_received < 0) {
+		// and therefore an exception will be thrown
+		throw Exception ("ClustonenLib: Could not receive byte sequence. \n") ;
+	}
 	
 	bytes_in_buffer = (reset_buffer) ? bytes_received : bytes_in_buffer + bytes_received;
 	
@@ -138,7 +148,8 @@ const char* Socket::getBuffer()
  */
 bool Socket::isConnected()
 {
-	return connected ; // Opponenhandle is -1 if no connection is present
+	// Opponenhandle is -1 if no connection is present
+	return connected ;
 }
 
 /**

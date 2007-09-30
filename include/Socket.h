@@ -28,18 +28,26 @@
 class Socket
 {
 public:
-	Socket(size_t buffer_size = SOCKET_DEFAULT_BUFFER_SIZE) ; // Constructor
-	virtual ~Socket() ; // Destructor
-		
-	void disconnect() ; // disconnects from opponent
-	void close(); // close socket
+	// Constructor
+	Socket(size_t buffer_size = SOCKET_DEFAULT_BUFFER_SIZE) ;
+	// Destructor
+	virtual ~Socket() ;
+	
+	// disconnects from opponent
+	void disconnect() ;
+	// close socket
+	void close();
 
-	void write(const char* msg, int len) ; // write message to connected host
-	int read(size_t num_bytes, bool reset_buffer = false) ; // read incoming message
+	// write message to connected host
+	void write(const char* msg, int len) ;
+	// read incoming message
+	int read(size_t num_bytes, bool reset_buffer = false) ;
 
-	const char* getBuffer() ; // returns saved message
+	// returns saved message
+	const char* getBuffer() ;
 	bool isConnected() ; 
-	std::string getOpponent() ; // IP of the opponent
+	// IP of the opponent
+	std::string getOpponent() ;
 	int getPort() ;
 	
 	size_t getBufferSize();
