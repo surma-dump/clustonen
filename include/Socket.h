@@ -49,7 +49,7 @@ public:
 	// write message to connected host
 	void write(const char* msg, int len) ;
 	// read incoming message
-	int read(size_t num_bytes, bool reset_buffer = true) ;
+	ssize_t read(size_t num_bytes, bool reset_buffer = true) ;
 
 	// returns saved message
 	const char* getBuffer() ;

@@ -199,7 +199,7 @@ void Socket::write(const char* msg, int len)
  			If set to false, the received bytes will be appended to the buffer.
  * @return Number of bytes received 
  */
-int Socket::read(size_t num_bytes, bool reset_buffer)
+ssize_t Socket::read(size_t num_bytes, bool reset_buffer)
 {
 	// Receive sequence and save length
 	ssize_t bytes_received = ::recv(transmissionhandle,
