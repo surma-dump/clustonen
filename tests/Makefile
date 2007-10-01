@@ -27,5 +27,4 @@ binary-clean:
 	make -C unit-tests binary-clean
 	make -C configfileparser binary-clean
 	make -C messageclass binary-clean
-	make -C socketclass binary-clean
 	make -C threads binary-clean
