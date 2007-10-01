@@ -39,6 +39,23 @@ Socket::Socket(size_t buffer_size)
 	if(buffer == NULL)
 		throw  Exception ("ClustonenLib: Could not allocate buffer. \n") ;
 }
+/**
+ * Creates a socket from an existing socket descriptor.
+ * @param socket the socket descriptor
+ * @param opponenthandle if already connected, this is the opponent handle
+ * @param transmissionhandle if already connected, this is the transmission handle
+ * @param
+ */
+Socket::Socket(int socket, size_t buffer_size, int opponenthandle, int transmissionhandle, bool connected)
+	: sockethandle(socket), opponenthandle(opponenthandle),
+	  transmissionhandle(transmissionhandle), buffer_size(buffer_size),
+	  bytes_in_buffer(0), connected(connected)
+{
+	buffer = new char[buffer_size];
+	
+	if(buffer == NULL)
+		throw  Exception ("ClustonenLib: Could not allocate buffer. \n") ;
+}
 
 /**
  * Standard destructor
