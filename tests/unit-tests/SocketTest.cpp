@@ -1,4 +1,3 @@
- 
 /**
  * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
@@ -22,11 +21,9 @@
 #include <netdb.h>
 #include "Socket.h"
 #include "ClustonenThread.h"
+#include "socketdefs.h"
 
 using namespace std;
-
-#define TESTPORT 22345
-#define TESTMSG "TEST"
 
 //TODO: Write more tests...
 
