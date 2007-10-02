@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -16,9 +17,7 @@
  */
 
 #include "clustonen-server.h"
-// #include "ServerSocket.h"
-
-#define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
+#include "NetworkThread.h"
 
 int main(int argc, char* argv[])
 {
@@ -52,12 +51,10 @@ int main(int argc, char* argv[])
 	if(port < 0) // if there was no port specified...
 		port = 23505 ; // ...use standard port
 	
-	// TODO 
-	// Load Modules
+	NetworkThread nwThr;
 	
-	
-	
-	// Queue
+	nwThr.start(NULL);
+	nwThr.join();
 }
 
 
