@@ -15,36 +15,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "NetworkThread.h"
-#include "SocketFunctor.h"
-#include "ClustonenThread.h"
-#include "SocketServer.h"
-#include "config.h"
-#include "WelcomeMessage.h"
-#include "MessageTransfer.h"
-#include <iostream>
+#ifndef WELCOMEMESSAGE_H
+#define WELCOMEMESSAGE_H
 
-class AcceptFunctor : public SocketFunctor
-{
+#include "ClustonenMessage.h"
+
+/**
+ * Message that the server sends to initialize the
+ * protocol with the client (first message sent).
+ */
+class WelcomeMessage : public ClustonenMessage {
 	public:
-		void operator()(Socket* socket)
-		{
-			WelcomeMessage welcome;
-			MessageTransfer::sendMessage(*socket, welcome);
-			delete socket;
-		}
+		WelcomeMessage();
 };
 
-AcceptFunctor acceptFunctor;
-
-void NetworkThread::run(void* _param)
-{
-	try {
-		SocketServer* server = new SocketServer(SERVER_PORT);
-		server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
-	}
-	catch(Exception& e)
-	{
-		std::cout << "Server: " << e.getMessage() << std::endl;
-	}
-}
+#endif //WELCOMEMESSAGE_H

@@ -15,19 +15,15 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef PROTOCOL_H
-#define PROTOCOL_H
+#ifndef MESSAGETRANSFER_H
+#define MESSAGETRANSFER_H
 
-#define PROTOCOL_WELCOME "CLUSTONEN SERVER\nPROTOCOL VERSION: 0.0.1\nHELLO?\n"
-#define PROTOCOL_WELCOME_LENGTH strlen(PROTOCOL_WELCOME)
+#include "ClustonenMessage.h"
+#include "Socket.h"
 
-#define PROTOCOL_CLIENT_WELCOME "HELLO!"
-#define PROTOCOL_CLIENT_WELCOME_LENGTH strlen(PROTOCOL_CLIENT_WELCOME)
+class MessageTransfer {
+	public:
+		static void sendMessage(Socket& socket, ClustonenMessage& message);
+};
 
-#define PROTOCOL_ABORT "UNKNOWN COMMAND. ABORTING!\n"
-#define PROTOCOL_ABORT_LENGTH strlen(PROTOCOL_ABORT)
-
-#define PROTOCOL_ACCEPT "ACCECPTED\n"
-#define PROTOCOL_ACCEPT_LENGTH strlen(PROTOCOL_ACCEPT)
-
-#endif //PROTOCOL_H
+#endif //MESSAGETRANSFER_H

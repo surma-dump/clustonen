@@ -15,36 +15,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "NetworkThread.h"
-#include "SocketFunctor.h"
-#include "ClustonenThread.h"
-#include "SocketServer.h"
-#include "config.h"
 #include "WelcomeMessage.h"
-#include "MessageTransfer.h"
-#include <iostream>
+#include "config.h"
 
-class AcceptFunctor : public SocketFunctor
+WelcomeMessage::WelcomeMessage()
+	: ClustonenMessage()
 {
-	public:
-		void operator()(Socket* socket)
-		{
-			WelcomeMessage welcome;
-			MessageTransfer::sendMessage(*socket, welcome);
-			delete socket;
-		}
-};
-
-AcceptFunctor acceptFunctor;
-
-void NetworkThread::run(void* _param)
-{
-	try {
-		SocketServer* server = new SocketServer(SERVER_PORT);
-		server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
-	}
-	catch(Exception& e)
-	{
-		std::cout << "Server: " << e.getMessage() << std::endl;
-	}
+	setName("WelcomeMessage");
+	addField("protocol-version", PROTOCOL_VERSION);
+	addField("server-name", PROTOCOL_SERVER);
 }

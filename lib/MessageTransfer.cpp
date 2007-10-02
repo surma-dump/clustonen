@@ -1,4 +1,3 @@
- 
 /**
  * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
@@ -16,11 +15,17 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#include "MessageTransfer.h"
+#include <arpa/inet.h>
 
-#define SERVER_PORT 22345
-#define SERVER_CLIENTQUEUE_LENGTH 10
-
-
-#endif //CONFIG_H
+/**
+ * Sends a message over the socket respecting the protocol.
+ */
+void MessageTransfer::sendMessage(Socket& socket, ClustonenMessage& message)
+{
+	std::string rawMsg = message.getData();
+	uint32_t length = rawMsg.length();
+	
+	socket.write((char*)&length, sizeof(length));
+	socket.write(rawMsg.c_str(), length);
+}
