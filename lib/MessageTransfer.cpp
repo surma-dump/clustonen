@@ -29,7 +29,7 @@ void MessageTransfer::sendMessage(Socket& socket, const ClustonenMessage& messag
 	uint32_t length = htonl(rawMsg.length());
 	
 	socket.write((char*)&length, sizeof(length));
-	socket.write(rawMsg.c_str(), length);
+	socket.write(rawMsg.c_str(), ntohl(length));
 }
 
 /**
@@ -40,7 +40,7 @@ void MessageTransfer::sendMessage(Socket& socket, const ClustonenMessage& messag
 ClustonenMessage MessageTransfer::receiveMessage(Socket& socket)
 {
 	uint32_t length;
-	uint32_t bytes_received;
+	uint32_t bytes_received = 0;
 	uint32_t buffer_size = socket.getBufferSize();
 	std::string rawMsg;
 	
