@@ -18,6 +18,8 @@
 #include "ClustonenMessage.h"
 #include "strhelper.h"
 
+#include <iostream>  // dito
+
 /**
  * Standardconstructor
  */
@@ -60,7 +62,7 @@ ClustonenMessage::ClustonenMessage(const std::string& pack)
 	name = _name ; // Save isolated name
 	regfree(&regex) ; 
 	len = strlen (buf) ; // save old length of buffer
-	memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo], pack.length() - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten). 
+	memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo+1], pack.length() - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten).
 	buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end
 	parse (buf) ; // and let the rest be done by parse()
 }
@@ -109,7 +111,7 @@ std::string ClustonenMessage::getData() const
 {
 	std::string ret = "" ;
 	for (std::map<std::string, std::string>::const_iterator dataseg=data.begin(); dataseg != data.end(); dataseg++) // Run through every data segment
-		ret += dataseg->first+"="+dataseg->second+";" ; // and append it formatted to the string
+		ret += dataseg->first+"='"+dataseg->second+"';" ; // and append it formatted to the string
 	return ret ;
 }
 
@@ -183,7 +185,7 @@ void ClustonenMessage::parse(const std::string& _data)
 	buf = (char *) malloc (_data.length() * sizeof(char)) ;
 	memcpy (buf, _data.c_str(), _data.length()) ;
 
-	if (regcomp (&regex, "([-_a-zA-Z0-9]+)\\s*=\\s*'(([^\\']|\\\\.)+)'\\s*;", REG_EXTENDED) != 0) // compile regex and chech if it succeeded
+	if (regcomp (&regex, "\\s*([-_a-zA-Z0-9]+)\\s*=\\s*'(([^\\']|\\\\.)+)'\\s*;", REG_EXTENDED) != 0) // compile regex and chech if it succeeded
 		throw Exception ("Could not parse data, error while compiling regular expression. \n") ; // if not, throw an exception
 	while (regexec (&regex, buf, 4, matches, 0) == 0) // As long as there are matches, fill them into the matches-struct-array...
 	{
@@ -191,12 +193,11 @@ void ClustonenMessage::parse(const std::string& _data)
 		memset (value, 0, MAXFIELDVALUE) ; // -- " --
 		memcpy (field, &buf[matches[1].rm_so], matches[1].rm_eo - matches[1].rm_so) ; // copy <length of match> chars from <beginning of match> to field
 		memcpy (value, &buf[matches[2].rm_so], matches[2].rm_eo - matches[2].rm_so) ; // -- " -- to value
-		data[std::string(field)] = std::string(value) ; // Add the field and the value to the map
-		unescapeData(data[std::string(field)]);
+		data[field] = std::string(value) ; // Add the field and the value to the map
+		unescapeData(data[field]);
 		len = strlen(buf) ; // save old length of buffer
 		memcpy (&buf[matches[0].rm_so], &buf[matches[0].rm_eo], strlen(buf) - matches[0].rm_eo) ; // goto beginning of match, and move the everything from the end of the match to there (the match itself is overwritten). 
 		buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end
 	}
-	
 	regfree(&regex) ;
 }
