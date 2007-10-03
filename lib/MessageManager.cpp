@@ -103,5 +103,7 @@ void MessageManager::distributeNext()
 		std::list<ClustonenModule*> modules = modulelist[msg->getName()] ;
 		for (std::list<ClustonenModule*>::iterator it = modules.begin(); it != modules.end(); ++it)
 			(*it)->processMessage(msg) ;
+		
+		delete msg;
 	}
 }
