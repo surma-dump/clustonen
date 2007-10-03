@@ -103,7 +103,7 @@ void SocketTest::connectTest(void)
 	CPPUNIT_ASSERT(client->isConnected() == false);
 	client->connect("localhost", TESTPORT);
 	CPPUNIT_ASSERT(client->isConnected() == true);
-	CPPUNIT_ASSERT(client->read(strlen(TESTMSG)) == strlen(TESTMSG));
+	CPPUNIT_ASSERT(client->readFixedLength(strlen(TESTMSG)) == strlen(TESTMSG));
 	CPPUNIT_ASSERT(memcmp(client->getBuffer(), TESTMSG, strlen(TESTMSG)) == 0);
 	
 	thrS.join();
@@ -129,7 +129,7 @@ void SocketTest::existingHandleTest1(void)
 	CPPUNIT_ASSERT(client2->isConnected() == false);
 	client2->connect("localhost", TESTPORT);
 	CPPUNIT_ASSERT(client2->isConnected() == true);
-	CPPUNIT_ASSERT(client2->read(strlen(TESTMSG)) == strlen(TESTMSG));
+	CPPUNIT_ASSERT(client2->readFixedLength(strlen(TESTMSG)) == strlen(TESTMSG));
 	CPPUNIT_ASSERT(memcmp(client2->getBuffer(), TESTMSG, strlen(TESTMSG)) == 0);
 	
 	thrS.join();
@@ -172,7 +172,7 @@ void SocketTest::existingHandleTest2(void)
 	
 	client2 = new Socket(sock, SOCKET_DEFAULT_BUFFER_SIZE, sock, sock, true);
 	CPPUNIT_ASSERT(client2->isConnected() == true);
-	CPPUNIT_ASSERT(client2->read(strlen(TESTMSG)) == strlen(TESTMSG));
+	CPPUNIT_ASSERT(client2->readFixedLength(strlen(TESTMSG)) == strlen(TESTMSG));
 	CPPUNIT_ASSERT(memcmp(client2->getBuffer(), TESTMSG, strlen(TESTMSG)) == 0);
 	
 	thrS.join();
