@@ -23,7 +23,7 @@
 
 class MessageTransfer {
 	public:
-		static void sendMessage(Socket& socket, ClustonenMessage& message);
+		static void sendMessage(Socket& socket, const ClustonenMessage& message); 
 };
 
 #endif //MESSAGETRANSFER_H

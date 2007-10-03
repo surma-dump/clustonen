@@ -21,7 +21,7 @@
 /**
  * Sends a message over the socket respecting the protocol.
  */
-void MessageTransfer::sendMessage(Socket& socket, ClustonenMessage& message)
+void MessageTransfer::sendMessage(Socket& socket, const ClustonenMessage& message)
 {
 	std::string rawMsg = message.getData();
 	uint32_t length = rawMsg.length();

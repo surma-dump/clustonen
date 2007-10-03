@@ -76,7 +76,7 @@ ClustonenMessage::~ClustonenMessage()
  * Get name of message
  * @return Name of the message as a string
  */
-std::string ClustonenMessage::getName()
+std::string ClustonenMessage::getName() const
 {
 	return name ;
 }
@@ -86,9 +86,14 @@ std::string ClustonenMessage::getName()
  * @param field  Name of the field
  * @return Value of the field with the name defined above
  */
-std::string ClustonenMessage::getField(const std::string& field)
+std::string ClustonenMessage::getField(const std::string& field) const
 {
-	return data[field] ;
+	std::map<std::string,std::string>::const_iterator it = data.find(field);
+	
+	if(it != data.end())
+		return it->second;
+	
+	return "";
 }
 
 void ClustonenMessage::unescapeData(std::string& _data)
@@ -100,10 +105,10 @@ void ClustonenMessage::unescapeData(std::string& _data)
  * Formats the saved data as a string
  * @return data as a string
  */
-std::string ClustonenMessage::getData()
+std::string ClustonenMessage::getData() const
 {
 	std::string ret = "" ;
-	for (std::map<std::string, std::string>::iterator dataseg=data.begin(); dataseg != data.end(); dataseg++) // Run through every data segment
+	for (std::map<std::string, std::string>::const_iterator dataseg=data.begin(); dataseg != data.end(); dataseg++) // Run through every data segment
 		ret += dataseg->first+"="+dataseg->second+";" ; // and append it formatted to the string
 	return ret ;
 }
@@ -158,7 +163,7 @@ void ClustonenMessage::delField(const std::string& field)
  * Converts the message to a string usable by the 3rd constructor
  * @return string representing the message
  */
-std::string ClustonenMessage::toString()
+std::string ClustonenMessage::toString() const
 {
 	return name+"|"+getData() ;
 }

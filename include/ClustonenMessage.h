@@ -40,15 +40,15 @@ public:
 	ClustonenMessage(const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
 	ClustonenMessage(const std::string& pack) ; // Constructs a message out of toString()-string
 	virtual ~ClustonenMessage() ; // Destructor
-	std::string getName() ; // returns name of the message
-	std::string getField(const std::string& field) ; // returns certain field of the data
-	std::string getData() ; // returns whole data string
+	std::string getName() const; // returns name of the message
+	std::string getField(const std::string& field) const; // returns certain field of the data
+	std::string getData() const; // returns whole data string
 	void setName(const std::string& _name) ; // sets the name
 	void setData(const std::string& _data) ; // sets the whole data
 	void addData(const std::string& _data) ; // adds new data
 	void addField(const std::string& field, const std::string& value) ; // set a single field
 	void delField(const std::string& field) ; // deletes a field
-	std::string toString() ; // converts the instance into a representing string
+	std::string toString() const; // converts the instance into a representing string
 protected:
 	void parse(const std::string& _data) ; // parses a string and fills values into data
 	void unescapeData(std::string& _data);
