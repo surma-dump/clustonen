@@ -1,5 +1,8 @@
-clientserver
-clustonenserver
+tests/configfileparser/configfileparser
+client/clientserver
+server/clustonenserver
+tests/unit-tests/testsuite
+tests/messageclass/messages
 *.o
 *.so
 *.so.*
