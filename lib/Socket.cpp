@@ -37,7 +37,7 @@ Socket::Socket(size_t buffer_size)
 	buffer = new char[buffer_size];
 	
 	if(buffer == NULL)
-		throw  Exception ("ClustonenLib: Could not allocate buffer. \n") ;
+		throw  Exception ("Socket::Socket(): Could not allocate buffer. \n") ;
 }
 /**
  * Creates a socket from an existing socket descriptor.
@@ -54,7 +54,7 @@ Socket::Socket(int socket, size_t buffer_size, int opponenthandle, int transmiss
 	buffer = new char[buffer_size];
 	
 	if(buffer == NULL)
-		throw  Exception ("ClustonenLib: Could not allocate buffer. \n") ;
+		throw  Exception ("Socket::Socket(): Could not allocate buffer. \n") ;
 }
 
 /**
@@ -114,7 +114,7 @@ void Socket::listen()
 	// set it to listen
 	if (::listen(sockethandle, 1) != 0) {
 		// and throw an exception if it failed
-		throw  Exception ("ClustonenLib: Could not switch to listening mode. \n") ;
+		throw  Exception (strerror(errno)) ;
 	}
 }
 
@@ -127,7 +127,7 @@ void Socket::waitForConnection()
 	// just wait and save sockethandle of the incoming connection
 	opponenthandle = ::accept(sockethandle, (struct sockaddr *) &opponentsocket, &socksize) ;
 	if (opponenthandle < 0)
-		throw Exception ("Could not accept connection. \n") ;
+		throw  Exception (strerror(errno)) ;
 	connected = true;
 	transmissionhandle = opponenthandle ;
 }
@@ -186,7 +186,7 @@ void Socket::write(const char* msg, int len)
 	// Write sequence to socket
 	if (::send(transmissionhandle,msg,len,0) < 0) {
 		// and throw exception if it failed
-		throw  Exception ("ClustonenLib: Could not send string. \n") ;
+		throw  Exception (strerror(errno)) ;
 	}
 }
 
@@ -234,7 +234,7 @@ ssize_t Socket::readFixedLength(size_t num_bytes, bool reset_buffer)
 	if((!reset_buffer && (num_bytes > buffer_size-bytes_in_buffer)) ||
 		(reset_buffer && num_bytes > buffer_size))
 	{
-		throw Exception("Socket::readFixedLength: requested number of bytes doesn't fit into buffer.");
+		throw Exception("Socket::readFixedLength(): requested number of bytes doesn't fit into buffer.");
 	}
 	
 	if(reset_buffer)
