@@ -25,8 +25,6 @@
 
 using namespace std;
 
-//TODO: Write more tests...
-
 class SocketTestServerThread : public ClustonenThread
 {
 	protected:
@@ -53,6 +51,8 @@ class SocketTest : public CPPUNIT_NS :: TestFixture
 	CPPUNIT_TEST (connectTest);
 	CPPUNIT_TEST (existingHandleTest1);
 	CPPUNIT_TEST (existingHandleTest2);
+	CPPUNIT_TEST (bufferSizeTest);
+	CPPUNIT_TEST (bufferAccumulationTest);
 	CPPUNIT_TEST_SUITE_END ();
 	
 	public:
@@ -63,6 +63,8 @@ class SocketTest : public CPPUNIT_NS :: TestFixture
 		void connectTest (void);
 		void existingHandleTest1 (void);
 		void existingHandleTest2 (void);
+		void bufferSizeTest (void);
+		void bufferAccumulationTest (void);
 
 	private:
 		Socket* server;
@@ -178,4 +180,38 @@ void SocketTest::existingHandleTest2(void)
 	thrS.join();
 	
 	delete client2;
+}
+
+/**
+ * Checks wether Socket::readFixedLength() complains if buffer is too small
+ */
+void SocketTest::bufferSizeTest(void)
+{
+	CPPUNIT_ASSERT_THROW(server->readFixedLength(server->getBufferSize()+1), Exception);
+}
+
+/**
+ * Creates a socket handle using socket() and allocates a new
+ * instance of Socket.
+ */
+void SocketTest::bufferAccumulationTest(void)
+{
+	SocketTestServerThread thrS;
+	
+	thrS.start(server);
+	
+	//FIXME: Actually, this point should be synchronized with the server thread
+	//We have a lot of potential race conditions here and the test might even fail
+	//because of bad timings...
+	sleep(1);
+	
+	CPPUNIT_ASSERT(client->isConnected() == false);
+	client->connect("localhost", TESTPORT);
+	CPPUNIT_ASSERT(client->isConnected() == true);
+	CPPUNIT_ASSERT(client->readFixedLength(2) == 2);
+	CPPUNIT_ASSERT(client->getNumBytesInBuffer() == 2);
+	CPPUNIT_ASSERT(client->readFixedLength(strlen(TESTMSG)-2, false) == (ssize_t)(strlen(TESTMSG)-2));
+	CPPUNIT_ASSERT(client->getNumBytesInBuffer() == (ssize_t)strlen(TESTMSG));
+	
+	thrS.join();
 }
