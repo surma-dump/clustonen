@@ -65,7 +65,7 @@ void ClustonenMessageTest::initTest(void)
 		"longer='baz doz'; "
 		"fieldwithapostroph='apostroph\\''; "
 		"moreapostrophes='\\'\\'\\'';");
-	
+
 	CPPUNIT_ASSERT(msg->getName() == "a_message");
 	CPPUNIT_ASSERT(msg->getField("foo") == "bar");
 	CPPUNIT_ASSERT(msg->getField("longer") == "baz doz");
@@ -87,6 +87,7 @@ void ClustonenMessageTest::packTest(void)
 	msg.addField("field1", "value1");
 	msg.addField("field2", "value2");
 	msg.addField("field3", "value3");
+
 	
 	CPPUNIT_ASSERT(msg.getName() == "aMessage");
 	CPPUNIT_ASSERT(msg.getField("field1") == "value1");
@@ -95,8 +96,7 @@ void ClustonenMessageTest::packTest(void)
 	
 	ClustonenMessage copiedMsg(msg.toString());
 	CPPUNIT_ASSERT(copiedMsg.getName() == "aMessage");
-	
-	std::cout << "VALUE IS: " << copiedMsg.getField("field1") << std::endl;
+
 	CPPUNIT_ASSERT(copiedMsg.getField("field1") == "value1");
 	CPPUNIT_ASSERT(copiedMsg.getField("field2") == "value2");
 	CPPUNIT_ASSERT(copiedMsg.getField("field3") == "value3");
