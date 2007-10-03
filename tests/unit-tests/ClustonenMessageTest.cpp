@@ -26,6 +26,8 @@ class ClustonenMessageTest : public CPPUNIT_NS :: TestFixture
 {
 	CPPUNIT_TEST_SUITE (ClustonenMessageTest);
 	CPPUNIT_TEST (initTest);
+	CPPUNIT_TEST (packTest);
+	CPPUNIT_TEST (dataTest);
 	CPPUNIT_TEST_SUITE_END ();
 	
 	public:
@@ -34,8 +36,8 @@ class ClustonenMessageTest : public CPPUNIT_NS :: TestFixture
 
 	protected:
 		void initTest (void);
-		void wrongValueTest (void);
-		void nonexistentFileTest(void);
+		void packTest (void);
+		void dataTest (void);
 
 	private:
 		
@@ -70,6 +72,57 @@ void ClustonenMessageTest::initTest(void)
 	
 	CPPUNIT_ASSERT(msg->getField("fieldwithapostroph") == "apostroph'");
 	CPPUNIT_ASSERT(msg->getField("moreapostrophes") == "'''");
-		
+	
 	delete msg;
+}
+
+/*
+ * Initializes a message with a string retrieved using toString()
+ */
+void ClustonenMessageTest::packTest(void)
+{
+	ClustonenMessage msg;
+	
+	msg.setName("aMessage");
+	msg.addField("field1", "value1");
+	msg.addField("field2", "value2");
+	msg.addField("field3", "value3");
+	
+	CPPUNIT_ASSERT(msg.getName() == "aMessage");
+	CPPUNIT_ASSERT(msg.getField("field1") == "value1");
+	CPPUNIT_ASSERT(msg.getField("field2") == "value2");
+	CPPUNIT_ASSERT(msg.getField("field3") == "value3");
+	
+	ClustonenMessage copiedMsg(msg.toString());
+	CPPUNIT_ASSERT(copiedMsg.getName() == "aMessage");
+	
+	std::cout << "VALUE IS: " << copiedMsg.getField("field1") << std::endl;
+	CPPUNIT_ASSERT(copiedMsg.getField("field1") == "value1");
+	CPPUNIT_ASSERT(copiedMsg.getField("field2") == "value2");
+	CPPUNIT_ASSERT(copiedMsg.getField("field3") == "value3");
+}
+
+/*
+ * Initializes a message with a name and data retrieved using getData()
+ */
+void ClustonenMessageTest::dataTest(void)
+{
+	ClustonenMessage msg;
+	
+	msg.setName("aMessage");
+	msg.addField("field1", "value1");
+	msg.addField("field2", "value2");
+	msg.addField("field3", "value3");
+	
+	CPPUNIT_ASSERT(msg.getName() == "aMessage");
+	CPPUNIT_ASSERT(msg.getField("field1") == "value1");
+	CPPUNIT_ASSERT(msg.getField("field2") == "value2");
+	CPPUNIT_ASSERT(msg.getField("field3") == "value3");
+	
+	ClustonenMessage copiedMsg(msg.getName(), msg.getData());
+	CPPUNIT_ASSERT(copiedMsg.getName() == "aMessage");
+	
+	CPPUNIT_ASSERT(copiedMsg.getField("field1") == "value1");
+	CPPUNIT_ASSERT(copiedMsg.getField("field2") == "value2");
+	CPPUNIT_ASSERT(copiedMsg.getField("field3") == "value3");
 }
