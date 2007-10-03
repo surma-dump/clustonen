@@ -50,6 +50,7 @@ public:
 	void write(const char* msg, int len) ;
 	// read incoming message
 	ssize_t read(size_t num_bytes, bool reset_buffer = true) ;
+	ssize_t readFixedLength(size_t num_bytes, bool reset_buffer = true) ;
 
 	// returns saved message
 	const char* getBuffer() ;

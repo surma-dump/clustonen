@@ -220,6 +220,35 @@ ssize_t Socket::read(size_t num_bytes, bool reset_buffer)
 }
 
 /**
+ * Receives a sequence of bytes from the connected host. The difference to
+ * Socket::read() is that num_bytes specifies the minimum number of bytes
+ * to receive. It cannot happen that fewer bytes are read.
+ *
+ * @param num_bytes The number of bytes to receive
+ * @param reset_buffer If set to true, the buffer's content will be overwritten.
+ 			If set to false, the received bytes will be appended to the buffer.
+ * @return Number of bytes received 
+ */
+ssize_t Socket::readFixedLength(size_t num_bytes, bool reset_buffer)
+{
+	if((!reset_buffer && (num_bytes > buffer_size-bytes_in_buffer)) ||
+		(reset_buffer && num_bytes > buffer_size))
+	{
+		throw Exception("Socket::readFixedLength: requested number of bytes doesn't fit into buffer.");
+	}
+	
+	if(reset_buffer)
+		resetBuffer();
+	
+	size_t bytes_read = 0;
+		
+	while(bytes_read < num_bytes)
+		bytes_read += read(num_bytes - bytes_read, false);
+	
+	return bytes_read;
+}
+
+/**
  * Returns the receive-buffer's size in bytes.
  */
 size_t Socket::getBufferSize()
