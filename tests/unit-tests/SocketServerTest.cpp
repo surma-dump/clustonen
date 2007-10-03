@@ -100,7 +100,7 @@ void SocketServerTest::connectTest(void)
 			Socket* client = new Socket();
 			client->connect("localhost", TESTPORT);
 			CPPUNIT_ASSERT(client->isConnected() == true);
-			CPPUNIT_ASSERT(client->read(strlen(TESTMSG)) == strlen(TESTMSG));
+			CPPUNIT_ASSERT(client->read(strlen(TESTMSG)) == (ssize_t)strlen(TESTMSG));
 			CPPUNIT_ASSERT(memcmp(client->getBuffer(), TESTMSG, strlen(TESTMSG)) == 0);
 			delete client;
 		}
