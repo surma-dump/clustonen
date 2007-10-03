@@ -1,0 +1,7 @@
+clientserver
+clustonenserver
+*.o
+*.so
+*.so.*
+*~
+\#*\#
