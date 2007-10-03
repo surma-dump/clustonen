@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -18,16 +19,14 @@
 #ifndef FOOMESSAGEMANAGERFOO
 #define FOOMESSAGEMANAGERFOO
 
-#define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
-
-#include <cstdio> 
-#include <cstdlib> 
 #include <string>
 #include <map> 
 #include <list>
 #include <queue>
 #include "ClustonenModule.h"
 #include "ClustonenMessage.h"
+#include "ClustonenMutex.h"
+
 /**
  * Manager for processing Messages
  */
@@ -38,10 +37,16 @@ public:
 	virtual	~MessageManager() ; // Destructor
 	void queueMessage (ClustonenMessage* msg) ; // Queues a message
 	void distributeNext() ; // Distributes next message in line to hooked modules
+	void addModuleHook(const std::string& msgName, ClustonenModule* module);
+	void removeModuleHook(const std::string& msgName, ClustonenModule* module);
+	void removeModuleHook(ClustonenModule* module);
+	
 protected:
 private:
 	std::map<std::string, std::list<ClustonenModule*> > modulelist ; // Message type string as key, results in a list of modules processing this event.
 	std::queue<ClustonenMessage*> messages ;
+	ClustonenMutex* modulelist_mutex;
+	ClustonenMutex* queue_mutex;
 } ;
 
 

@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -16,12 +17,15 @@
  */
 
 #include "MessageManager.h"
+#include <algorithm>
 
 /**
  * Standard constructor
  */
 MessageManager::MessageManager()
 {
+	modulelist_mutex = new ClustonenMutex();
+	queue_mutex = new ClustonenMutex();
 }
 
 /**
@@ -29,6 +33,48 @@ MessageManager::MessageManager()
  */
 MessageManager::~MessageManager()
 {
+	delete modulelist_mutex;
+	delete queue_mutex;
+}
+
+/**
+ * Adds a Hook
+ * @param msgName The message type for which the module should be notified
+ * @param module The module that will be notified
+ */
+void MessageManager::addModuleHook(const std::string& msgName, ClustonenModule* module)
+{
+	modulelist_mutex->lock();
+		modulelist[msgName].insert(modulelist[msgName].begin(), module);
+	modulelist_mutex->unlock();
+}
+
+/**
+ * Removes a module's hook for a certain message type.
+ * @param msgName The message type for which the module shouldn't be notified anymore
+ * @param module The module whose hook should be removed
+ */
+void MessageManager::removeModuleHook(const std::string& msgName, ClustonenModule* module)
+{
+	modulelist_mutex->lock();
+		modulelist[msgName].erase(find(modulelist[msgName].begin(), modulelist[msgName].end(), module));
+	modulelist_mutex->unlock();
+}
+
+/**
+ * Removes all Hooks that concern the specified module.
+ * @param module The module whose hooks should be removed
+ */
+void MessageManager::removeModuleHook(ClustonenModule* module)
+{
+	modulelist_mutex->lock();
+		for(std::map<std::string, std::list<ClustonenModule*> >::iterator it = modulelist.begin();
+			it != modulelist.end();
+			++it)
+		{
+			(it->second).erase(find((it->second).begin(), (it->second).end(), module));
+		}
+	modulelist_mutex->unlock();
 }
 
 /**
@@ -37,7 +83,9 @@ MessageManager::~MessageManager()
  */
 void MessageManager::queueMessage (ClustonenMessage* msg)
 {
-	messages.push(msg) ;
+	queue_mutex->lock();
+		messages.push(msg) ;
+	queue_mutex->unlock();
 }
 
 /**
@@ -47,10 +95,13 @@ void MessageManager::distributeNext()
 {
 	if (messages.size() > 0)
 	{
-		ClustonenMessage* msg = messages.front() ;
-		messages.pop() ;
+		queue_mutex->lock();
+			ClustonenMessage* msg = messages.front() ;
+			messages.pop() ;
+		queue_mutex->unlock();
+		
 		std::list<ClustonenModule*> modules = modulelist[msg->getName()] ;
-		for (std::list<ClustonenModule*>::iterator module = modules.begin(); module != modules.end(); module++)
-			(*module)->processMessage(msg) ;
+		for (std::list<ClustonenModule*>::iterator it = modules.begin(); it != modules.end(); ++it)
+			(*it)->processMessage(msg) ;
 	}
 }
