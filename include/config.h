@@ -19,7 +19,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define SERVER_PORT 22345
+#define DEFAULT_SERVER_PORT 22345
 #define SERVER_CLIENTQUEUE_LENGTH 10
 #define PROTOCOL_VERSION "0.0.1"
 #define PROTOCOL_SERVER "ClustonenServer"

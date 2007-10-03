@@ -37,10 +37,15 @@ class AcceptFunctor : public SocketFunctor
 
 AcceptFunctor acceptFunctor;
 
+NetworkThread::NetworkThread(unsigned int port)
+	: port(port)
+{
+}
+
 void NetworkThread::run(void* _param)
 {
 	try {
-		SocketServer* server = new SocketServer(SERVER_PORT);
+		SocketServer* server = new SocketServer(port);
 		server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
 	}
 	catch(Exception& e)

@@ -18,6 +18,7 @@
 
 #include "clustonen-server.h"
 #include "NetworkThread.h"
+#include "config.h"
 
 int main(int argc, char* argv[])
 {
@@ -49,9 +50,9 @@ int main(int argc, char* argv[])
 		daemonize() ; // Daemonize!
 	int port = arguments.getIntegerValue("port") ; // get port number
 	if(port < 0) // if there was no port specified...
-		port = 23505 ; // ...use standard port
+		port = DEFAULT_SERVER_PORT ; // ...use standard port
 	
-	NetworkThread nwThr;
+	NetworkThread nwThr(port);
 	
 	nwThr.start(NULL);
 	nwThr.join();

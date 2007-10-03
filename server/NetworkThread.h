@@ -22,8 +22,12 @@
 
 class NetworkThread : public ClustonenThread
 {
+	public:
+		NetworkThread(unsigned int port);
+		
 	protected:
 		void run(void* _param);
+		unsigned int port;
 };
 
 #endif //NETWORKTHREAD_H
