@@ -25,6 +25,8 @@ class MessageTransfer {
 	public:
 		static void sendMessage(Socket& socket, const ClustonenMessage& message); 
 		static ClustonenMessage receiveMessage(Socket& socket); 
+		static ClustonenMessage* receiveMessagePtr(Socket& socket);
+		static std::string receiveRawMessage(Socket& socket);
 };
 
 #endif //MESSAGETRANSFER_H

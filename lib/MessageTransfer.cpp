@@ -32,12 +32,7 @@ void MessageTransfer::sendMessage(Socket& socket, const ClustonenMessage& messag
 	socket.write(rawMsg.c_str(), ntohl(length));
 }
 
-/**
- * Receives a message from the socket respecting the protocol.
- * @param socket the Socket to read from
- * @return The message received
- */
-ClustonenMessage MessageTransfer::receiveMessage(Socket& socket)
+std::string MessageTransfer::receiveRawMessage(Socket& socket)
 {
 	uint32_t length;
 	uint32_t bytes_received = 0;
@@ -58,5 +53,27 @@ ClustonenMessage MessageTransfer::receiveMessage(Socket& socket)
 		rawMsg += socket.getBuffer();
 	}
 	
-	return ClustonenMessage(rawMsg);
+	return rawMsg;
+}
+
+/**
+ * Receives a message from the socket respecting the protocol.
+ * @param socket the Socket to read from
+ * @return The message received
+ */
+ClustonenMessage MessageTransfer::receiveMessage(Socket& socket)
+{
+	return ClustonenMessage(receiveRawMessage(socket));
+}
+
+/**
+ * Receives a message from the socket respecting the protocol and allocates
+ * a new instance of ClustonenMessage. The caller must ensure that the instance
+ * is correctly deleted.
+ * @param socket the Socket to read from
+ * @return A pointer to a new instance of the received message
+ */
+ClustonenMessage* MessageTransfer::receiveMessagePtr(Socket& socket)
+{
+	return new ClustonenMessage(receiveRawMessage(socket));
 }
