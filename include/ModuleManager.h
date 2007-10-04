@@ -18,8 +18,6 @@
 #ifndef FOOMODULEMANAGERFOO
 #define FOOMODULEMANAGERFOO
 
-#define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
-
 #include <cstdio> 
 #include <cstdlib> 
 #include <string>
