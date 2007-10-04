@@ -18,8 +18,6 @@
 #ifndef FOOCLUSTONENMODULEFOO 
 #define FOOCLUSTONENMODULEFOO 
 
-#define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
-
 #include <cstdio>
 #include <cstdlib>
 #include "ClustonenMessage.h"
@@ -31,16 +29,25 @@
 class ClustonenModule
 {
 public:
-	ClustonenModule() ; // Constructor
-	virtual ~ClustonenModule() ; // Destructor
-		
+	// Constructor
+	ClustonenModule();
+	// Destructor
+	virtual ~ClustonenModule();
+
 	//TODO Module information methods
-	virtual const char* getName() = 0; // returns plugin's name
+	virtual std::string getName() = 0; // returns plugin's name
 
 	// TODO Module handling
-	virtual int processMessage(ClustonenMessage* msg) = 0; // Called when a message is processed, the module is hooked for
+	// Called when a message the module is hooked for is processed
+	virtual int processMessage(ClustonenMessage* msg) = 0;
 protected:
 private:
+} ;
+
+enum {
+	CHAIN_STOP = 1,
+	CHAIN_PROCEED,
+	CHAIN_RESTART
 } ;
 
 #endif
