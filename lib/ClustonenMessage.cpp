@@ -28,6 +28,14 @@ ClustonenMessage::ClustonenMessage()
 }
 
 /**
+ * Copy constructor
+ */
+ClustonenMessage::ClustonenMessage(const ClustonenMessage& msg)
+{
+	fromString(msg.toString());
+}
+
+/**
  * Constructor with initialization
  * @param name Identifier of the message
  * @param data Data of the message (see class definition)
@@ -44,6 +52,16 @@ ClustonenMessage::ClustonenMessage(const std::string& _name, const std::string& 
  */
 ClustonenMessage::ClustonenMessage(const std::string& pack)
 {
+	fromString(pack);
+}
+
+/**
+ * Takes a string created by the ClustonenMessage::toString() function of another instance
+ * and sets all data fields accordingly.
+ * @param str A string created by the ClustonenMessage::toString() function
+ */
+void ClustonenMessage::fromString(const std::string& pack)
+{
 	int len ;
 	char *buf ;
 	char _name[MAXFIELDNAME] ;
@@ -51,6 +69,8 @@ ClustonenMessage::ClustonenMessage(const std::string& pack)
 	regmatch_t matches[2] ; // Buffer for matches. 1 for the expression and 3 subexpressions
 	buf = (char *) malloc (pack.length() * sizeof(char)) ;
 	memcpy (buf, pack.c_str(), pack.length()) ;
+	
+	data.erase(data.begin(), data.end());
 
 	if (regcomp (&regex, "\\s*([-_a-zA-Z0-9]+)\\s*|", REG_EXTENDED) != 0) // compile regex and chech if it succeeded
 		throw Exception ("Could not parse data, error while compiling regular expression. \n") ; // if not, throw an exception

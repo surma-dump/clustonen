@@ -37,6 +37,7 @@ class ClustonenMessage
 {
 public:
 	ClustonenMessage(); // Constructor
+	ClustonenMessage(const ClustonenMessage& msg); // Copy Constructor
 	ClustonenMessage(const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
 	ClustonenMessage(const std::string& pack) ; // Constructs a message out of toString()-string
 	virtual ~ClustonenMessage() ; // Destructor
@@ -50,6 +51,7 @@ public:
 	void delField(const std::string& field) ; // deletes a field
 	int getNumFields() const ; // returns number of defined fields
 	std::string toString() const; // converts the instance into a representing string
+	void fromString(const std::string& pack); // Sets the data using a toString()-string
 protected:
 	void parse(const std::string& _data) ; // parses a string and fills values into data
 	void unescapeData(std::string& _data);
