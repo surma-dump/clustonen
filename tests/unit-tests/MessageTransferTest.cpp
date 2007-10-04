@@ -25,7 +25,7 @@
 
 using namespace std;
 
-#define MAXCLIENTS 1
+#define MAXCLIENTS 3
 
 class MessageTransferTestServerThread : public ClustonenThread
 {
@@ -108,7 +108,29 @@ void MessageTransferTest::sendReceiveTest(void)
 		client->connect("localhost", TESTPORT);
 		CPPUNIT_ASSERT(client->isConnected() == true);
 		
+		//receive a message and check if it is correct
 		ClustonenMessage msg = MessageTransfer::receiveMessage(*client);
+		
+		CPPUNIT_ASSERT(msg.getName() == "aMessage");
+		CPPUNIT_ASSERT(msg.getField("field1") == "value1");
+		CPPUNIT_ASSERT(msg.getField("field2") == "value2");
+		CPPUNIT_ASSERT(msg.getField("field3") == "value3");
+		
+		//Do the same using a pointer
+		client->connect("localhost", TESTPORT);
+		ClustonenMessage* msgPtr = MessageTransfer::receiveMessagePtr(*client);
+				
+		CPPUNIT_ASSERT(msgPtr != NULL);
+		CPPUNIT_ASSERT(msgPtr->getName() == "aMessage");
+		CPPUNIT_ASSERT(msgPtr->getField("field1") == "value1");
+		CPPUNIT_ASSERT(msgPtr->getField("field2") == "value2");
+		CPPUNIT_ASSERT(msgPtr->getField("field3") == "value3");
+		
+		delete msgPtr;
+		
+		//and once again using receiveRawMessage
+		client->connect("localhost", TESTPORT);
+		msg = ClustonenMessage(MessageTransfer::receiveRawMessage(*client));
 		
 		CPPUNIT_ASSERT(msg.getName() == "aMessage");
 		CPPUNIT_ASSERT(msg.getField("field1") == "value1");
