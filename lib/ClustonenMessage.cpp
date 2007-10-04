@@ -171,6 +171,15 @@ std::string ClustonenMessage::toString() const
 }
 
 /**
+ * Returns the number of defined fields contained in the message
+ * @returns number of fields
+ */
+int ClustonenMessage::getNumFields() const
+{
+	return data.size() ;
+}
+
+/**
  * Parses the given string and fills it into the data map
  * @param _data string to parse
  */

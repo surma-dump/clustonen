@@ -48,6 +48,7 @@ public:
 	void addData(const std::string& _data) ; // adds new data
 	void addField(const std::string& field, const std::string& value) ; // set a single field
 	void delField(const std::string& field) ; // deletes a field
+	int getNumFields() const ; // returns number of defined fields
 	std::string toString() const; // converts the instance into a representing string
 protected:
 	void parse(const std::string& _data) ; // parses a string and fills values into data
