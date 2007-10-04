@@ -18,6 +18,7 @@
 
 #include "clustonen-server.h"
 #include "NetworkThread.h"
+#include "MessageManager.h"
 #include "config.h"
 
 int main(int argc, char* argv[])
@@ -52,7 +53,8 @@ int main(int argc, char* argv[])
 	if(port < 0) // if there was no port specified...
 		port = DEFAULT_SERVER_PORT ; // ...use standard port
 	
-	NetworkThread nwThr(port);
+	MessageManager mmgr;
+	NetworkThread nwThr(port, &mmgr);
 	
 	nwThr.start(NULL);
 	nwThr.join();

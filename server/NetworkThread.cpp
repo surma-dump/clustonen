@@ -27,24 +27,83 @@
 class AcceptFunctor : public SocketFunctor
 {
 	public:
+		AcceptFunctor(MessageManager* mmgr)
+			: mmgr(mmgr)
+		{
+		}
+		
 		void operator()(Socket* socket)
 		{
-			WelcomeMessage welcome;
-			MessageTransfer::sendMessage(*socket, welcome);
-			delete socket;
+			ClientHandlerThread* cht = new ClientHandlerThread(mmgr);
+			cht->start(socket, true);
+			cht->deletionMutex.unlock();
 		}
+	
+	protected:
+		MessageManager* mmgr;
 };
 
-AcceptFunctor acceptFunctor;
+//////////////////////////////////////////////////////////////////////////////////
 
-NetworkThread::NetworkThread(unsigned int port)
-	: port(port)
+ClientHandlerThread::ClientHandlerThread(MessageManager* mmgr)
+	: mmgr(mmgr)
+{
+}
+
+void ClientHandlerThread::run(void* _param)
+{
+	Socket* socket = (Socket*)_param;
+	
+	try {
+		WelcomeMessage welcome;
+		ClustonenMessage* response;
+				
+		MessageTransfer::sendMessage(*socket, welcome);
+		
+		response = MessageTransfer::receiveMessagePtr(*socket);
+		if(response->getName() != "AcceptMessage")
+		{
+			socket->disconnect();
+			delete socket;
+			delete response;
+			return;
+		}
+		delete response;
+		
+		while(true)
+		{
+			response = MessageTransfer::receiveMessagePtr(*socket);
+			if(response->getName() == "AbortMessage")
+			{
+				mmgr->queueMessage(response);
+				socket->disconnect();
+				delete socket;
+				return;
+			}
+			
+			mmgr->queueMessage(response);
+		}
+	}
+	catch(Exception& e)
+	{
+		std::cout << e.getMessage() << std::endl;
+	}
+			
+	delete socket;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+NetworkThread::NetworkThread(unsigned int port, MessageManager* mmgr)
+	: port(port), mmgr(mmgr)
 {
 }
 
 void NetworkThread::run(void* _param)
 {
 	try {
+		AcceptFunctor acceptFunctor(mmgr);
+		
 		SocketServer* server = new SocketServer(port);
 		server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
 	}
