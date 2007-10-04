@@ -19,6 +19,8 @@
 #define FOOCLUSTONENTHREADFOO
 
 #include <pthread.h>
+#include "ClustonenMutex.h"
+
 /**
  * Represents a thread and simplifies handling. Basically a C++-wrapper for pthreads.
  */
@@ -28,10 +30,17 @@ public:
 	ClustonenThread(); // Constructor
 	virtual ~ClustonenThread() ; // Destructor
 	int isRunning() ; // Is thread running?
-	void start(void* _param) ; // starts the thread with given parameter
+	void start(void* _param, bool deleteAfterExecution = false) ; // starts the thread with given parameter
 	void join() ; // waits until thread terminates
 	void* getParameter() ; // Returns saved parameter
 	virtual void run(void* _param) = 0; // run in spawned process
+	
+	/**
+	 * This mutex is automatically locked by start() if deleteAfterExecution
+	 * is set to true. The mutex has to be unlocked from the outside so
+	 * that the instance can be deleted.
+	 */
+	ClustonenMutex deletionMutex;	
 protected:
 private:
 	pthread_t threadhandler ;

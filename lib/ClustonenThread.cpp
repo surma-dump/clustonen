@@ -18,6 +18,15 @@
 #include "ClustonenThread.h"
 
 /**
+ * Ugly structure to pass more than one argument
+ * to the ClustonenThreadRun function
+ */
+struct run_struct {
+	ClustonenThread* instance;
+	bool del;
+};
+
+/**
  * Standardconstructor
  */
 ClustonenThread::ClustonenThread()
@@ -43,12 +52,23 @@ int ClustonenThread::isRunning()
 
 /**
  * Starts the thread
- * @param param Parameter to pass on
+ * @param _param Parameter to pass on
+ * @param deleteAfterExecution If set to true, the instance
+ * will be deleted after run() has returned. NOTE: The mutex named deletionMutex
+ * has to be unlocked from the outside so that the instance can be deleted.
  */
-void ClustonenThread::start(void* _param) 
+void ClustonenThread::start(void* _param, bool deleteAfterExecution) 
 {
 	param = _param ;
-	pthread_create (&threadhandler, NULL, ClustonenThreadRun, this) ;
+	struct run_struct* rst = new struct run_struct;
+	rst->instance = this;
+	rst->del = deleteAfterExecution;
+	
+	//Set the lock so that ClustonenThreadRun cannot
+	//delete the instance before we leaved this function
+	deletionMutex.lock();
+	
+	pthread_create (&threadhandler, NULL, ClustonenThreadRun, rst) ;
 }
 
 /**
@@ -74,6 +94,20 @@ void* ClustonenThread::getParameter()
  */
 void* ClustonenThreadRun(void* param)
 {
-	ClustonenThread *t = (ClustonenThread*)param ;
+	struct run_struct* rst = (struct run_struct*)param;
+	ClustonenThread *t = rst->instance ;
 	t->run(t->getParameter()) ;
+	
+	if(rst->del)
+	{
+		//Wait for the creating thread to unlock
+		//the mutex
+		t->deletionMutex.lock();
+		
+		//We want to leave it in a sane state
+		t->deletionMutex.unlock();
+		delete t;
+	}
+	
+	delete rst;
 }
