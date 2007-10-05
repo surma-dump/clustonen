@@ -15,32 +15,36 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef NETWORKTHREAD_H
-#define NETWORKTHREAD_H
+#ifndef CLIENT_H
+#define CLIENT_H
 
-#include "ClustonenThread.h"
-#include "Server.h"
+#include <string>
+#include "Socket.h"
+#include "ClustonenMessage.h"
+#include "ClustonenMutex.h"
 
-class NetworkThread : public ClustonenThread
-{
+class Client {
 	public:
-		NetworkThread(unsigned int port, Server* srv);
+		Client(const std::string& name);
+		~Client();
+		
+		void setName(const std::string& name);
+		std::string getName();
+		
+		Socket* getSendSocket();
+		Socket* getReceiveSocket();
+		void setSendSocket(Socket* sock);
+		void setReceiveSocket(Socket* sock);
+		
+		void sendMessage(const ClustonenMessage& msg);
+		ClustonenMessage receiveMessage();
+		ClustonenMessage* receiveMessagePtr();
 		
 	protected:
-		void run(void* _param);
-		unsigned int port;
-		Server* srv;
+		Socket* sendSocket;
+		Socket* receiveSocket;
+		std::string name;
+		ClustonenMutex dataMutex;
 };
 
-class ClientHandlerThread : public ClustonenThread
-{
-	public:
-		ClientHandlerThread(Server* srv);
-		
-	protected:
-		void run(void* _param);
-		unsigned int port;
-		Server* srv;
-};
-
-#endif //NETWORKTHREAD_H
+#endif //CLIENT_H

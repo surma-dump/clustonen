@@ -172,7 +172,7 @@ void SocketTest::existingHandleTest2(void)
 	if(::connect(sock, (struct sockaddr *) &host_addr, sizeof(struct sockaddr)) < 0)
 		CPPUNIT_ASSERT(false);
 	
-	client2 = new Socket(sock, SOCKET_DEFAULT_BUFFER_SIZE, sock, sock, true);
+	client2 = new Socket(sock, &host_addr, SOCKET_DEFAULT_BUFFER_SIZE, true);
 	CPPUNIT_ASSERT(client2->isConnected() == true);
 	CPPUNIT_ASSERT(client2->readFixedLength(strlen(TESTMSG)) == (ssize_t)strlen(TESTMSG));
 	CPPUNIT_ASSERT(memcmp(client2->getBuffer(), TESTMSG, strlen(TESTMSG)) == 0);

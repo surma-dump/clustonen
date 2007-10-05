@@ -67,7 +67,7 @@ void SocketServer::run(SocketFunctor& acceptFunc, unsigned int queuelength, int 
 		if((client = accept(sock, (struct sockaddr *) &cli_addr, &clilen)) < 0)
 			throw Exception(strerror(errno));
 		
-		acceptFunc(new Socket(::dup(client), SOCKET_DEFAULT_BUFFER_SIZE, ::dup(client), ::dup(client), true));
+		acceptFunc(new Socket(::dup(client), &cli_addr, SOCKET_DEFAULT_BUFFER_SIZE, true));
 		close(client);
 	}
 	

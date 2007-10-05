@@ -15,32 +15,29 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef NETWORKTHREAD_H
-#define NETWORKTHREAD_H
+#ifndef SERVER_H
+#define SERVER_H
 
-#include "ClustonenThread.h"
-#include "Server.h"
+#include <string>
+#include "MessageManager.h"
+#include "Client.h"
+#include "ClustonenMutex.h"
 
-class NetworkThread : public ClustonenThread
-{
+class Server {
 	public:
-		NetworkThread(unsigned int port, Server* srv);
+		Server(const std::string& name);
+		
+		std::string getName();
+		MessageManager& getMessageManager();
+		Client* getClientByName(const std::string& name);
+		void addClient(Client* client);
+		void removeClient(Client* client);
 		
 	protected:
-		void run(void* _param);
-		unsigned int port;
-		Server* srv;
+		std::string name;
+		MessageManager mmgr;
+		std::list<Client*> clients;
+		ClustonenMutex clientlist_mutex;
 };
 
-class ClientHandlerThread : public ClustonenThread
-{
-	public:
-		ClientHandlerThread(Server* srv);
-		
-	protected:
-		void run(void* _param);
-		unsigned int port;
-		Server* srv;
-};
-
-#endif //NETWORKTHREAD_H
+#endif //SERVER_H

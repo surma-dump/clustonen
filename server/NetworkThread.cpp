@@ -27,32 +27,33 @@
 class AcceptFunctor : public SocketFunctor
 {
 	public:
-		AcceptFunctor(MessageManager* mmgr)
-			: mmgr(mmgr)
+		AcceptFunctor(Server* srv)
+			: srv(srv)
 		{
 		}
 		
 		void operator()(Socket* socket)
 		{
-			ClientHandlerThread* cht = new ClientHandlerThread(mmgr);
+			ClientHandlerThread* cht = new ClientHandlerThread(srv);
 			cht->start(socket, true);
 			cht->deletionMutex.unlock();
 		}
 	
 	protected:
-		MessageManager* mmgr;
+		Server* srv;
 };
 
 //////////////////////////////////////////////////////////////////////////////////
 
-ClientHandlerThread::ClientHandlerThread(MessageManager* mmgr)
-	: mmgr(mmgr)
+ClientHandlerThread::ClientHandlerThread(Server* srv)
+	: srv(srv)
 {
 }
 
 void ClientHandlerThread::run(void* _param)
 {
 	Socket* socket = (Socket*)_param;
+	Client* client;
 	
 	try {
 		WelcomeMessage welcome;
@@ -61,13 +62,42 @@ void ClientHandlerThread::run(void* _param)
 		MessageTransfer::sendMessage(*socket, welcome);
 		
 		response = MessageTransfer::receiveMessagePtr(*socket);
-		if(response->getName() != "AcceptMessage")
+		if(response->getName() != "InitiateTransferMessage")
 		{
 			socket->disconnect();
 			delete socket;
 			delete response;
 			return;
 		}
+		
+		if(response->getField("connection-direction") == "client-receives")
+		{
+			client = new Client(socket->getOpponent()+"-"+response->getField("client-name"));
+			client->setSendSocket(socket);
+			srv->addClient(client);
+			
+			std::cout << "Added client " << client->getName() << "..." << std::endl;
+			
+			delete socket;
+			delete response;
+			return;
+			
+		}
+		else if(response->getField("connection-direction") == "client-sends")
+		{
+			client = srv->getClientByName(socket->getOpponent()+"-"+response->getField("client-name"));
+			if(client == NULL)
+			{
+				socket->disconnect();
+				delete socket;
+				delete response;
+				return;
+			}
+			
+			client->setReceiveSocket(socket);
+			std::cout << "Two-way connection to " << client->getName() << " established..." << std::endl;
+		}
+		
 		delete response;
 		
 		while(true)
@@ -75,13 +105,15 @@ void ClientHandlerThread::run(void* _param)
 			response = MessageTransfer::receiveMessagePtr(*socket);
 			if(response->getName() == "AbortMessage")
 			{
-				mmgr->queueMessage(response);
+				srv->getMessageManager().queueMessage(response);
+				srv->removeClient(client);
 				socket->disconnect();
 				delete socket;
+				delete client;
 				return;
 			}
 			
-			mmgr->queueMessage(response);
+			srv->getMessageManager().queueMessage(response);
 		}
 	}
 	catch(Exception& e)
@@ -94,18 +126,18 @@ void ClientHandlerThread::run(void* _param)
 
 //////////////////////////////////////////////////////////////////////////////////
 
-NetworkThread::NetworkThread(unsigned int port, MessageManager* mmgr)
-	: port(port), mmgr(mmgr)
+NetworkThread::NetworkThread(unsigned int port, Server* srv)
+	: port(port), srv(srv)
 {
 }
 
 void NetworkThread::run(void* _param)
 {
 	try {
-		AcceptFunctor acceptFunctor(mmgr);
+		AcceptFunctor acceptFunctor(srv);
 		
-		SocketServer* server = new SocketServer(port);
-		server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
+		SocketServer* sock_server = new SocketServer(port);
+		sock_server->run(acceptFunctor, SOCKETSERVER_DEFAULT_QUEUELENGTH, SERVER_CLIENTQUEUE_LENGTH);
 	}
 	catch(Exception& e)
 	{

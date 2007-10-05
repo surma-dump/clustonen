@@ -73,13 +73,14 @@ int main(int argc, char* argv[])
 	if(server == "")
 		server = "localhost";
 	
-	Socket client;
+	Socket sendSocket;
+	Socket receiveSocket;
 	
 	try {
-		client.connect(server, port);
+		receiveSocket.connect(server, port);
 		std::cout << "Connected to server " << server << " on port " << port << std::endl;
 		
-		ClustonenMessage msg = MessageTransfer::receiveMessage(client);
+		ClustonenMessage msg = MessageTransfer::receiveMessage(receiveSocket);
 		if(msg.getName() != "WelcomeMessage")
 			return -1;
 		
@@ -87,9 +88,23 @@ int main(int argc, char* argv[])
 		std::cout << "server-name: " << msg.getField("server-name") << std::endl;
 		std::cout << "protocol-version: " << msg.getField("protocol-version") << std::endl;
 		
+		ClustonenMessage initRcvMsg;
+		initRcvMsg.setName("InitiateTransferMessage");
+		initRcvMsg.addField("connection-direction", "client-receives");
+		initRcvMsg.addField("client-name", "ClustonenClient");
+		MessageTransfer::sendMessage(receiveSocket, initRcvMsg);
+		
+		sendSocket.connect(server, port);
+		ClustonenMessage initSendMsg;
+		initSendMsg.setName("InitiateTransferMessage");
+		initSendMsg.addField("connection-direction", "client-sends");
+		initSendMsg.addField("client-name", "ClustonenClient");
+		MessageTransfer::sendMessage(sendSocket, initSendMsg);
+		
+		
 		ClustonenMessage abort = ClustonenMessage();
 		abort.setName("AbortMessage");
-		MessageTransfer::sendMessage(client, abort);
+		MessageTransfer::sendMessage(sendSocket, abort);
 		
 	}
 	catch(Exception& e) {
