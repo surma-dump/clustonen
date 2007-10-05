@@ -31,14 +31,15 @@
  *
  * Messagedata can be defined in the following format:
  * FIELDNAME1='FIELDVALUE1';FIELDNAME2='FIELDVALUE2';...
- * If you need to type ' in the Value, you can do this by backslashing it
+ * If you need to type ' in the Value, you can do this by backslashing it. Backslashes
+ * before a Apostroph can be used by backslashing them also.
  */
 class ClustonenMessage
 {
 public:
 	ClustonenMessage(); // Constructor
 	ClustonenMessage(const ClustonenMessage& msg); // Copy Constructor
-	ClustonenMessage(const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
+	ClustonenMessage(const std::string& _destination, const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
 	ClustonenMessage(const std::string& pack) ; // Constructs a message out of toString()-string
 	virtual ~ClustonenMessage() ; // Destructor
 	std::string getName() const; // returns name of the message
@@ -52,11 +53,16 @@ public:
 	int getNumFields() const ; // returns number of defined fields
 	std::string toString() const; // converts the instance into a representing string
 	void fromString(const std::string& pack); // Sets the data using a toString()-string
+	void setDestination(const std::string& _destination); // Sets destination
+	void setOrigin(const std::string& _origin); // Sets origin
+	std::string getDestination(); // Returns destination
+	std::string getOrigin(); // Returns origin
 protected:
 	void parse(const std::string& _data) ; // parses a string and fills values into data
 	void unescapeData(std::string& _data);
 private:
 	std::string name ;
 	std::map<std::string, std::string> data ;
+	std::string origin, destination ;
 };
 #endif

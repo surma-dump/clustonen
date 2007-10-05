@@ -37,11 +37,13 @@ ClustonenMessage::ClustonenMessage(const ClustonenMessage& msg)
 
 /**
  * Constructor with initialization
- * @param name Identifier of the message
- * @param data Data of the message (see class definition)
+ * @param _destination Name of the receipient
+ * @param _name Identifier of the message
+ * @param _data Data of the message (see class definition)
  */
-ClustonenMessage::ClustonenMessage(const std::string& _name, const std::string& _data)
+ClustonenMessage::ClustonenMessage(const std::string& _destination, const std::string& _name, const std::string& _data)
 {
+	destination = _destination ;
 	name = _name ;
 	parse (_data) ;
 }
@@ -229,4 +231,40 @@ void ClustonenMessage::parse(const std::string& _data)
 		buf[matches[0].rm_so + (len - matches[0].rm_eo)] = '\0' ; // terminate at the new end
 	}
 	regfree(&regex) ;
+}
+
+/**
+ * Sets the destination of the message
+ * @param _destination Name of the receipient
+ */
+void ClustonenMessage::setDestination(const std::string& _destination)
+{
+	destination = _destination ;
+}
+
+/**
+ * Sets the origin of the message
+ * @param _orgin Name of the sender
+ */
+void ClustonenMessage::setOrigin(const std::string& _origin)
+{
+	origin = _origin ;
+}
+
+/**
+ * Returns Origin
+ * @return Name of the sender
+ */
+std::string ClustonenMessage::getOrigin()
+{
+	return origin ;
+}
+
+/**
+ * Returns Destination
+ * @return Name of the receipient
+ */
+std::string ClustonenMessage::getDestination()
+{
+	return destination ;
 }
