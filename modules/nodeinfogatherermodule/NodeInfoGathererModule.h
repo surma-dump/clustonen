@@ -20,6 +20,8 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+#include <fstream>
 #include "ClustonenModule.h"
 #include "ClustonenMessage.h"
 
@@ -35,7 +37,14 @@ public:
 	std::string getName(); // returns plugin's name
 
 	int processMessage(ClustonenMessage* msg); // Called when a appropiate message hits chain
-protected:
+
+	std::string getHostname() const;
+	//int getNumInterfaces();
+	//std::string getInterface(int num);
+	std::string getRunningKernel() const;
+	//std::string getRamStatus();
+	//std::string get
+protected:	
 private:
 } ;
 

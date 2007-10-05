@@ -33,18 +33,47 @@ NodeInfoGathererModule::~NodeInfoGathererModule()
 
 std::string NodeInfoGathererModule::getName()
 {
-	return "NodeInfoGathererModule" ;
+	//return "NodeInfoGathererModule" ;
+	return getRunningKernel();
 }
 
 int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 {
-	// There are only certain values required
-	if (msg->getNumFields() > 0)
+	ClustonenMessage ret;
+	//ret.setName(msg->getOrigin());
+	for (int i = 0; i < msg->getNumFields(); i++)
 	{
+		std::string attr = msg->getField("Attribute"+i);
+		if (attr == "Hostname")
+			ret.addField("Hostname", getHostname()) ;
+		else if (attr == "Kernel")
+			ret.addField("Kernel", getRunningKernel());
 	}
-	else // everything is wanted
-	{
-		
-	}
+	//sendMessage(ret);
 	return CHAIN_PROCEED ;
+}
+
+std::string NodeInfoGathererModule::getHostname() const
+{
+	std::ifstream f;
+	f.open("/etc/hostname");
+	if(!f)
+		return "Could not be determinded" ;
+	std::string p;
+	f >> p ;
+	f.close() ;
+	return p ;
+}
+
+std::string NodeInfoGathererModule::getRunningKernel() const
+{
+	std::ifstream f;
+	f.open("/proc/version");
+	if(!f)
+		return "Could not be determinded" ;
+	std::string p,ret;
+	while (f >> p) 
+	      ret += p + " " ;
+	f.close() ;
+	return ret ;
 }
