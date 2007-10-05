@@ -19,28 +19,28 @@
 #define NETWORKTHREAD_H
 
 #include "ClustonenThread.h"
-#include "MessageManager.h"
+#include "Server.h"
 
 class NetworkThread : public ClustonenThread
 {
 	public:
-		NetworkThread(unsigned int port, MessageManager* mmgr);
+		NetworkThread(unsigned int port, Server* srv);
 		
 	protected:
 		void run(void* _param);
 		unsigned int port;
-		MessageManager* mmgr;
+		Server* srv;
 };
 
 class ClientHandlerThread : public ClustonenThread
 {
 	public:
-		ClientHandlerThread(MessageManager* mmgr);
+		ClientHandlerThread(Server* srv);
 		
 	protected:
 		void run(void* _param);
 		unsigned int port;
-		MessageManager* mmgr;
+		Server* srv;
 };
 
 #endif //NETWORKTHREAD_H
