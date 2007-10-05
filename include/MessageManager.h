@@ -49,5 +49,4 @@ private:
 	ClustonenMutex* queue_mutex;
 } ;
 
-
 #endif

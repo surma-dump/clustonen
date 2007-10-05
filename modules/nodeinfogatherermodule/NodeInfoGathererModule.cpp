@@ -1,3 +1,4 @@
+
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
  * 
@@ -31,7 +32,7 @@ NodeInfoGathererModule::~NodeInfoGathererModule()
 {
 }
 
-std::string NodeInfoGathererModule::getName() const
+std::string NodeInfoGathererModule::getName()
 {
 	return "NodeInfoGathererModule" ;
 }
@@ -47,6 +48,8 @@ int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 			ret.addField("Hostname", getHostname()) ;
 		else if (attr == "Kernel")
 			ret.addField("Kernel", getRunningKernel());
+		else if (attr == "NumInterfaces")
+			ret.addField("NumInterfaces", getNumInterfaces);
 	}
 	//sendMessage(ret);
 	return CHAIN_PROCEED ;
@@ -74,5 +77,13 @@ std::string NodeInfoGathererModule::getRunningKernel() const
 	while (f >> p) 
 	      ret += p + " " ;
 	f.close() ;
+	return ret ;
+}
+
+int NodeInfoGathererModule::getNumInterfaces() const
+{
+	FILE *f = popen ("cat /proc/net/dev | grep -E \"[a-z0-9+]:\" | wc -l", "r");
+	int ret ;
+	fscanf (f, "%d", &ret) ;
 	return ret ;
 }
