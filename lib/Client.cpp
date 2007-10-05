@@ -34,21 +34,21 @@ void Client::setName(const std::string& name) {
 /**
  * @return the client's name
  */
-std::string Client::getName() {
+std::string Client::getName() const {
 	return name;
 }
 
 /**
  * @return The socket that is used to send messages
  */
-Socket* Client::getSendSocket() {
+Socket* Client::getSendSocket() const {
 	return sendSocket;
 }
 
 /**
  * @return The socket that is used to receive messages
  */
-Socket* Client::getReceiveSocket() {
+Socket* Client::getReceiveSocket() const {
 	return receiveSocket;
 }
 

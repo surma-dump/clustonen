@@ -27,10 +27,10 @@ class Client {
 		Client(const std::string& name);
 		
 		void setName(const std::string& name);
-		std::string getName();
+		std::string getName() const;
 		
-		Socket* getSendSocket();
-		Socket* getReceiveSocket();
+		Socket* getSendSocket() const;
+		Socket* getReceiveSocket() const;
 		void setSendSocket(Socket* sock);
 		void SetReceiveSocket(Socket* sock);
 		
