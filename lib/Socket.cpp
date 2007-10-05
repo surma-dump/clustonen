@@ -46,15 +46,17 @@ Socket::Socket(size_t buffer_size)
  * @param transmissionhandle if already connected, this is the transmission handle
  * @param
  */
-Socket::Socket(int socket, size_t buffer_size, int opponenthandle, int transmissionhandle, bool connected)
-	: sockethandle(socket), opponenthandle(opponenthandle),
-	  transmissionhandle(transmissionhandle), buffer_size(buffer_size),
+Socket::Socket(int socket, struct sockaddr_in* opponent_addr, size_t buffer_size, bool connected)
+	: sockethandle(socket), opponenthandle(socket),
+	  transmissionhandle(socket), buffer_size(buffer_size),
 	  bytes_in_buffer(0), connected(connected)
 {
 	buffer = new char[buffer_size];
 	
 	if(buffer == NULL)
 		throw  Exception ("Socket::Socket(): Could not allocate buffer. \n") ;
+	
+	memcpy(&opponentsocket, opponent_addr, sizeof(*opponent_addr));
 }
 
 /**

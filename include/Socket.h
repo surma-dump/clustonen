@@ -32,8 +32,8 @@ public:
 	// Constructor
 	Socket(size_t buffer_size = SOCKET_DEFAULT_BUFFER_SIZE) ;
 	
-	Socket(int socket, size_t buffer_size = SOCKET_DEFAULT_BUFFER_SIZE, int opponenthandle = -1,
-		int transmissionhandle = -1, bool connected = false) ;
+	Socket(int socket, struct sockaddr_in* opponent_addr,
+		size_t buffer_size = SOCKET_DEFAULT_BUFFER_SIZE, bool connected = false) ;
 	
 	// Destructor
 	virtual ~Socket() ;
