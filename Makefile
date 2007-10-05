@@ -31,6 +31,9 @@ server-target:
 # compiles the testsuites
 tests: library-target
 	make -C ./tests
+	
+modules: library-target
+	make -C ./modules
 
 # deletes all modules, librarys, executables and backup files
 clean: object-clean binary-clean backup-clean
@@ -45,6 +48,7 @@ binary-clean:
 	make -C lib binary-clean
 	make -C server binary-clean
 	make -C tests binary-clean
+	make -C modules binary-clean
 
 # delete all backupfiles
 backup-clean:

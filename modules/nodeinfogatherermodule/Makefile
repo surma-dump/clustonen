@@ -62,6 +62,9 @@ clean:
 	-@rm $(NAME).$(MAINVERSION) 2> /dev/null
 	-@rm $(NAME) 2> /dev/null
 	-@rm *~ 2> /dev/null
+	
+binary-clean:
+	-@rm $(NAME) 2> /dev/null
 
 post-clean:
 	-@rm *.o 2 >/dev/null
