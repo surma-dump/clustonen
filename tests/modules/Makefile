@@ -1,4 +1,4 @@
-#/**
+\]#/**
 # * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
 # * 
 # * This program is free software; you can redistribute it and/or modify
