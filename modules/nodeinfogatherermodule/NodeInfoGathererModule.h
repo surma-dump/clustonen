@@ -34,7 +34,7 @@ public:
 	NodeInfoGathererModule() ; // Constructor
 	virtual ~NodeInfoGathererModule() ; // Destructor
 		
-	std::string getName(); // returns plugin's name
+	std::string getName() const; // returns plugin's name
 
 	int processMessage(ClustonenMessage* msg); // Called when a appropiate message hits chain
 
@@ -43,7 +43,7 @@ public:
 	//std::string getInterface(int num);
 	std::string getRunningKernel() const;
 	//std::string getRamStatus();
-	//std::string get
+	//std::string getProcesslist();
 protected:	
 private:
 } ;

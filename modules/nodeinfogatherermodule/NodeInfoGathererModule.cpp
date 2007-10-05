@@ -31,7 +31,7 @@ NodeInfoGathererModule::~NodeInfoGathererModule()
 {
 }
 
-std::string NodeInfoGathererModule::getName()
+std::string NodeInfoGathererModule::getName() const
 {
 	return "NodeInfoGathererModule" ;
 }
