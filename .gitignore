@@ -3,6 +3,7 @@ client/clientserver
 server/clustonenserver
 tests/unit-tests/testsuite
 tests/messageclass/messages
+doc/*
 *.o
 *.so
 *.so.*

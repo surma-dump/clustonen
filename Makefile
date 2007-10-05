@@ -20,6 +20,11 @@
 # compiles everything
 all: library-target server-target client-target
 
+# generates the documentation using doxygen
+# requires graphviz
+doc:
+	doxygen
+
 # compiles just the library
 library-target: 
 	make -C lib
