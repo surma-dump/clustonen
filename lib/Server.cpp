@@ -22,7 +22,63 @@ Server::Server(const std::string& name)
 {
 }
 
+/**
+ * @return the server's MessageManager
+ */
 MessageManager& Server::getMessageManager()
 {
 	return mmgr;
+}
+
+/**
+ * @return the server's name
+ */
+std::string Server::getName() {
+	return name;
+}
+
+/**
+ * Searches for a client in the list of clients.
+ * @return a pointer to the client if found, else NULL.
+ */
+Client* Server::getClientByName(const std::string& name)
+{
+	clientlist_mutex.lock();
+		for(std::list<Client*>::iterator it = clients.begin();
+			it != clients.end();
+			++it)
+		{
+			Client* client = (*it);
+			if(client->getName() == name)
+			{
+				clientlist_mutex.unlock();
+				return client;
+				
+			}
+		}
+	clientlist_mutex.unlock();
+	
+	return NULL;
+}
+
+/**
+ * Adds a client to the list of clients
+ * @param client the client to be added
+ */
+void Server::addClient(Client* client)
+{
+	clientlist_mutex.lock();
+		clients.push_back(client);
+	clientlist_mutex.unlock();
+}
+
+/**
+ * Removes a client from the list of clients
+ * @param client the client to be removed
+ */
+void Server::removeClient(Client* client)
+{
+	clientlist_mutex.lock();
+		clients.remove(client);
+	clientlist_mutex.unlock();
 }

@@ -20,15 +20,24 @@
 
 #include <string>
 #include "MessageManager.h"
+#include "Client.h"
+#include "ClustonenMutex.h"
 
 class Server {
 	public:
 		Server(const std::string& name);
+		
+		std::string getName();
 		MessageManager& getMessageManager();
+		Client* getClientByName(const std::string& name);
+		void addClient(Client* client);
+		void removeClient(Client* client);
 		
 	protected:
 		std::string name;
 		MessageManager mmgr;
+		std::list<Client*> clients;
+		ClustonenMutex clientlist_mutex;
 };
 
 #endif //SERVER_H
