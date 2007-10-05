@@ -22,34 +22,57 @@ Client::Client(const std::string& name)
 	: name(name), sendSocket(NULL), receiveSocket(NULL)
 {
 }
+
+Client::~Client()
+{
+	dataMutex.lock();
+}
 	
 /**
  * Sets the client's name
  * @param name The client's new name
  */
-void Client::setName(const std::string& name) {
-	this->name = name;
+void Client::setName(const std::string& name)
+{
+	dataMutex.lock();
+		this->name = name;
+	dataMutex.unlock();
 }
 
 /**
  * @return the client's name
  */
-std::string Client::getName() const {
-	return name;
+std::string Client::getName()
+{
+	dataMutex.lock();
+		std::string tmpName = name;
+	dataMutex.unlock();
+	
+	return tmpName;
 }
 
 /**
  * @return The socket that is used to send messages
  */
-Socket* Client::getSendSocket() const {
-	return sendSocket;
+Socket* Client::getSendSocket()
+{
+	dataMutex.lock();
+		Socket* tmpSocket = sendSocket;
+	dataMutex.unlock();
+	
+	return tmpSocket;
 }
 
 /**
  * @return The socket that is used to receive messages
  */
-Socket* Client::getReceiveSocket() const {
-	return receiveSocket;
+Socket* Client::getReceiveSocket()
+{
+	dataMutex.lock();
+		Socket* tmpSocket = receiveSocket;
+	dataMutex.unlock();
+	
+	return tmpSocket;
 }
 
 /**
@@ -58,7 +81,9 @@ Socket* Client::getReceiveSocket() const {
  * @param sock The socket used to send messages
  */
 void Client::setSendSocket(Socket* sock) {
-	sendSocket = sock;
+	dataMutex.lock();
+		sendSocket = sock;
+	dataMutex.unlock();
 }
 
 /**
@@ -66,8 +91,11 @@ void Client::setSendSocket(Socket* sock) {
  * the client.
  * @param sock The socket used to receive messages
  */
-void Client::SetReceiveSocket(Socket* sock) {
-	receiveSocket = sock;
+void Client::setReceiveSocket(Socket* sock)
+{
+	dataMutex.lock();
+		receiveSocket = sock;
+	dataMutex.unlock();
 }
 
 void Client::sendMessage(const ClustonenMessage& msg) {

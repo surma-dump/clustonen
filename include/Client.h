@@ -21,18 +21,20 @@
 #include <string>
 #include "Socket.h"
 #include "ClustonenMessage.h"
+#include "ClustonenMutex.h"
 
 class Client {
 	public:
 		Client(const std::string& name);
+		~Client();
 		
 		void setName(const std::string& name);
-		std::string getName() const;
+		std::string getName();
 		
-		Socket* getSendSocket() const;
-		Socket* getReceiveSocket() const;
+		Socket* getSendSocket();
+		Socket* getReceiveSocket();
 		void setSendSocket(Socket* sock);
-		void SetReceiveSocket(Socket* sock);
+		void setReceiveSocket(Socket* sock);
 		
 		void sendMessage(const ClustonenMessage& msg);
 		ClustonenMessage receiveMessage();
@@ -42,6 +44,7 @@ class Client {
 		Socket* sendSocket;
 		Socket* receiveSocket;
 		std::string name;
+		ClustonenMutex dataMutex;
 };
 
 #endif //CLIENT_H
