@@ -29,7 +29,7 @@ server-target:
 	make -C server
 
 # compiles the testsuites
-tests: all
+tests: library-target
 	make -C ./tests
 
 # deletes all modules, librarys, executables and backup files
