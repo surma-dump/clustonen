@@ -22,6 +22,7 @@
 #include <cstdlib>
 #include "ClustonenMessage.h"
 
+class MessageManager;
 
 /**
  * Abstract class to interact with modules (provided by the module itself)
@@ -41,7 +42,12 @@ public:
 	// Called when a message the module is hooked for is processed
 	virtual int processMessage(ClustonenMessage* msg) = 0;
 protected:
+	// Sends a messsage to someone
+	void sendMessage(ClustonenMessage *msg);
+	
 private:
+	void setMessageManager(MessageManager *_mm);
+	MessageManager *mm ;
 } ;
 
 enum {

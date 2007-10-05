@@ -24,3 +24,18 @@ ClustonenModule::ClustonenModule()
 ClustonenModule::~ClustonenModule()
 {
 }
+
+/**
+ * Sends a message to a someone. Actually passes it on to the MessageManager 
+ * who will send it to  the receipient.
+ * @param msg Pointer to the message to send
+ */
+void ClustonenModule::sendMessage(ClustonenMessage *msg)
+{
+	// TODO
+}
+
+void ClustonenModule::setMessageManager(MessageManager *_mm)
+{
+	mm = _mm ;
+}
