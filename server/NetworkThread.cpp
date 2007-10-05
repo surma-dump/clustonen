@@ -72,9 +72,11 @@ void ClientHandlerThread::run(void* _param)
 		
 		if(response->getField("connection-direction") == "client-receives")
 		{
-			client = new Client(socket->getOpponent()+response->getField("client-name"));
+			client = new Client(socket->getOpponent()+"-"+response->getField("client-name"));
 			client->setSendSocket(socket);
 			srv->addClient(client);
+			
+			std::cout << "Added client " << client->getName() << "..." << std::endl;
 			
 			delete socket;
 			delete response;
@@ -83,7 +85,7 @@ void ClientHandlerThread::run(void* _param)
 		}
 		else if(response->getField("connection-direction") == "client-sends")
 		{
-			client = srv->getClientByName(socket->getOpponent()+response->getField("client-name"));
+			client = srv->getClientByName(socket->getOpponent()+"-"+response->getField("client-name"));
 			if(client == NULL)
 			{
 				socket->disconnect();
@@ -93,6 +95,7 @@ void ClientHandlerThread::run(void* _param)
 			}
 			
 			client->setReceiveSocket(socket);
+			std::cout << "Two-way connection to " << client->getName() << " established..." << std::endl;
 		}
 		
 		delete response;
