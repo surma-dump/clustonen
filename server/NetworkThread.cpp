@@ -53,6 +53,7 @@ ClientHandlerThread::ClientHandlerThread(Server* srv)
 void ClientHandlerThread::run(void* _param)
 {
 	Socket* socket = (Socket*)_param;
+	Client* client;
 	
 	try {
 		WelcomeMessage welcome;
@@ -68,6 +69,32 @@ void ClientHandlerThread::run(void* _param)
 			delete response;
 			return;
 		}
+		
+		if(response->getField("connection-direction") == "client-receives")
+		{
+			client = new Client(socket->getOpponent()+response->getField("client-name"));
+			client->setSendSocket(socket);
+			srv->addClient(client);
+			
+			delete socket;
+			delete response;
+			return;
+			
+		}
+		else if(response->getField("connection-direction") == "client-sends")
+		{
+			client = srv->getClientByName(socket->getOpponent()+response->getField("client-name"));
+			if(client == NULL)
+			{
+				socket->disconnect();
+				delete socket;
+				delete response;
+				return;
+			}
+			
+			client->setReceiveSocket(socket);
+		}
+		
 		delete response;
 		
 		while(true)
@@ -76,8 +103,10 @@ void ClientHandlerThread::run(void* _param)
 			if(response->getName() == "AbortMessage")
 			{
 				srv->getMessageManager().queueMessage(response);
+				srv->removeClient(client);
 				socket->disconnect();
 				delete socket;
+				delete client;
 				return;
 			}
 			
