@@ -22,7 +22,8 @@
 #include <iostream>
 
 #include "ArgumentParser.h"
-#include "ServerSocket.h"
+#include "Socket.h"
+#include "MessageTransfer.h"
 
 const char* program_name;
 enum EXIT_STATUS
@@ -68,7 +69,33 @@ int main(int argc, char* argv[])
 	if(port < 0) // if there was no port specified...
 		port = 23505 ; // ...use standard port
 	
-	std::cout << "Server: " <<arguments.getStringValue("server") << std::endl;
+	std::string server = arguments.getStringValue("server");
+	if(server == "")
+		server = "localhost";
+	
+	Socket client;
+	
+	try {
+		client.connect(server, port);
+		std::cout << "Connected to server " << server << " on port " << port << std::endl;
+		
+		ClustonenMessage msg = MessageTransfer::receiveMessage(client);
+		if(msg.getName() != "WelcomeMessage")
+			return -1;
+		
+		std::cout << "Received welcome message:" << std::endl;
+		std::cout << "server-name: " << msg.getField("server-name") << std::endl;
+		std::cout << "protocol-version: " << msg.getField("protocol-version") << std::endl;
+		
+		ClustonenMessage abort = ClustonenMessage();
+		abort.setName("AbortMessage");
+		MessageTransfer::sendMessage(client, abort);
+		
+	}
+	catch(Exception& e) {
+		std::cerr << e.getMessage() << std::endl;
+		return -1;
+	}
 }
 
 
