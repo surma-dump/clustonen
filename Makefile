@@ -18,7 +18,7 @@
 .PHONY: tests
 
 # compiles everything
-all: library-target server-target
+all: library-target server-target client-target
 
 # compiles just the library
 library-target: 
@@ -27,6 +27,10 @@ library-target:
 # compiles just the server
 server-target:
 	make -C server
+
+# compiles just the client
+client-target:
+	make -C client
 
 # compiles the testsuites
 tests: library-target
