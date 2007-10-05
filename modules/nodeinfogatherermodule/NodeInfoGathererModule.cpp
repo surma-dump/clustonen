@@ -33,8 +33,7 @@ NodeInfoGathererModule::~NodeInfoGathererModule()
 
 std::string NodeInfoGathererModule::getName()
 {
-	//return "NodeInfoGathererModule" ;
-	return getRunningKernel();
+	return "NodeInfoGathererModule" ;
 }
 
 int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
