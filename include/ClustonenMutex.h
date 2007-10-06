@@ -25,8 +25,13 @@ class ClustonenMutex {
 		ClustonenMutex();
 		~ClustonenMutex();
 		
+		// Lock a mutex or wait until it is unlocked to lock it
 		int lock();
+		
+		// Unlock a mutex
 		int unlock();
+
+		// Try to lock it or proceed if it is already locked (by whomever)
 		int trylock();
 	
 	protected:

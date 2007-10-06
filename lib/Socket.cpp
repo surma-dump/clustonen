@@ -108,7 +108,7 @@ void Socket::bind(int port)
 }
 
 /**
- * Sets the socket to listening mode
+ * Sets the socket to (passive) listening mode
  * @param pendings Allow this number of pending connections 
  */
 void Socket::listen()
@@ -121,7 +121,7 @@ void Socket::listen()
 }
 
 /**
- * Waits for an connection request and accepts it
+ * Waits for an connection request (if in passive mode) and accepts it
  */
 void Socket::waitForConnection()
 {

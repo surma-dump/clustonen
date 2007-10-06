@@ -22,21 +22,22 @@
 #include <cstdlib>
 #include "ClustonenMessage.h"
 
+// Forward-Declaration to prevent circular dependencies from screwing everything up
 class MessageManager;
 
 /**
- * Abstract class to interact with modules (provided by the module itself)
+ * Abstract class for modules to be loaded by the ModuleManager
  */
 class ClustonenModule
 {
 public:
-	// Constructor
 	ClustonenModule();
-	// Destructor
 	virtual ~ClustonenModule();
 
-	//TODO Module information methods
-	virtual std::string getName() = 0; // returns plugin's name
+	// TODO Module information methods
+
+	// returns plugin's name
+	virtual std::string getName() = 0;
 
 	// TODO Module handling
 	// Called when a message the module is hooked for is processed

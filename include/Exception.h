@@ -18,17 +18,22 @@
 #ifndef FOOEXCEPTIONFOO
 #define FOOEXCEPTIONFOO
 
-#define AUTHOR "Alexander \"crock\" Surma <crock@drebesium.org>"
-
 #include <string>
+
+/**
+ * Simple super-class for exceptions. Just to save messages and to be thrown.
+ * EveryType of exception should be manifested in its own class inheriting from
+ * this one.
+ */
 
 class Exception
 {
 public:
-	Exception (std::string _msg) ; // Constructor
-	virtual ~Exception () ; // Destructor
+	Exception (std::string _msg) ; 
+	virtual ~Exception () ; 
 		
-	std::string getMessage() ; // Delivers the message of the exception
+	// Delivers the message of the exception
+	std::string getMessage() ;
 	
 private:
 	std::string msg ;

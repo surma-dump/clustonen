@@ -27,13 +27,23 @@
 class ClustonenThread
 {
 public:
-	ClustonenThread(); // Constructor
-	virtual ~ClustonenThread() ; // Destructor
-	int isRunning() ; // Is thread running?
-	void start(void* _param, bool deleteAfterExecution = false) ; // starts the thread with given parameter
-	void join() ; // waits until thread terminates
-	void* getParameter() ; // Returns saved parameter
-	virtual void run(void* _param) = 0; // run in spawned process
+	ClustonenThread();
+	virtual ~ClustonenThread(); 
+	
+	// Is thread running?
+	int isRunning(); 
+
+	// Starts the thread with given parameter
+	void start(void* _param, bool deleteAfterExecution = false) ; 
+
+	// Waits until thread terminates
+	void join() ; 
+
+	// Returns saved parameter
+	void* getParameter() ; 
+
+	// Will be run in spawned process
+	virtual void run(void* _param) = 0; 
 	
 	/**
 	 * This mutex is automatically locked by start() if deleteAfterExecution
