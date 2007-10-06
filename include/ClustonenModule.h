@@ -41,12 +41,14 @@ public:
 	// TODO Module handling
 	// Called when a message the module is hooked for is processed
 	virtual int processMessage(ClustonenMessage* msg) = 0;
+
+	// Sets the MessageManager to use when sendMessage() is called
+	void setMessageManager(MessageManager *_mm);
 protected:
 	// Sends a messsage to someone
 	void sendMessage(ClustonenMessage *msg);
 	
 private:
-	void setMessageManager(MessageManager *_mm);
 	MessageManager *mm ;
 } ;
 
