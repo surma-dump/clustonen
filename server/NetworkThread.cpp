@@ -54,6 +54,7 @@ void ClientHandlerThread::run(void* _param)
 {
 	Socket* socket = (Socket*)_param;
 	Client* client;
+	std::string client_name;
 	
 	try {
 		WelcomeMessage welcome;
@@ -97,12 +98,13 @@ void ClientHandlerThread::run(void* _param)
 			client->setReceiveSocket(socket);
 			std::cout << "Two-way connection to " << client->getName() << " established..." << std::endl;
 		}
-		
+		client_name = response->getField("client-name");
 		delete response;
 		
 		while(true)
 		{
 			response = MessageTransfer::receiveMessagePtr(*socket);
+			response->setOrigin(socket->getOpponent()+"-"+client_name);
 			if(response->getName() == "AbortMessage")
 			{
 				srv->getMessageManager().queueMessage(response);
