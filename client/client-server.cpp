@@ -24,6 +24,7 @@
 #include "ArgumentParser.h"
 #include "Socket.h"
 #include "MessageTransfer.h"
+#include "MessageManager.h"
 
 const char* program_name;
 enum EXIT_STATUS
@@ -75,6 +76,8 @@ int main(int argc, char* argv[])
 	
 	Socket sendSocket;
 	Socket receiveSocket;
+	MessageManager mmgr;
+	std::string server_name;
 	
 	try {
 		receiveSocket.connect(server, port);
@@ -88,6 +91,8 @@ int main(int argc, char* argv[])
 		std::cout << "server-name: " << msg.getField("server-name") << std::endl;
 		std::cout << "protocol-version: " << msg.getField("protocol-version") << std::endl;
 		
+		server_name = msg.getField("server-name");
+		
 		ClustonenMessage initRcvMsg;
 		initRcvMsg.setName("InitiateTransferMessage");
 		initRcvMsg.addField("connection-direction", "client-receives");
@@ -100,12 +105,13 @@ int main(int argc, char* argv[])
 		initSendMsg.addField("connection-direction", "client-sends");
 		initSendMsg.addField("client-name", "ClustonenClient");
 		MessageTransfer::sendMessage(sendSocket, initSendMsg);
-		
-		
-		ClustonenMessage abort = ClustonenMessage();
-		abort.setName("AbortMessage");
-		MessageTransfer::sendMessage(sendSocket, abort);
-		
+
+		while (true)
+		{
+			ClustonenMessage* response = MessageTransfer::receiveMessagePtr(receiveSocket);
+			response->setOrigin(receiveSocket.getOpponent() + "-" + server_name);
+			mmgr.queueMessage(response);
+		}
 	}
 	catch(Exception& e) {
 		std::cerr << e.getMessage() << std::endl;
