@@ -39,7 +39,7 @@ class ClustonenMessage
 public:
 	ClustonenMessage();
 	ClustonenMessage(const ClustonenMessage& msg); 
-	ClustonenMessage(std::string& _name, const std::string& _data) ;
+	ClustonenMessage(const std::string& _name, const std::string& _data) ;
 	ClustonenMessage(const std::string& pack) ; 
 	virtual ~ClustonenMessage() ;
 
