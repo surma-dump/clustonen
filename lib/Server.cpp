@@ -38,6 +38,14 @@ std::string Server::getName() {
 }
 
 /**
+ * @return the server's ModuleManager
+ */
+ModuleManager& Server::getModuleManager()
+{
+	return modmgr;
+}
+
+/**
  * Searches for a client in the list of clients.
  * @return a pointer to the client if found, else NULL.
  */

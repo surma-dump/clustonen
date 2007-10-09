@@ -22,6 +22,7 @@
 #include "MessageManager.h"
 #include "Client.h"
 #include "ClustonenMutex.h"
+#include "ModuleManager.h"
 
 class Server {
 	public:
@@ -29,6 +30,7 @@ class Server {
 		
 		std::string getName();
 		MessageManager& getMessageManager();
+		ModuleManager& getModuleManager();
 		Client* getClientByName(const std::string& name);
 		void addClient(Client* client);
 		void removeClient(Client* client);
@@ -38,6 +40,7 @@ class Server {
 		MessageManager mmgr;
 		std::list<Client*> clients;
 		ClustonenMutex clientlist_mutex;
+		ModuleManager modmgr;
 };
 
 #endif //SERVER_H
