@@ -17,6 +17,7 @@
 
 #include "strhelper.h"
 #include <malloc.h>
+#include <sstream>
 
 /**
  * Trims a string (deletes leading and trailing whitespace)
@@ -55,4 +56,16 @@ void replacestr(const std::string& needle, const std::string& replacement, std::
 	std::string::size_type pos = 0;
 	while((pos = haystack.find(needle, pos)) != std::string::npos)
 		haystack.replace(pos, needle.length(), replacement, 0, replacement.length());
+}
+
+/**
+ * Returns a string containing a number's value
+ * @param num The number to be converted
+ * @return the number's value as a string
+ */
+std::string numberToString(double num)
+{
+	std::ostringstream stream;
+	stream << num;
+	return stream.str();
 }

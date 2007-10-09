@@ -24,5 +24,6 @@
 void trim(std::string& str, const std::string& ws = "\t ");
 char* copystr(const std::string& str);
 void replacestr(const std::string& needle, const std::string& replacement, std::string& haystack);
+std::string numberToString(double num);
 
 #endif //STRHELPER_H
