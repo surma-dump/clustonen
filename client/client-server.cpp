@@ -24,7 +24,7 @@
 #include "ArgumentParser.h"
 #include "Socket.h"
 #include "MessageTransfer.h"
-#include "MessageManager.h"
+#include "Server.h"
 
 const char* program_name;
 enum EXIT_STATUS
@@ -76,7 +76,11 @@ int main(int argc, char* argv[])
 	
 	Socket sendSocket;
 	Socket receiveSocket;
-	MessageManager mmgr;
+	
+	//The local server
+	Server srv("ClustonenClient");
+
+	//The other server's name
 	std::string server_name;
 	
 	try {
@@ -96,21 +100,21 @@ int main(int argc, char* argv[])
 		ClustonenMessage initRcvMsg;
 		initRcvMsg.setName("InitiateTransferMessage");
 		initRcvMsg.addField("connection-direction", "client-receives");
-		initRcvMsg.addField("client-name", "ClustonenClient");
+		initRcvMsg.addField("client-name", srv.getName());
 		MessageTransfer::sendMessage(receiveSocket, initRcvMsg);
 		
 		sendSocket.connect(server, port);
 		ClustonenMessage initSendMsg;
 		initSendMsg.setName("InitiateTransferMessage");
 		initSendMsg.addField("connection-direction", "client-sends");
-		initSendMsg.addField("client-name", "ClustonenClient");
+		initSendMsg.addField("client-name", srv.getName());
 		MessageTransfer::sendMessage(sendSocket, initSendMsg);
 
 		while (true)
 		{
 			ClustonenMessage* response = MessageTransfer::receiveMessagePtr(receiveSocket);
 			response->setOrigin(receiveSocket.getOpponent() + "-" + server_name);
-			mmgr.queueMessage(response);
+			srv.getMessageManager().queueMessage(response);
 		}
 	}
 	catch(Exception& e) {
