@@ -31,7 +31,7 @@ library-target:
 	make -C lib
 
 # compiles just the server
-server-target:
+server-target: modules
 	make -C server
 
 # compiles just the client

@@ -19,14 +19,18 @@
 #include "clustonen-server.h"
 #include "NetworkThread.h"
 #include "MessageManager.h"
+#include "ConfigFileParser.h"
 #include "Server.h"
 #include "config.h"
+#include "Exception.h"
+#include <iostream>
 
 int main(int argc, char* argv[])
 {
 	ArgumentParser arguments (PROGNAME) ;
 	arguments	<< arguments.createFlagOption("h","help",	"Shows this help") 
-			<< arguments.createFlagOption("v","version",	"Shows version information") 
+			<< arguments.createFlagOption("v","version",	"Shows version information")
+			<< arguments.createStringOption("f","config-file","The configuration file")
 			<< arguments.createFlagOption("d","daemon",	"Start as daemon")
 			<< arguments.createIntegerOption("p","port",	"Bind daemon to listen to this port[=23505]") ;
 
@@ -55,6 +59,35 @@ int main(int argc, char* argv[])
 		port = DEFAULT_SERVER_PORT ; // ...use standard port
 	
 	Server srv("ClustonenServer");
+	if(arguments.getStringValue("config-file") != "")
+	{
+		try {
+			ConfigFileParser cfp(arguments.getStringValue("config-file"));
+			cfp.addMultiValueToken("module");
+			cfp.parse();
+			
+			const std::vector<std::string> vec = cfp.getMultiValue("module");
+			for(std::vector<std::string>::const_iterator it = vec.begin();
+			    it != vec.end();
+			    ++it)
+			{
+				std::string module_identifier = srv.getModuleManager().loadModule(*it);
+				
+				if(module_identifier == "")
+					throw Exception(srv.getModuleManager().getLastError());
+				
+				std::cout << "Loaded module \"" << module_identifier << "\" from file \"" << *it << "\"..." << std::endl;
+				
+				ClustonenModule* mod = srv.getModuleManager().getModule(module_identifier);
+				mod->setMessageManager(&srv.getMessageManager());
+			}
+		} catch(Exception& e)
+		{
+			std::cerr << e.getMessage();
+			return -1;
+		}
+	}
+	
 	NetworkThread nwThr(port, &srv);
 	
 	nwThr.start(NULL);
