@@ -17,6 +17,7 @@
  */
 
 #include "NodeInfoGathererModule.h"
+#include "strhelper.h"
 
 /**
  * Standard Constructor
@@ -58,9 +59,9 @@ int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 		else if (attr == "Kernel")
 			ret.addField("Kernel", getRunningKernel());
 		else if (attr == "NumInterfaces")
-			ret.addField("NumInterfaces", getNumInterfaces);
+			ret.addField("NumInterfaces", numberToString(getNumInterfaces()));
 	}
-	sendMessage(ret);
+	sendMessage(&ret);
 	// No need to kill the message or obtain it again
 	return CHAIN_PROCEED ; 
 }
