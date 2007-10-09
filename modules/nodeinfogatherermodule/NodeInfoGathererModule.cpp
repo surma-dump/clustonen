@@ -60,7 +60,7 @@ std::string NodeInfoGathererModule::getHostname() const
 	std::ifstream f;
 	f.open("/etc/hostname");
 	if(!f)
-		return "Could not be determinded" ;
+		return "Could not be determined" ;
 	std::string p;
 	f >> p ;
 	f.close() ;
@@ -72,7 +72,7 @@ std::string NodeInfoGathererModule::getRunningKernel() const
 	std::ifstream f;
 	f.open("/proc/version");
 	if(!f)
-		return "Could not be determinded" ;
+		return "Could not be determined" ;
 	std::string p,ret;
 	while (f >> p) 
 	      ret += p + " " ;
