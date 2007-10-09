@@ -22,6 +22,8 @@
 
 #include <string>
 #include <map>
+#include <vector>
+#include <list>
 
 class ConfigFileParser {
 	public:
@@ -29,12 +31,19 @@ class ConfigFileParser {
 
 		void parse();
 		std::string getValue(const std::string& key);
+		std::vector<std::string> getMultiValue(const std::string& key);
 		unsigned int getNumValues();
 		const std::map<std::string,std::string>& getValues();
+		const std::map<std::string,std::vector<std::string> >& getMultiValues();
+
+		void addMultiValueToken(const std::string& token_name);
+		void removeMultiValueToken(const std::string& token_name);
 
 	protected:
 		std::string filename;
 		std::map<std::string, std::string> values;
+		std::map<std::string, std::vector<std::string> > multiValues;
+		std::list<std::string> multiValueTokens;
 };
 
 class ConfigFileParserException : public Exception

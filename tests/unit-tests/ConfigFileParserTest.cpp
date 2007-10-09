@@ -25,6 +25,7 @@ class ConfigFileParserTest : public CPPUNIT_NS :: TestFixture
 {
 	CPPUNIT_TEST_SUITE (ConfigFileParserTest);
 	CPPUNIT_TEST (valueTest);
+	CPPUNIT_TEST(multiValueTest);
 	CPPUNIT_TEST (wrongValueTest);
 	CPPUNIT_TEST (nonexistentFileTest);
 	CPPUNIT_TEST_SUITE_END ();
@@ -35,6 +36,7 @@ class ConfigFileParserTest : public CPPUNIT_NS :: TestFixture
 
 	protected:
 		void valueTest (void);
+		void multiValueTest (void);
 		void wrongValueTest (void);
 		void nonexistentFileTest(void);
 
@@ -47,6 +49,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION (ConfigFileParserTest);
 void ConfigFileParserTest::setUp(void)
 {
 	CPPUNIT_ASSERT_NO_THROW(a = new ConfigFileParser("./testdata/testconfiguration"));
+	CPPUNIT_ASSERT_NO_THROW(a->parse());
 }
 
 void ConfigFileParserTest::tearDown(void)
@@ -62,6 +65,29 @@ void ConfigFileParserTest::valueTest(void)
 	CPPUNIT_ASSERT(a->getValue("foo") == "bar");
 	CPPUNIT_ASSERT(a->getValue("sense_of_life") == "42");
 	CPPUNIT_ASSERT(a->getValue("linux") == "great");
+}
+
+/*
+ * Reads multivalues from the config file and checks if they are right
+ */
+void ConfigFileParserTest::multiValueTest(void)
+{
+	ConfigFileParser* b;
+	CPPUNIT_ASSERT_NO_THROW(b = new ConfigFileParser("./testdata/testconfiguration_multi"));
+	b->addMultiValueToken("load");
+	CPPUNIT_ASSERT_NO_THROW(b->parse());
+
+	CPPUNIT_ASSERT(b->getNumValues() == 2);
+	CPPUNIT_ASSERT(b->getValue("aname") == "avalue");
+
+	std::vector<std::string> vec = b->getMultiValue("load");
+	CPPUNIT_ASSERT(vec.size() == 4);
+
+	CPPUNIT_ASSERT(find(vec.begin(), vec.end(), "foo.so") != vec.end());
+	CPPUNIT_ASSERT(find(vec.begin(), vec.end(), "bar.so") != vec.end());
+	CPPUNIT_ASSERT(find(vec.begin(), vec.end(), "baz.so") != vec.end());
+	CPPUNIT_ASSERT(find(vec.begin(), vec.end(), "doz.so") != vec.end());
+	delete b;
 }
 
 /*
@@ -84,6 +110,7 @@ void ConfigFileParserTest::wrongValueTest(void)
  */
 void ConfigFileParserTest::nonexistentFileTest(void)
 {
-	ConfigFileParser *tmp;
-	CPPUNIT_ASSERT_THROW(tmp = new ConfigFileParser("./testdata/nofile"), ConfigFileParserException);
+	ConfigFileParser *tmp = new ConfigFileParser("./testdata/nofile");
+	CPPUNIT_ASSERT_THROW(tmp->parse(), ConfigFileParserException);
+	delete tmp;
 }

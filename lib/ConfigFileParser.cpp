@@ -26,7 +26,15 @@
 ConfigFileParser::ConfigFileParser(const std::string& filename)
 	: filename(filename)
 {
-	parse();
+}
+
+std::vector<std::string> ConfigFileParser::getMultiValue(const std::string& key)
+{
+	std::map<std::string,std::vector<std::string> >::iterator iter = multiValues.find(key);
+	if(iter != multiValues.end())
+		return iter->second;
+	
+	return std::vector<std::string>();
 }
 
 /**
@@ -61,7 +69,10 @@ void ConfigFileParser::parse()
 		trim(lhs);
 		trim(rhs);
 
-		values.insert(std::make_pair(lhs, rhs));
+		if(find(multiValueTokens.begin(), multiValueTokens.end(), lhs) != multiValueTokens.end())
+			multiValues[lhs].push_back(rhs);
+		else
+			values.insert(std::make_pair(lhs, rhs));
 	}
 
 	fp.close();
@@ -85,7 +96,35 @@ std::string ConfigFileParser::getValue(const std::string& key)
  */
 unsigned int ConfigFileParser::getNumValues()
 {
-	return values.size();
+	return values.size() + multiValues.size();
+}
+
+/**
+ * Returns a map with all the multi values from the config file
+ */
+const std::map<std::string,std::vector<std::string> >& ConfigFileParser::getMultiValues()
+{
+	return multiValues;
+}
+
+/**
+ * Adds a token that is treated as a multi value token (it's definition
+ * can appear multiple times in the configuration file; all definitions'
+ * right hand sides will be collected).
+ * @param token_name The token's name
+ */
+void ConfigFileParser::addMultiValueToken(const std::string& token_name)
+{
+	multiValueTokens.push_front(token_name);
+}
+
+/**
+ * removed a token that is treated as a multi value token.
+ * @param token_name The token's name
+ */
+void ConfigFileParser::removeMultiValueToken(const std::string& token_name)
+{
+	multiValueTokens.erase(find(multiValueTokens.begin(), multiValueTokens.end(), token_name));
 }
 
 /**
