@@ -231,13 +231,19 @@ arg_str* ArgumentParser::createStringOption(const std::string&  short_desc, cons
  */
 std::string ArgumentParser::getStringValue(const std::string&  long_desc)
 {
+	const char* val;
+	
 	for (int i = 0; i < arg_list.size(); i++)
 	{
 		if (strcmp(((struct arg_str*)arg_list.at(i))->hdr.longopts, long_desc.c_str()) == 0)
 		{
 			if (type_list.at(i) != ARGTYPE_STRING)
 				return "";
-			return ((struct arg_str*)arg_list.at(i))->sval[0] ;
+			
+			if((val = ((struct arg_str*)arg_list.at(i))->sval[0]) == NULL)
+				return "";
+			else
+				return val;
 		}
 	}
 	return "";
