@@ -47,8 +47,12 @@ public:
 	// Tries to load a module
 	std::string loadModule(std::string filename) ;
 	
-	// Returns the last error encountered
+	// Writes the last error encountered to the file
+	// specified by f
 	void lastError (FILE* f = stderr) ;
+
+	// Returns a descriptive string for the last error
+	std::string getLastError();
 
 	// hands over a module
 	ClustonenModule* getModule(std::string identifier) ; 

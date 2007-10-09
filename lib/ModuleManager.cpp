@@ -94,3 +94,16 @@ void ModuleManager::lastError(FILE* f)
 		fprintf (f, "%s\n", dlerror()) ;
 	own_error = false;
 }
+
+/**
+ * Returns a descriptive string for the last error
+ * @return the error message
+ */
+std::string ModuleManager::getLastError()
+{
+	if (own_error)
+		return own_error_msg;
+	else
+		return dlerror();
+	own_error = false;
+}
