@@ -35,6 +35,12 @@ void ClustonenModule::sendMessage(ClustonenMessage *msg)
 	// TODO
 }
 
+
+/**
+ * Sends the MessageManager to use when sendMessage() is called. 
+ * Should not be called manually
+ * @param _mm Pointer to MessageManager
+ */
 void ClustonenModule::setMessageManager(MessageManager *_mm)
 {
 	mm = _mm ;

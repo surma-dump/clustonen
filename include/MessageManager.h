@@ -33,17 +33,23 @@
 class MessageManager
 {
 public:
-	MessageManager () ; // Constructor
-	virtual	~MessageManager() ; // Destructor
-	void queueMessage (ClustonenMessage* msg) ; // Queues a message
-	void distributeNext() ; // Distributes next message in line to hooked modules
+	MessageManager () ;
+	virtual	~MessageManager() ; 
+
+	// Queues a message
+	void queueMessage (ClustonenMessage* msg) ;
+
+	// Distributes next message in line to hooked modules
+	void distributeNext() ;
+
 	void addModuleHook(const std::string& msgName, ClustonenModule* module);
 	void removeModuleHook(const std::string& msgName, ClustonenModule* module);
 	void removeModuleHook(ClustonenModule* module);
 	
 protected:
 private:
-	std::map<std::string, std::list<ClustonenModule*> > modulelist ; // Message type string as key, results in a list of modules processing this event.
+	// Message type string as key, results in a list of modules processing this event.
+	std::map<std::string, std::list<ClustonenModule*> > modulelist ; 
 	std::queue<ClustonenMessage*> messages ;
 	ClustonenMutex* modulelist_mutex;
 	ClustonenMutex* queue_mutex;

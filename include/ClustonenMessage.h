@@ -37,28 +37,62 @@
 class ClustonenMessage
 {
 public:
-	ClustonenMessage(); // Constructor
-	ClustonenMessage(const ClustonenMessage& msg); // Copy Constructor
-	ClustonenMessage(const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
-	ClustonenMessage(const std::string& pack) ; // Constructs a message out of toString()-string
-	virtual ~ClustonenMessage() ; // Destructor
-	std::string getName() const; // returns name of the message
-	std::string getField(const std::string& field) const; // returns certain field of the data
-	std::string getData() const; // returns whole data string
-	void setName(const std::string& _name) ; // sets the name
-	void setData(const std::string& _data) ; // sets the whole data
-	void addData(const std::string& _data) ; // adds new data
-	void addField(const std::string& field, const std::string& value) ; // set a single field
-	void delField(const std::string& field) ; // deletes a field
-	int getNumFields() const ; // returns number of defined fields
-	std::string toString() const; // converts the instance into a representing string
-	void fromString(const std::string& pack); // Sets the data using a toString()-string
-	void setDestination(const std::string& _destination); // Sets destination
-	void setOrigin(const std::string& _origin); // Sets origin
-	std::string getDestination(); // Returns destination
-	std::string getOrigin(); // Returns origin
+	ClustonenMessage();
+	ClustonenMessage(const ClustonenMessage& msg); 
+	ClustonenMessage(std::string& _name, const std::string& _data) ;
+	ClustonenMessage(const std::string& pack) ; 
+	virtual ~ClustonenMessage() ;
+
+	// returns name of the message 
+	std::string getName() const; 
+
+	// returns certain field of the data
+	std::string getField(const std::string& field) const;
+
+	// returns whole data string
+	std::string getData() const;
+
+	// sets the name
+	void setName(const std::string& _name) ; 
+	
+	// sets the whole data
+	void setData(const std::string& _data) ;
+
+	// adds new data
+	void addData(const std::string& _data); 
+
+	// set a single field
+	void addField(const std::string& field, const std::string& value);
+
+	// deletes a field
+	void delField(const std::string& field); 
+
+	// returns number of defined fields
+	int getNumFields() const;
+
+	// converts the instance into a representing string
+	std::string toString() const;
+
+	// Sets the data using a toString()-string
+	void fromString(const std::string& pack);
+
+	// Sets destination
+	void setDestination(const std::string& _destination);
+
+	// Sets origin
+	void setOrigin(const std::string& _origin);
+	
+	// Returns destination
+	std::string getDestination();
+
+	// Returns origin
+	std::string getOrigin();
+
 protected:
-	void parse(const std::string& _data) ; // parses a string and fills values into data
+	// parses a string and fills values into data
+	void parse(const std::string& _data) ;
+
+	// unescapes aprostrophs from the field values
 	void unescapeData(std::string& _data);
 private:
 	std::string name ;

@@ -31,17 +31,19 @@
 class NodeInfoGathererModule : ClustonenModule
 {
 public:
-	NodeInfoGathererModule() ; // Constructor
-	virtual ~NodeInfoGathererModule() ; // Destructor
+	NodeInfoGathererModule() ;
+	virtual ~NodeInfoGathererModule() ;
 		
-	std::string getName() ; // returns plugin's name
+	// returns plugin's name
+	std::string getName() ;
 
-	int processMessage(ClustonenMessage* msg); // Called when a appropiate message hits chain
+	// Called when a appropiate message hits chain
+	int processMessage(ClustonenMessage* msg);
 
 	std::string getHostname() const;
 	int getNumInterfaces() const;
-	//std::string getInterface(int num);
 	std::string getRunningKernel() const;
+	//std::string getInterface(int num);
 	//std::string getRamStatus();
 	//std::string getProcesslist();
 protected:	

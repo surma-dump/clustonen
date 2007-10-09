@@ -40,20 +40,32 @@ std::string NodeInfoGathererModule::getName()
 int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 {
 	ClustonenMessage ret;
-	//ret.setName(msg->getOrigin());
+	ret.setName("NodeInfo");
+	// If this is not a request for information, what is it doing here anyways?!
+	if (msg->getName() != "NodeInfoRequest") 
+		return -1;
+	
+	//Walk through every field in the Message
 	for (int i = 0; i < msg->getNumFields(); i++)
-	{
+	{ 
+		// We just suppose there only "Attribute<x>" formatted fields
+		// and don't bother to look at the rest. 
+
 		std::string attr = msg->getField("Attribute"+i);
-		if (attr == "Hostname")
+		// Check what is requested and give it to 'em if possible
+		if (attr == "Hostname") 
 			ret.addField("Hostname", getHostname()) ;
 		else if (attr == "Kernel")
 			ret.addField("Kernel", getRunningKernel());
 		else if (attr == "NumInterfaces")
 			ret.addField("NumInterfaces", getNumInterfaces);
 	}
-	//sendMessage(ret);
-	return CHAIN_PROCEED ;
+	sendMessage(ret);
+	// No need to kill the message or obtain it again
+	return CHAIN_PROCEED ; 
 }
+
+// The stuff below is rather dirty. Please consider it to be temporary
 
 std::string NodeInfoGathererModule::getHostname() const
 {
@@ -82,7 +94,7 @@ std::string NodeInfoGathererModule::getRunningKernel() const
 
 int NodeInfoGathererModule::getNumInterfaces() const
 {
-	FILE *f = popen ("cat /proc/net/dev | grep -E \"[a-z0-9+]:\" | wc -l", "r");
+        FILE *f = popen ("cat /proc/net/dev | grep -E \"[a-z0-9+]:\" | wc -l", "r");
 	int ret ;
 	fscanf (f, "%d", &ret) ;
 	return ret ;

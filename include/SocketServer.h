@@ -25,6 +25,7 @@
 
 #define SOCKETSERVER_DEFAULT_QUEUELENGTH 10
 
+
 class SocketServer {
 	public:
 		SocketServer(unsigned int port);

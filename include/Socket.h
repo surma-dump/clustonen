@@ -59,12 +59,18 @@ public:
 	std::string getOpponent() ;
 	int getPort() ;
 	
+	// Returns size of buffer for messages
 	size_t getBufferSize();
+	// Returns how many bytes are actually used by a message
 	size_t getNumBytesInBuffer();
+	// Resets the buffer
 	void resetBuffer();
 	
+	// Binds socket to a port
 	void bind(int port);
+	// Makes it a (passive) listening socket. 
 	void listen();
+	// Waits for an incoming connection
 	void waitForConnection();
 
 protected:
