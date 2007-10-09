@@ -233,7 +233,7 @@ std::string ArgumentParser::getStringValue(const std::string&  long_desc)
 {
 	for (int i = 0; i < arg_list.size(); i++)
 	{
-		if (strcmp(((struct arg_int*)arg_list.at(i))->hdr.longopts, long_desc.c_str()) == 0)
+		if (strcmp(((struct arg_str*)arg_list.at(i))->hdr.longopts, long_desc.c_str()) == 0)
 		{
 			if (type_list.at(i) != ARGTYPE_STRING)
 				return "";
