@@ -25,6 +25,7 @@
 #include "Socket.h"
 #include "MessageTransfer.h"
 #include "Server.h"
+#include "ConfigFileParser.h"
 
 const char* program_name;
 enum EXIT_STATUS
@@ -40,7 +41,8 @@ int main(int argc, char* argv[])
 	program_name = argv[0];
 	ArgumentParser arguments (program_name) ;
 	arguments	<< arguments.createFlagOption("h","help",	"Shows this help") 
-			<< arguments.createFlagOption("v","version",	"Shows version information") 
+			<< arguments.createFlagOption("v","version",	"Shows version information")
+			<< arguments.createStringOption("f","config-file","The configuration file")
 			<< arguments.createFlagOption("d","daemon",	"Start as daemon")
 			<< arguments.createStringOption("s","server",	"Specify the server to connect to")
 			<< arguments.createIntegerOption("p","port",	"The server port to connect to") ;
@@ -82,6 +84,35 @@ int main(int argc, char* argv[])
 
 	//The other server's name
 	std::string server_name;
+
+	if(arguments.getStringValue("config-file") != "")
+	{
+		try {
+			ConfigFileParser cfp(arguments.getStringValue("config-file"));
+			cfp.addMultiValueToken("module");
+			cfp.parse();
+			
+			const std::vector<std::string> vec = cfp.getMultiValue("module");
+			for(std::vector<std::string>::const_iterator it = vec.begin();
+			    it != vec.end();
+			    ++it)
+			{
+				std::string module_identifier = srv.getModuleManager().loadModule(*it);
+				
+				if(module_identifier == "")
+					throw Exception(srv.getModuleManager().getLastError());
+				
+				std::cout << "Loaded module \"" << module_identifier << "\" from file \"" << *it << "\"..." << std::endl;
+				
+				ClustonenModule* mod = srv.getModuleManager().getModule(module_identifier);
+				mod->setMessageManager(&srv.getMessageManager());
+			}
+		} catch(Exception& e)
+		{
+			std::cerr << e.getMessage();
+			return -1;
+		}
+	}
 	
 	try {
 		receiveSocket.connect(server, port);
