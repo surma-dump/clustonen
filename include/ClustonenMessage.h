@@ -39,7 +39,7 @@ class ClustonenMessage
 public:
 	ClustonenMessage(); // Constructor
 	ClustonenMessage(const ClustonenMessage& msg); // Copy Constructor
-	ClustonenMessage(const std::string& _destination, const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
+	ClustonenMessage(const std::string& _name, const std::string& _data) ; // Constructs a message with name and data field
 	ClustonenMessage(const std::string& pack) ; // Constructs a message out of toString()-string
 	virtual ~ClustonenMessage() ; // Destructor
 	std::string getName() const; // returns name of the message

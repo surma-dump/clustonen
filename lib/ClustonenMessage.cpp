@@ -41,9 +41,8 @@ ClustonenMessage::ClustonenMessage(const ClustonenMessage& msg)
  * @param _name Identifier of the message
  * @param _data Data of the message (see class definition)
  */
-ClustonenMessage::ClustonenMessage(const std::string& _destination, const std::string& _name, const std::string& _data)
+ClustonenMessage::ClustonenMessage(const std::string& _name, const std::string& _data)
 {
-	destination = _destination ;
 	name = _name ;
 	parse (_data) ;
 }
