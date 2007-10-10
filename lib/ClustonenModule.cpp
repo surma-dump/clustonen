@@ -16,6 +16,7 @@
  */
 
 #include "ClustonenModule.h"
+#include "MessageManager.h"
 
 ClustonenModule::ClustonenModule()
 {
@@ -32,7 +33,7 @@ ClustonenModule::~ClustonenModule()
  */
 void ClustonenModule::sendMessage(ClustonenMessage *msg)
 {
-	// TODO
+	mm->sendMessage(msg);
 }
 
 

@@ -17,15 +17,15 @@
  */
 
 #include "MessageManager.h"
+#include "Server.h"
 #include <algorithm>
 
 /**
  * Standard constructor
  */
-MessageManager::MessageManager()
+MessageManager::MessageManager(Server* srv)
+	: server(srv)
 {
-	modulelist_mutex = new ClustonenMutex();
-	queue_mutex = new ClustonenMutex();
 }
 
 /**
@@ -33,8 +33,6 @@ MessageManager::MessageManager()
  */
 MessageManager::~MessageManager()
 {
-	delete modulelist_mutex;
-	delete queue_mutex;
 }
 
 /**
@@ -44,9 +42,9 @@ MessageManager::~MessageManager()
  */
 void MessageManager::addModuleHook(const std::string& msgName, ClustonenModule* module)
 {
-	modulelist_mutex->lock();
+	modulelist_mutex.lock();
 		modulelist[msgName].insert(modulelist[msgName].begin(), module);
-	modulelist_mutex->unlock();
+	modulelist_mutex.unlock();
 }
 
 /**
@@ -56,9 +54,9 @@ void MessageManager::addModuleHook(const std::string& msgName, ClustonenModule* 
  */
 void MessageManager::removeModuleHook(const std::string& msgName, ClustonenModule* module)
 {
-	modulelist_mutex->lock();
+	modulelist_mutex.lock();
 		modulelist[msgName].erase(find(modulelist[msgName].begin(), modulelist[msgName].end(), module));
-	modulelist_mutex->unlock();
+	modulelist_mutex.unlock();
 }
 
 /**
@@ -67,14 +65,14 @@ void MessageManager::removeModuleHook(const std::string& msgName, ClustonenModul
  */
 void MessageManager::removeModuleHook(ClustonenModule* module)
 {
-	modulelist_mutex->lock();
+	modulelist_mutex.lock();
 		for(std::map<std::string, std::list<ClustonenModule*> >::iterator it = modulelist.begin();
 			it != modulelist.end();
 			++it)
 		{
 			(it->second).erase(find((it->second).begin(), (it->second).end(), module));
 		}
-	modulelist_mutex->unlock();
+	modulelist_mutex.unlock();
 }
 
 /**
@@ -83,9 +81,24 @@ void MessageManager::removeModuleHook(ClustonenModule* module)
  */
 void MessageManager::queueMessage (ClustonenMessage* msg)
 {
-	queue_mutex->lock();
+	queue_mutex.lock();
 		messages.push(msg) ;
-	queue_mutex->unlock();
+	queue_mutex.unlock();
+}
+
+/**
+ * Sends a message over the network. The message's destination
+ * has to be set.
+ * @param msg the message to be sent
+ */
+void MessageManager::sendMessage (ClustonenMessage* msg)
+{
+	Client* client = server->getClientByName(msg->getDestination());
+
+	if(client == NULL)
+		throw Exception("Could not deliver message to unknown client \"" + msg->getDestination() + "\"");
+
+	client->sendMessage(*msg);
 }
 
 /**
@@ -95,10 +108,10 @@ void MessageManager::distributeNext()
 {
 	if (messages.size() > 0)
 	{
-		queue_mutex->lock();
+		queue_mutex.lock();
 			ClustonenMessage* msg = messages.front() ;
 			messages.pop() ;
-		queue_mutex->unlock();
+		queue_mutex.unlock();
 		
 		std::list<ClustonenModule*> modules = modulelist[msg->getName()] ;
 		for (std::list<ClustonenModule*>::iterator it = modules.begin(); it != modules.end(); ++it)

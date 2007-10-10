@@ -27,17 +27,22 @@
 #include "ClustonenMessage.h"
 #include "ClustonenMutex.h"
 
+class Server;
+
 /**
  * Manager for processing Messages
  */
 class MessageManager
 {
 public:
-	MessageManager () ;
+	MessageManager (Server* srv) ;
 	virtual	~MessageManager() ; 
 
 	// Queues a message
 	void queueMessage (ClustonenMessage* msg) ;
+
+	//sends a message over the network
+	void sendMessage (ClustonenMessage* msg) ;
 
 	// Distributes next message in line to hooked modules
 	void distributeNext() ;
@@ -51,8 +56,9 @@ private:
 	// Message type string as key, results in a list of modules processing this event.
 	std::map<std::string, std::list<ClustonenModule*> > modulelist ; 
 	std::queue<ClustonenMessage*> messages ;
-	ClustonenMutex* modulelist_mutex;
-	ClustonenMutex* queue_mutex;
+	ClustonenMutex modulelist_mutex;
+	ClustonenMutex queue_mutex;
+	Server* server;
 } ;
 
 #endif
