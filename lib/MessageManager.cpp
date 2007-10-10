@@ -112,10 +112,28 @@ void MessageManager::distributeNext()
 			ClustonenMessage* msg = messages.front() ;
 			messages.pop() ;
 		queue_mutex.unlock();
-		
-		std::list<ClustonenModule*> modules = modulelist[msg->getName()] ;
-		for (std::list<ClustonenModule*>::iterator it = modules.begin(); it != modules.end(); ++it)
-			(*it)->processMessage(msg) ;
+
+		modulelist_mutex.lock();
+restart:
+			std::list<ClustonenModule*> modules = modulelist[msg->getName()] ;
+			for (std::list<ClustonenModule*>::iterator it = modules.begin(); it != modules.end(); ++it)
+			{
+				switch((*it)->processMessage(msg))
+				{
+					case CHAIN_STOP:
+						//ugly, but efficient here
+						goto out;
+					
+					case CHAIN_RESTART:
+						//ugly, but efficient here
+						goto restart;
+
+					default:
+						break;
+				}
+			}
+out:
+		modulelist_mutex.unlock();
 		
 		delete msg;
 	}
