@@ -19,6 +19,7 @@
 #define FOOCLUSTONENTHREADFOO
 
 #include <pthread.h>
+#include <signal.h>
 #include "ClustonenMutex.h"
 
 /**
@@ -29,6 +30,9 @@ class ClustonenThread
 public:
 	ClustonenThread();
 	virtual ~ClustonenThread(); 
+	friend void* ClustonenThreadRun(void* param);
+	
+	void kill(int signal = SIGKILL);
 	
 	// Is thread running?
 	int isRunning(); 
@@ -55,6 +59,9 @@ protected:
 private:
 	pthread_t threadhandler ;
 	void* param ;
+	bool running;
+	ClustonenMutex running_mutex;
+	ClustonenMutex init_mutex;
 };
 
 void* ClustonenThreadRun(void* param) ;

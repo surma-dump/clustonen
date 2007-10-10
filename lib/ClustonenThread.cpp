@@ -16,6 +16,7 @@
  */
 
 #include "ClustonenThread.h"
+#include "Exception.h"
 
 /**
  * Ugly structure to pass more than one argument
@@ -30,8 +31,8 @@ struct run_struct {
  * Standardconstructor
  */
 ClustonenThread::ClustonenThread()
+	: threadhandler(-1), running(false)
 {
-	threadhandler = -1 ;
 }
 
 /**
@@ -39,6 +40,31 @@ ClustonenThread::ClustonenThread()
  */
 ClustonenThread::~ClustonenThread()
 {
+	kill();
+}
+
+/**
+ * Sends a signal to the thread. Default is SIGKILL.
+ * @param signal The signal to be sent.
+ */
+void ClustonenThread::kill(int signal)
+{
+	running_mutex.lock();
+	
+		if(!running)
+			goto out;
+	
+		if(signal == SIGKILL)
+		{
+			if(pthread_cancel(threadhandler) == 0)
+				running = false;
+		}
+		else
+		{
+			pthread_kill(threadhandler, signal);
+		}
+out:
+	running_mutex.unlock();
 }
 
 /**
@@ -47,7 +73,11 @@ ClustonenThread::~ClustonenThread()
  */
 int ClustonenThread::isRunning()
 {
-	return (threadhandler != 0) ;
+	running_mutex.lock();
+	bool tmp = running && threadhandler != -1;
+	running_mutex.unlock();
+
+	return tmp;
 }
 
 /**
@@ -67,8 +97,17 @@ void ClustonenThread::start(void* _param, bool deleteAfterExecution)
 	//Set the lock so that ClustonenThreadRun cannot
 	//delete the instance before we leaved this function
 	deletionMutex.lock();
+
+	init_mutex.lock();
 	
-	pthread_create (&threadhandler, NULL, ClustonenThreadRun, rst) ;
+	if(pthread_create (&threadhandler, NULL, ClustonenThreadRun, rst) < 0)
+		throw Exception("Could not create Thread.");
+
+	init_mutex.lock();
+	
+	running_mutex.lock();
+		running = true;
+	running_mutex.unlock();
 }
 
 /**
@@ -76,7 +115,8 @@ void ClustonenThread::start(void* _param, bool deleteAfterExecution)
  */
 void ClustonenThread::join()
 {
-	pthread_join (threadhandler, NULL) ;
+	if(isRunning())
+		pthread_join (threadhandler, NULL) ;
 }
 
 /**
@@ -96,16 +136,22 @@ void* ClustonenThreadRun(void* param)
 {
 	struct run_struct* rst = (struct run_struct*)param;
 	ClustonenThread *t = rst->instance ;
-	t->run(t->getParameter()) ;
+
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	
+	t->init_mutex.unlock();
+	t->run(t->getParameter()) ;
+
+	t->running_mutex.lock();
+		t->running = false;
+	t->running_mutex.unlock();
+		
 	if(rst->del)
 	{
 		//Wait for the creating thread to unlock
 		//the mutex
 		t->deletionMutex.lock();
-		
-		//We want to leave it in a sane state
-		t->deletionMutex.unlock();
+
 		delete t;
 	}
 	
