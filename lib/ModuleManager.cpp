@@ -1,5 +1,6 @@
 /**
  * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -64,9 +65,10 @@ std::string ModuleManager::loadModule(std::string filename)
 /**
  * Obtains a module and returns it
  * @param identifier Identifier string of the module
+ * @param side Specifies wether the server part or the client part of the module should be returned
  * @return an instance of the module
  */
-ClustonenModule* ModuleManager::getModule(std::string identifier)
+ClustonenModule* ModuleManager::getModule(std::string identifier, enum module_side side)
 {
 	if (module_handles[identifier] == NULL) // Is there a module with that identifier?
 	{
@@ -75,7 +77,12 @@ ClustonenModule* ModuleManager::getModule(std::string identifier)
 		return NULL ; // and return a invalid reference
 	} // otherwise...
 	
-	get_module_func get_module = (get_module_func)dlsym (module_handles[identifier], "get_module") ; // obtain function pointer
+	get_module_func get_module;
+	if(side == MODULE_SIDE_SERVER)
+		get_module = (get_module_func)dlsym (module_handles[identifier], "get_server_module") ; // obtain function pointer
+	else
+		get_module = (get_module_func)dlsym (module_handles[identifier], "get_client_module") ; // obtain function pointer
+	
 	if (get_module == NULL) // if the function was not found
 		return NULL ; // Error handling is done by libdl, so just return null
 	

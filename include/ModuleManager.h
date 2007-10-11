@@ -35,6 +35,11 @@ typedef ClustonenModule* (*get_module_func)(void) ;
 // will return an unique identifer
 typedef const char* (*get_identifier_func)(void) ; 
 
+enum module_side {
+  MODULE_SIDE_SERVER = 0,
+  MODULE_SIDE_CLIENT
+};
+
 /**
  * Manager for loading and managing modules
  */
@@ -55,7 +60,7 @@ public:
 	std::string getLastError();
 
 	// hands over a module
-	ClustonenModule* getModule(std::string identifier) ; 
+	ClustonenModule* getModule(std::string identifier, enum module_side side) ; 
 protected:
 private:
 	// Keeps the references to the modules

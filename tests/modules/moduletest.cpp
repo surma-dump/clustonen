@@ -28,8 +28,8 @@ int main()
 {
 	ModuleManager mm ;
 	ClustonenModule *cm ;
-	std::string s = mm.loadModule("/home/crock/programmierung/clustonen/modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so");
+	std::string s = mm.loadModule("../../modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so");
 	std::cout << s << std::endl ;
-	cm = mm.getModule(s);
+	cm = mm.getModule(s, MODULE_SIDE_CLIENT);
 	std::cout << cm->getName() << std::endl;
 }

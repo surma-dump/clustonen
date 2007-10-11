@@ -22,7 +22,12 @@ extern "C" const char* get_identifier() // >extern "C"< is needed to prevent sym
 	return "NodeInfoGathererModule-v0.0.1-beta" ; // just return the modulename
 }
 
-extern "C" ClustonenModule* get_module() // s.a.
+extern "C" ClustonenModule* get_client_module() // s.a.
 {
 	return (ClustonenModule*)(new NodeInfoGathererModule()) ; // just return an initialize module
+}
+
+extern "C" ClustonenModule* get_server_module()
+{
+	return NULL;
 }

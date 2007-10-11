@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
 				
 				std::cout << "Loaded module \"" << module_identifier << "\" from file \"" << *it << "\"..." << std::endl;
 				
-				ClustonenModule* mod = srv.getModuleManager().getModule(module_identifier);
+				ClustonenModule* mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
 				mod->setMessageManager(&srv.getMessageManager());
 			}
 		} catch(Exception& e)
