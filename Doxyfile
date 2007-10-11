@@ -86,7 +86,8 @@ INPUT                  = ./lib \
                          ./server \
                          ./client \
                          ./modules \
-                         ./include
+                         ./include \
+                         ./tests
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
