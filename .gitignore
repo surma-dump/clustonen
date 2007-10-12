@@ -8,5 +8,8 @@ doc/*
 *.o
 *.so
 *.so.*
+*.gcno
+*.gcda
+*.gcov
 *~
 \#*\#

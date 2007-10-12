@@ -27,15 +27,21 @@ LD := g++
 CCFLAGS := -Wall
 CXXFLAGS := -Wall
 LDFLAGS := 
+LIBS := stdc++ clustonen c dl
 
 ifdef DEBUG
 	CCFLAGS := $(CCFLAGS) -g
 	CXXFLAGS := $(CXXFLAGS) -g
 endif
 
+ifdef PROFILING
+	CCFLAGS := $(CCFLAGS) -fprofile-arcs -ftest-coverage
+	CXXFLAGS := $(CXXFLAGS) -fprofile-arcs -ftest-coverage
+	LIBS := $(LIBS) -lgcov
+endif
+
 CPPS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(CPPS) )
-LIBS := stdc++ clustonen c dl
 
 LIBPATHS := ../../lib 
 INCLUDES := ../../include

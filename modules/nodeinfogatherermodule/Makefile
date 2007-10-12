@@ -28,15 +28,21 @@ LN := ln
 CCFLAGS := -Werror
 CXXFLAGS := -Werror -fPIC
 LDFLAGS := --shared
+LIBS := stdc++ c 
 
 ifdef DEBUG
 	CCFLAGS := $(CCFLAGS) -g
 	CXXFLAGS := $(CXXFLAGS) -g
 endif
 
+ifdef PROFILING
+	CCFLAGS := $(CCFLAGS) -fprofile-arcs -ftest-coverage
+	CXXFLAGS := $(CXXFLAGS) -fprofile-arcs -ftest-coverage
+	LIBS := $(LIBS) gcov
+endif
+
 CPPS := $(wildcard *.cpp)
 OBJS := $(patsubst %.cpp, %.o, $(CPPS) )
-LIBS := stdc++ c 
 
 LIBPATHS := 
 

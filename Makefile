@@ -46,7 +46,7 @@ modules: library-target
 	make -C ./modules
 
 # deletes all modules, librarys, executables and backup files
-clean: object-clean binary-clean backup-clean
+clean: object-clean binary-clean backup-clean profiling-clean
 
 # delete all object files
 # FIXME: add modules and test
@@ -57,12 +57,18 @@ object-clean:
 binary-clean:
 	make -C lib binary-clean
 	make -C server binary-clean
+	make -C client binary-clean
 	make -C tests binary-clean
 	make -C modules binary-clean
 
 # delete all backupfiles
 backup-clean:
 	find . -name "*~" -exec rm {} \;
+
+profiling-clean:
+	find . -name "*.gcov" -exec rm {} \;
+	find . -name "*.gcda" -exec rm {} \;
+	find . -name "*.gcno" -exec rm {} \;
 
 me:
 	@echo -n "do "
