@@ -23,11 +23,11 @@ all:
 	make -C configfileparser
 	make -C messageclass
 	#make -C threads
-	make -C moduletest
+	make -C modules
 
 binary-clean:
 	make -C unit-tests binary-clean
 	make -C configfileparser binary-clean
 	make -C messageclass binary-clean
 	make -C threads binary-clean
-	make -C moduletest binary-clean
+	make -C modules binary-clean
