@@ -15,4 +15,4 @@
 # * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # */
 
-module ../modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so
+client-module ../modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so

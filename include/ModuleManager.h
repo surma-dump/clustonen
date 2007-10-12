@@ -36,8 +36,8 @@ typedef ClustonenModule* (*get_module_func)(void) ;
 typedef const char* (*get_identifier_func)(void) ; 
 
 enum module_side {
-  MODULE_SIDE_SERVER = 0,
-  MODULE_SIDE_CLIENT
+  MODULE_SIDE_SERVER = 1,
+  MODULE_SIDE_CLIENT = 2
 };
 
 /**

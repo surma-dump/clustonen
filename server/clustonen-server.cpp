@@ -63,23 +63,63 @@ int main(int argc, char* argv[])
 	{
 		try {
 			ConfigFileParser cfp(arguments.getStringValue("config-file"));
-			cfp.addMultiValueToken("module");
+			cfp.addMultiValueToken("client-module");
+			cfp.addMultiValueToken("server-module");
 			cfp.parse();
 			
-			const std::vector<std::string> vec = cfp.getMultiValue("module");
-			for(std::vector<std::string>::const_iterator it = vec.begin();
-			    it != vec.end();
+			const std::vector<std::string> client_modules = cfp.getMultiValue("client-module");
+			const std::vector<std::string> server_modules = cfp.getMultiValue("server-module");
+
+			std::map<std::string, unsigned long> modules;
+
+			//adds all client modules to the modules map
+			for(std::vector<std::string>::const_iterator it = client_modules.begin();
+			    it != client_modules.end();
 			    ++it)
 			{
-				std::string module_identifier = srv.getModuleManager().loadModule(*it);
+				modules[(*it)] = MODULE_SIDE_CLIENT;
+			}
+
+			//adds all server modules to the modules map
+			for(std::vector<std::string>::const_iterator it = server_modules.begin();
+			    it != server_modules.end();
+			    ++it)
+			{
+				modules[(*it)] |= MODULE_SIDE_SERVER;
+			}
+
+			//Loads all modules
+			for(std::map<std::string, unsigned long>::iterator it = modules.begin();
+			    it != modules.end();
+			    ++it)
+			{
+				std::string module_identifier = srv.getModuleManager().loadModule(it->first);
 				
 				if(module_identifier == "")
 					throw Exception(srv.getModuleManager().getLastError());
 				
-				std::cout << "Loaded module \"" << module_identifier << "\" from file \"" << *it << "\"..." << std::endl;
-				
-				ClustonenModule* mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER);
-				mod->setMessageManager(&srv.getMessageManager());
+				std::cout << "Loaded module \"" << module_identifier << "\" from file \"" << it->first << "\"..." << std::endl;
+
+				ClustonenModule* mod;
+				switch(it->second)
+				{
+					case MODULE_SIDE_CLIENT:
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
+						mod->setMessageManager(&srv.getMessageManager());
+						break;
+
+					case MODULE_SIDE_SERVER:
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
+						mod->setMessageManager(&srv.getMessageManager());
+						break;
+
+					case MODULE_SIDE_SERVER | MODULE_SIDE_CLIENT:
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
+						mod->setMessageManager(&srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER);
+						mod->setMessageManager(&srv.getMessageManager());
+						break;
+				}
 			}
 		} catch(Exception& e)
 		{
