@@ -26,6 +26,9 @@ all: library-target server-target client-target
 doc:
 	doxygen
 
+doc-clean:
+	cd doc; rm -rf *
+
 # compiles just the library
 library-target: 
 	make -C lib
