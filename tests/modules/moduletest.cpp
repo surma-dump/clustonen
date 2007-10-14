@@ -21,15 +21,12 @@
 #include "ClustonenMessage.h"
 #include "ModuleManager.h"
 
-typedef ClustonenModule* (*get_module_func)(void) ; // will return an instance of the module
-typedef const char* (*get_identifier_func)(void) ; // will return an unique identifer
-
 int main()
 {
 	ModuleManager mm ;
 	ClustonenModule *cm ;
 	std::string s = mm.loadModule("../../modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so");
 	std::cout << s << std::endl ;
-	cm = mm.getModule(s, MODULE_SIDE_CLIENT);
+	cm = mm.getModule(s, MODULE_SIDE_CLIENT, NULL);
 	std::cout << cm->getName() << std::endl;
 }

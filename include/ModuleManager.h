@@ -30,10 +30,10 @@
  */
 
 // will return an instance of the module
-typedef ClustonenModule* (*get_module_func)(void) ;
+typedef ClustonenModule* (*get_module_func)(MessageManager*) ;
 
 // will return an unique identifer
-typedef const char* (*get_identifier_func)(void) ; 
+typedef const char* (*get_identifier_func)() ; 
 
 enum module_side {
   MODULE_SIDE_SERVER = 1,
@@ -60,7 +60,7 @@ public:
 	std::string getLastError();
 
 	// hands over a module
-	ClustonenModule* getModule(std::string identifier, enum module_side side) ; 
+	ClustonenModule* getModule(std::string identifier, enum module_side side, MessageManager *_mm) ; 
 protected:
 private:
 	// Keeps the references to the modules

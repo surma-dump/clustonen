@@ -59,6 +59,9 @@ int main(int argc, char* argv[])
 		port = DEFAULT_SERVER_PORT ; // ...use standard port
 	
 	Server srv("ClustonenServer");
+	MessageDistributorThread mdt;
+	mdt.start(&srv.getMessageManager());
+	
 	if(arguments.getStringValue("config-file") != "")
 	{
 		try {
@@ -104,20 +107,16 @@ int main(int argc, char* argv[])
 				switch(it->second)
 				{
 					case MODULE_SIDE_CLIENT:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
-						mod->setMessageManager(&srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
 						break;
 
 					case MODULE_SIDE_SERVER:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
-						mod->setMessageManager(&srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
 						break;
 
 					case MODULE_SIDE_SERVER | MODULE_SIDE_CLIENT:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT);
-						mod->setMessageManager(&srv.getMessageManager());
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER);
-						mod->setMessageManager(&srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &srv.getMessageManager());
 						break;
 				}
 			}

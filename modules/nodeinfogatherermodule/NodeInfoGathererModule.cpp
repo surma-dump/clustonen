@@ -22,7 +22,8 @@
 /**
  * Standard Constructor
  */
-NodeInfoGathererModule::NodeInfoGathererModule()
+NodeInfoGathererModule::NodeInfoGathererModule(MessageManager *_mm)
+	: ClustonenModule(_mm)
 {
 }
 

@@ -31,7 +31,7 @@
 class NodeInfoGathererModule : ClustonenModule
 {
 public:
-	NodeInfoGathererModule() ;
+	NodeInfoGathererModule(MessageManager *_mm) ;
 	virtual ~NodeInfoGathererModule() ;
 		
 	// returns plugin's name
