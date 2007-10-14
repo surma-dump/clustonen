@@ -166,5 +166,5 @@ void MessageDistributorThread::run(void* param)
 void DistributionCallerThread::run(void* param)
 {
 	MessageManager* mmgr = (MessageManager*)param;
-	
+	mmgr->distributeNext();
 }
