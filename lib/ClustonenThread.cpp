@@ -136,7 +136,11 @@ void* ClustonenThreadRun(void* param)
 {
 	struct run_struct* rst = (struct run_struct*)param;
 	ClustonenThread *t = rst->instance ;
+	bool del = rst->del;
 
+	//delete this as soon as possible (thread might be killed)
+	delete rst;
+	
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	
 	t->init_mutex.unlock();
@@ -146,7 +150,7 @@ void* ClustonenThreadRun(void* param)
 		t->running = false;
 	t->running_mutex.unlock();
 		
-	if(rst->del)
+	if(del)
 	{
 		//Wait for the creating thread to unlock
 		//the mutex
@@ -154,6 +158,4 @@ void* ClustonenThreadRun(void* param)
 
 		delete t;
 	}
-	
-	delete rst;
 }
