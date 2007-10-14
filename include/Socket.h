@@ -23,6 +23,7 @@
 #include <string>
 #include "Exception.h"
 #include "errno.h"
+#include "ClustonenMutex.h"
 
 #define SOCKET_DEFAULT_BUFFER_SIZE 1024
 
@@ -83,6 +84,7 @@ protected:
 	char* buffer ;
 	size_t buffer_size;
 	size_t bytes_in_buffer;
+	ClustonenMutex send_mutex;
 
 private:
 } ;

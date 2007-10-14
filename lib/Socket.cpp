@@ -185,11 +185,16 @@ void Socket::connect(const std::string& host, unsigned int port)
  */
 void Socket::write(const char* msg, int len)
 {
+	send_mutex.lock();
+	
 	// Write sequence to socket
 	if (::send(transmissionhandle,msg,len,0) < 0) {
 		// and throw exception if it failed
+		send_mutex.unlock();
 		throw  Exception (strerror(errno)) ;
 	}
+
+	send_mutex.unlock();
 }
 
 /**
