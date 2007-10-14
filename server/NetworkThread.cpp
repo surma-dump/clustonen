@@ -79,7 +79,6 @@ void ClientHandlerThread::run(void* _param)
 			
 			std::cout << "Added client " << client->getName() << "..." << std::endl;
 			
-			delete socket;
 			delete response;
 			return;
 			
@@ -110,7 +109,8 @@ void ClientHandlerThread::run(void* _param)
 				srv->getMessageManager().queueMessage(response);
 				srv->removeClient(client);
 				socket->disconnect();
-				delete socket;
+				delete client->getSendSocket();
+				delete client->getReceiveSocket();
 				delete client;
 				return;
 			}
