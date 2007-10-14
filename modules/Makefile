@@ -19,6 +19,8 @@
 
 all:
 	make -C nodeinfogatherermodule
+	make -C testmodule
 
 binary-clean:
 	make -C nodeinfogatherermodule binary-clean
+	make -C testmodule binary-clean

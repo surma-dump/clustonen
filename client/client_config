@@ -16,3 +16,4 @@
 # */
 
 client-module ../modules/nodeinfogatherermodule/libclustonen_nodeinfogatherermodule.so
+client-module ../modules/testmodule/libclustonen_testmodule.so
