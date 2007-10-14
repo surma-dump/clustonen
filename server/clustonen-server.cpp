@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
 						break;
 
 					case MODULE_SIDE_SERVER:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &srv.getMessageManager());
 						break;
 
 					case MODULE_SIDE_SERVER | MODULE_SIDE_CLIENT:

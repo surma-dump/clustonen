@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
 						break;
 
 					case MODULE_SIDE_SERVER:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &srv.getMessageManager());
 						break;
 
 					case MODULE_SIDE_SERVER | MODULE_SIDE_CLIENT:
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 	
 	try {
 		receiveSocket.connect(server, port);
-		std::cout << "Connected to server " << server << " on port " << port << std::endl;
+		std::cout << "Connected to server (first time)" << server << " on port " << port << std::endl;
 		
 		ClustonenMessage msg = MessageTransfer::receiveMessage(receiveSocket);
 		if(msg.getName() != "WelcomeMessage")
@@ -170,14 +170,36 @@ int main(int argc, char* argv[])
 		initRcvMsg.setName("InitiateTransferMessage");
 		initRcvMsg.addField("connection-direction", "client-receives");
 		initRcvMsg.addField("client-name", srv.getName());
+
+		std::cout << "sending InitiateTransferMessage (client-receives)...";
 		MessageTransfer::sendMessage(receiveSocket, initRcvMsg);
+		std::cout << "done." << std::endl;
+		
 		
 		sendSocket.connect(server, port);
+		std::cout << std::endl << "Connected to server (second time)" << server << " on port " << port << std::endl;
+
+		ClustonenMessage* msg2 = MessageTransfer::receiveMessagePtr(sendSocket);
+
+		if(msg2->getName() != "WelcomeMessage") {
+			delete msg2;
+			return -1;
+		}
+		
+		std::cout << "Received welcome message:" << std::endl;
+		std::cout << "server-name: " << msg2->getField("server-name") << std::endl;
+		std::cout << "protocol-version: " << msg2->getField("protocol-version") << std::endl;
+
+		delete msg2;
+		
 		ClustonenMessage initSendMsg;
 		initSendMsg.setName("InitiateTransferMessage");
 		initSendMsg.addField("connection-direction", "client-sends");
 		initSendMsg.addField("client-name", srv.getName());
+		
+		std::cout << "sending InitiateTransferMessage (client-sends)...";
 		MessageTransfer::sendMessage(sendSocket, initSendMsg);
+		std::cout << "done." << std::endl;
 
 		//The server we're connected to is this local server's only client
 		Client client(sendSocket.getOpponent()+"-"+server_name);
