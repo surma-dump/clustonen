@@ -46,8 +46,6 @@ public:
 protected:
 	// Sends a messsage to someone
 	void sendMessage(ClustonenMessage *msg);
-	
-private:
 	MessageManager *mm ;
 } ;
 
