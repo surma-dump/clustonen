@@ -24,7 +24,7 @@
  * Standard constructor
  */
 MessageManager::MessageManager(Server* srv)
-	: server(srv)
+	: server(srv), queue_length(0)
 {
 }
 
@@ -83,6 +83,7 @@ void MessageManager::queueMessage (ClustonenMessage* msg)
 {
 	queue_mutex.lock();
 		messages.push(msg) ;
+		queue_length.up();
 	queue_mutex.unlock();
 }
 
@@ -137,4 +138,33 @@ out:
 		
 		delete msg;
 	}
+}
+
+/**
+ * The thread's main routine that creates threads that
+ * call MessageManager::distributeNext().
+ * @param param A pointer to an instance of the class
+ * MessageManager
+ */
+void MessageDistributorThread::run(void* param)
+{
+	MessageManager* mmgr = (MessageManager*)param;
+	
+	while(true)
+	{
+		mmgr->queue_length.down();
+		DistributionCallerThread* dct = new DistributionCallerThread();
+		dct->start(mmgr, true);
+	}
+}
+
+/**
+ * The thread's main routine that actually calls MessageManager::distributeNext().
+ * @param param A pointer to an instance of the class
+ * MessageManager
+ */
+void DistributionCallerThread::run(void* param)
+{
+	MessageManager* mmgr = (MessageManager*)param;
+	
 }

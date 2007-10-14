@@ -26,8 +26,11 @@
 #include "ClustonenModule.h"
 #include "ClustonenMessage.h"
 #include "ClustonenMutex.h"
+#include "ClustonenSemaphore.h"
+#include "ClustonenThread.h"
 
 class Server;
+class MessageDistributorThread;
 
 /**
  * Manager for processing Messages
@@ -50,6 +53,8 @@ public:
 	void addModuleHook(const std::string& msgName, ClustonenModule* module);
 	void removeModuleHook(const std::string& msgName, ClustonenModule* module);
 	void removeModuleHook(ClustonenModule* module);
+
+	friend class MessageDistributorThread;
 	
 protected:
 private:
@@ -58,7 +63,26 @@ private:
 	std::queue<ClustonenMessage*> messages ;
 	ClustonenMutex modulelist_mutex;
 	ClustonenMutex queue_mutex;
+	ClustonenSemaphore queue_length;
 	Server* server;
 } ;
+
+/**
+ * Thread that creates other threads that call
+ * MessageManager::distributeNext()
+ */
+class MessageDistributorThread : public ClustonenThread
+{
+	public:
+		void run(void* param);
+};
+
+/**
+ * Thread that actually calls MessageManager::distributeNext()
+ */
+class DistributionCallerThread : public ClustonenThread {
+	public:
+		void run(void* param);
+};
 
 #endif
