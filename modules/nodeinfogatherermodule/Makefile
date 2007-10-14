@@ -71,6 +71,7 @@ clean:
 	
 binary-clean:
 	-@rm $(NAME) 2> /dev/null
+	-@rm *.so.* 2> /dev/null
 
 post-clean:
 	-@rm *.o 2 >/dev/null
