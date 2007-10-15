@@ -99,7 +99,7 @@ int TestModule::processMessage (ClustonenMessage* msg)
 		ret.setDestination(msg->getOrigin());
 
 		try {
-			sendMessage(&ret);
+			mm->sendMessage(&ret);
 		}
 		catch(Exception& e)
 		{

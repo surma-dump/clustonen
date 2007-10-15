@@ -44,8 +44,6 @@ public:
 	virtual int processMessage(ClustonenMessage* msg) = 0;
 
 protected:
-	// Sends a messsage to someone
-	void sendMessage(ClustonenMessage *msg);
 	MessageManager *mm ;
 } ;
 
