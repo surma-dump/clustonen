@@ -203,6 +203,8 @@ int main(int argc, char* argv[])
 
 		//The server we're connected to is this local server's only client
 		Client client(sendSocket.getOpponent()+"-"+server_name);
+		client.setSendSocket(&sendSocket);
+		client.setReceiveSocket(&receiveSocket);
 		srv.addClient(&client);
 
 		while (true)
