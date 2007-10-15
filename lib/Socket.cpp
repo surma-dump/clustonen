@@ -154,24 +154,23 @@ void Socket::close()
  */
 void Socket::connect(const std::string& host, unsigned int port)
 {
-	struct sockaddr_in host_addr;
 	struct hostent *hostinfo;
 	
 	transmissionhandle = socket (AF_INET, SOCK_STREAM, 0);
 
 	// get the host's address
-	memset( &host_addr, 0, sizeof (host_addr));
-	host_addr.sin_family = AF_INET;
-	host_addr.sin_port = htons (port);
-	host_addr.sin_addr.s_addr = inet_addr (host.c_str());
+	memset( &opponentsocket, 0, sizeof (opponentsocket));
+	opponentsocket.sin_family = AF_INET;
+	opponentsocket.sin_port = htons (port);
+	opponentsocket.sin_addr.s_addr = inet_addr (host.c_str());
 	
-	if (host_addr.sin_addr.s_addr == INADDR_NONE) {
+	if (opponentsocket.sin_addr.s_addr == INADDR_NONE) {
 		//A Host name rather than an address was specified
 		hostinfo = gethostbyname (host.c_str());
-		memcpy((char*) &host_addr.sin_addr.s_addr, hostinfo->h_addr, hostinfo->h_length);
+		memcpy((char*) &opponentsocket.sin_addr.s_addr, hostinfo->h_addr, hostinfo->h_length);
 	}
 	
-	if(::connect(transmissionhandle, (struct sockaddr *) &host_addr, sizeof(struct sockaddr)) < 0)
+	if(::connect(transmissionhandle, (struct sockaddr *) &opponentsocket, sizeof(struct sockaddr)) < 0)
 	{
 		throw  Exception (strerror(errno)) ;
 	}
