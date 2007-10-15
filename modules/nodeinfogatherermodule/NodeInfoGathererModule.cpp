@@ -17,6 +17,7 @@
  */
 
 #include "NodeInfoGathererModule.h"
+#include "MessageManager.h"
 #include "strhelper.h"
 
 /**
@@ -62,7 +63,7 @@ int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 		else if (attr == "NumInterfaces")
 			ret.addField("NumInterfaces", numberToString(getNumInterfaces()));
 	}
-	sendMessage(&ret);
+	mm->sendMessage(&ret);
 	// No need to kill the message or obtain it again
 	return CHAIN_PROCEED ; 
 }
