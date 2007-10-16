@@ -1,9 +1,11 @@
+
 What still has to be implemented:
 - Move existing code in lib/ and include/ to new comment style
   (see commit b61e53d82a81163f8156613a615b19d554435339 for an example)
 - Check if destructors are thread safe
 - Take a closer look on the socket class. I experienced mysterious
   disconnects from time to time
+- Notify other threads when a client gets deleted.
 
 Well, basically everything, but here are the things which came to mind:
 
