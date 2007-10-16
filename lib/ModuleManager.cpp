@@ -19,6 +19,22 @@
 #include "ModuleManager.h"
 
 /**
+ * Ugly hack that is needed to be compliant with ISO C++
+ * when loading function pointers via dlsym().
+ */
+template<class T>
+inline T dlsym_funcptr_isocpp(void* handle, const char* name)
+{
+	union {
+		void* ptr;
+		T func;
+	} u;
+	u.ptr = dlsym(handle, name);
+	return u.func;
+}
+
+
+/**
  * Standard constructor
  */
 ModuleManager::ModuleManager()
@@ -43,12 +59,12 @@ ModuleManager::~ModuleManager()
 std::string ModuleManager::loadModule(std::string filename)
 {
 	void *mod_pointer = dlopen (filename.c_str(), RTLD_LAZY) ; // try to load module
-
+	
 	get_identifier_func get_identifier ;
 	if (mod_pointer == NULL) // if loading was not successful...
 		return "" ;
 
-	get_identifier = (get_identifier_func)dlsym (mod_pointer, "get_identifier") ; // obtain function pointer
+	get_identifier = dlsym_funcptr_isocpp<get_identifier_func>(mod_pointer, "get_identifier"); // obtain function pointer
 	if (get_identifier == NULL) // if function was not found...
 	{
 		own_error_msg = dlerror() ; // save error message, since it will get lost after dlclose() is called
@@ -79,9 +95,9 @@ ClustonenModule* ModuleManager::getModule(std::string identifier, enum module_si
 	
 	get_module_func get_module;
 	if(side == MODULE_SIDE_SERVER)
-		get_module = (get_module_func)dlsym (module_handles[identifier], "get_server_module") ; // obtain function pointer
+		get_module = dlsym_funcptr_isocpp<get_module_func>(module_handles[identifier], "get_server_module") ; // obtain function pointer
 	else
-		get_module = (get_module_func)dlsym (module_handles[identifier], "get_client_module") ; // obtain function pointer
+		get_module = dlsym_funcptr_isocpp<get_module_func>(module_handles[identifier], "get_client_module") ; // obtain function pointer
 	
 	if (get_module == NULL) // if the function was not found
 		return NULL ; // Error handling is done by libdl, so just return null

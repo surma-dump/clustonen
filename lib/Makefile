@@ -25,8 +25,8 @@ CXX := g++
 LD := g++
 LN := ln
 
-CCFLAGS := -Werror -pthread
-CXXFLAGS := -Werror -fPIC -pthread
+CCFLAGS := -Werror -pthread -pedantic
+CXXFLAGS := -Werror -fPIC -pthread -pedantic
 LDFLAGS := --shared
 LIBS := argtable2 c pthread
 

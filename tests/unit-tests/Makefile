@@ -20,8 +20,8 @@ CXX := g++
 LD := g++
 NAME=testsuite
 
-CCFLAGS := -Wall -pthread
-CXXFLAGS := -Wall -pthread
+CCFLAGS := -Wall -pthread -pedantic
+CXXFLAGS := -Wall -pthread -pedantic
 LDFLAGS := 
 LIBS := cppunit stdc++ clustonen c dl
 
