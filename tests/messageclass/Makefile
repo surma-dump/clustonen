@@ -24,8 +24,8 @@ CC := gcc
 CXX := g++
 LD := g++
 
-CCFLAGS := -Wall
-CXXFLAGS := -Wall
+CCFLAGS := -Wall -pthread
+CXXFLAGS := -Wall -pthread
 LDFLAGS := 
 LIBS := stdc++ clustonen c dl
 
