@@ -103,7 +103,21 @@ void ClientHandlerThread::run(void* _param)
 		
 		while(true)
 		{
-			response = MessageTransfer::receiveMessagePtr(*socket);
+			try  {
+				response = MessageTransfer::receiveMessagePtr(*socket);
+			}
+			catch(SocketException& e)
+			{
+				std::cerr << "Can't receive message from client " << client_name
+					  << "... Closing connection." << std::endl;
+
+				srv->removeClient(client);
+				delete client->getSendSocket();
+				delete client->getReceiveSocket();
+				delete client;
+				return;
+			}
+			
 			response->setOrigin(client_name);
 			if(response->getName() == "AbortMessage")
 			{

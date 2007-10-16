@@ -89,4 +89,32 @@ protected:
 private:
 } ;
 
+/**
+ * General socket exception
+ */
+class SocketException : public Exception {
+	public:
+		SocketException(const std::string& msg, Socket* socket);
+		Socket* getSocket();
+		
+	protected:
+		Socket* socket;
+};
+
+/**
+ * Thrown when the other side called close()
+ */
+class SocketDisconnectedException : public SocketException {
+	public:
+		SocketDisconnectedException(Socket* socket);
+};
+
+/**
+ * Thrown when the other side didn't close the conenction properly
+ */
+class SocketBrokenException : public SocketException {
+	public:
+		SocketBrokenException(Socket* socket);
+};
+
 #endif 

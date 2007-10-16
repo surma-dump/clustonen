@@ -37,7 +37,7 @@ Socket::Socket(size_t buffer_size)
 	buffer = new char[buffer_size];
 	
 	if(buffer == NULL)
-		throw  Exception ("Socket::Socket(): Could not allocate buffer. \n") ;
+		throw SocketException ("Socket::Socket(): Could not allocate buffer. \n", this) ;
 }
 /**
  * Creates a socket from an existing socket descriptor.
@@ -54,7 +54,7 @@ Socket::Socket(int socket, struct sockaddr_in* opponent_addr, size_t buffer_size
 	buffer = new char[buffer_size];
 	
 	if(buffer == NULL)
-		throw  Exception ("Socket::Socket(): Could not allocate buffer. \n") ;
+		throw  SocketException ("Socket::Socket(): Could not allocate buffer. \n", this) ;
 	
 	memcpy(&opponentsocket, opponent_addr, sizeof(*opponent_addr));
 }
@@ -97,13 +97,13 @@ void Socket::bind(int port)
 	
 	int opt = 1;
 	if(setsockopt(sockethandle, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-		throw  Exception (strerror(errno)) ;
+		throw SocketException (strerror(errno), this) ;
 	} 
 	
 	// Try to bind the socket to the port
 	if (::bind(sockethandle, (struct sockaddr *)&serversocket, sizeof (struct sockaddr)) != 0) {
 		// and throw an exception if it failed
-		throw  Exception (strerror(errno)) ;
+		throw  SocketException (strerror(errno), this) ;
 	}
 }
 
@@ -116,7 +116,7 @@ void Socket::listen()
 	// set it to listen
 	if (::listen(sockethandle, 1) != 0) {
 		// and throw an exception if it failed
-		throw  Exception (strerror(errno)) ;
+		throw  SocketException (strerror(errno), this) ;
 	}
 }
 
@@ -129,7 +129,7 @@ void Socket::waitForConnection()
 	// just wait and save sockethandle of the incoming connection
 	opponenthandle = ::accept(sockethandle, (struct sockaddr *) &opponentsocket, &socksize) ;
 	if (opponenthandle < 0)
-		throw  Exception (strerror(errno)) ;
+		throw SocketException (strerror(errno), this) ;
 	connected = true;
 	transmissionhandle = opponenthandle ;
 }
@@ -172,7 +172,7 @@ void Socket::connect(const std::string& host, unsigned int port)
 	
 	if(::connect(transmissionhandle, (struct sockaddr *) &opponentsocket, sizeof(struct sockaddr)) < 0)
 	{
-		throw  Exception (strerror(errno)) ;
+		throw SocketException (strerror(errno), this) ;
 	}
 	
 	connected = true;
@@ -190,7 +190,13 @@ void Socket::write(const char* msg, int len)
 	if (::send(transmissionhandle,msg,len,0) < 0) {
 		// and throw exception if it failed
 		send_mutex.unlock();
-		throw  Exception (strerror(errno)) ;
+
+		if(errno == EPIPE)
+			throw SocketBrokenException(this);
+		else if(errno == ECONNRESET)
+			throw SocketDisconnectedException(this);
+		else
+			throw Exception (strerror(errno)) ;
 	}
 
 	send_mutex.unlock();
@@ -217,7 +223,14 @@ ssize_t Socket::read(size_t num_bytes, bool reset_buffer)
 	// if it failed, num will be -1
 	if (bytes_received < 0) {
 		// and therefore an exception will be thrown
-		throw  Exception (strerror(errno)) ;
+		if(errno == EPIPE)
+			throw SocketBrokenException(this);
+		else
+			throw Exception (strerror(errno)) ;
+	}
+	else if(bytes_received == 0)
+	{
+		throw SocketDisconnectedException(this);
 	}
 	
 	bytes_in_buffer = (reset_buffer) ? bytes_received : bytes_in_buffer + bytes_received;
@@ -240,7 +253,7 @@ ssize_t Socket::readFixedLength(size_t num_bytes, bool reset_buffer)
 	if((!reset_buffer && (num_bytes > buffer_size-bytes_in_buffer)) ||
 		(reset_buffer && num_bytes > buffer_size))
 	{
-		throw Exception("Socket::readFixedLength(): requested number of bytes doesn't fit into buffer.");
+		throw SocketException("Socket::readFixedLength(): requested number of bytes doesn't fit into buffer.", this);
 	}
 	
 	if(reset_buffer)
@@ -308,4 +321,19 @@ std::string Socket::getOpponent()
 	if (!isConnected())
 		return NULL ;
 	return inet_ntoa(opponentsocket.sin_addr) ;
+}
+
+SocketException::SocketException(const std::string& msg, Socket* socket)
+	: socket(socket), Exception(msg)
+{
+}
+
+SocketDisconnectedException::SocketDisconnectedException(Socket* socket)
+	: SocketException("Socket disconnected.", socket)
+{
+}
+
+SocketBrokenException::SocketBrokenException(Socket* socket)
+	: SocketException("Socket closed unexpectedly by the other side.", socket)
+{
 }

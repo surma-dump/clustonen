@@ -209,7 +209,19 @@ int main(int argc, char* argv[])
 
 		while (true)
 		{
-			ClustonenMessage* response = MessageTransfer::receiveMessagePtr(receiveSocket);
+			ClustonenMessage* response;
+
+			try {
+				response = MessageTransfer::receiveMessagePtr(receiveSocket);
+			}
+			catch(SocketException& e)
+			{
+				std::cerr << "Can't receive message from " << client.getName()
+					  << "... Closing connection." << std::endl;
+				
+				srv.removeClient(&client);
+				return -1;
+			}
 			response->setOrigin(client.getName());
 			srv.getMessageManager().queueMessage(response);
 		}
