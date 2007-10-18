@@ -15,27 +15,13 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef SOCKETSERVER_H
-#define SOCKETSERVER_H
-
-#include <queue>
-
-#include "Socket.h"
-#include "SocketFunctor.h"
 #include "ReadyFunctor.h"
 
-#define SOCKETSERVER_DEFAULT_QUEUELENGTH 10
+ReadyFunctor::ReadyFunctor()
+{
+}
 
+ReadyFunctor::~ReadyFunctor()
+{
+}
 
-class SocketServer {
-	public:
-		SocketServer(unsigned int port);
-		
-		void run(SocketFunctor& acceptFunc, unsigned int queuelength = SOCKETSERVER_DEFAULT_QUEUELENGTH,
-			 int maxclients = -1, ReadyFunctor* readyFunc = NULL);
-	
-	protected:
-		unsigned int port;
-};
-
-#endif //SOCKETSERVER_H

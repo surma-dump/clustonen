@@ -34,7 +34,7 @@ SocketServer::SocketServer(unsigned int port)
  * @param queuelength The maximum number of clients held in a queue waiting for a connection
  * @param maxclients The maximum number of clients server (not at a time, but overall)
  */
-void SocketServer::run(SocketFunctor& acceptFunc, unsigned int queuelength, int maxclients)
+void SocketServer::run(SocketFunctor& acceptFunc, unsigned int queuelength, int maxclients, ReadyFunctor* readyFunc)
 {
 	int sock;
 	int client;
@@ -61,6 +61,9 @@ void SocketServer::run(SocketFunctor& acceptFunc, unsigned int queuelength, int 
 	
 	listen(sock, queuelength);
 	clilen = sizeof(cli_addr);
+
+	if(readyFunc != NULL)
+		(*readyFunc)();
 	
 	while((maxclients >= 0 && (clients_accepted++) < maxclients) || (maxclients < 0))
 	{
