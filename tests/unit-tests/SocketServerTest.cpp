@@ -20,8 +20,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "SocketServer.h"
 #include "SocketFunctor.h"
+#include "LockReadyFunctor.h"
 #include "ClustonenThread.h"
 #include "socketdefs.h"
+#include "twofunctors.h"
 
 using namespace std;
 
@@ -33,10 +35,10 @@ class SocketServerTestServerThread : public ClustonenThread
 		void run(void* _param)
 		{
 			try {
-				SocketFunctor* func = (SocketFunctor*)_param;
+				TwoFunctors* funcs = (TwoFunctors*)_param;
 				SocketServer* server = new SocketServer(TESTPORT);
 				
-				server->run(*func, SOCKETSERVER_DEFAULT_QUEUELENGTH, MAXCLIENTS);
+				server->run(*funcs->socketFunc, SOCKETSERVER_DEFAULT_QUEUELENGTH, MAXCLIENTS, funcs->readyFunc);
 			}
 			catch(Exception& e)
 			{
@@ -85,14 +87,15 @@ void SocketServerTest::tearDown(void)
 void SocketServerTest::connectTest(void)
 {
 	SocketServerTestServerThread thrS;
-	SocketFunctorSample* func = new SocketFunctorSample();
+	SocketFunctorSample sfs;
+	LockReadyFunctor rf;
+
+	struct TwoFunctors twoFuncs;
+	twoFuncs.readyFunc = &rf;
+	twoFuncs.socketFunc = &sfs;
+	thrS.start(&twoFuncs);
 	
-	thrS.start(func);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	rf.waitForReadyState();
 	
 	for(int i = 0; i < MAXCLIENTS; ++i)
 	{
@@ -111,6 +114,4 @@ void SocketServerTest::connectTest(void)
 	}
 	
 	thrS.join();
-	
-	delete func;
 }

@@ -20,8 +20,11 @@
 #include "SocketServer.h"
 #include "SocketFunctor.h"
 #include "ClustonenThread.h"
+#include "ClustonenMutex.h"
 #include "MessageTransfer.h"
 #include "socketdefs.h"
+#include "LockReadyFunctor.h"
+#include "twofunctors.h"
 
 using namespace std;
 
@@ -33,10 +36,10 @@ class MessageTransferTestServerThread : public ClustonenThread
 		void run(void* _param)
 		{
 			try {
-				SocketFunctor* func = (SocketFunctor*)_param;
+				struct TwoFunctors* funcs = (TwoFunctors*)_param;
 				SocketServer* server = new SocketServer(TESTPORT);
 				
-				server->run(*func, SOCKETSERVER_DEFAULT_QUEUELENGTH, MAXCLIENTS);
+				server->run(*funcs->socketFunc, SOCKETSERVER_DEFAULT_QUEUELENGTH, MAXCLIENTS, funcs->readyFunc);
 			}
 			catch(Exception& e)
 			{
@@ -94,14 +97,15 @@ void MessageTransferTest::tearDown(void)
 void MessageTransferTest::sendReceiveTest(void)
 {
 	MessageTransferTestServerThread thrS;
-	MessageWriterFunctor* func = new MessageWriterFunctor();
+	MessageWriterFunctor mwf;
+	LockReadyFunctor rf;
+
+	struct TwoFunctors twoFuncs;
+	twoFuncs.readyFunc = &rf;
+	twoFuncs.socketFunc = &mwf;
+	thrS.start(&twoFuncs);
 	
-	thrS.start(func);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	rf.waitForReadyState();
 	
 	try {
 		Socket* client = new Socket();
@@ -145,6 +149,4 @@ void MessageTransferTest::sendReceiveTest(void)
 	}
 	
 	thrS.join();
-	
-	delete func;
 }

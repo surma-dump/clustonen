@@ -21,9 +21,12 @@
 #include <netdb.h>
 #include "Socket.h"
 #include "ClustonenThread.h"
+#include "ClustonenMutex.h"
 #include "socketdefs.h"
 
 using namespace std;
+
+ClustonenMutex readyMutex;
 
 class SocketTestServerThread : public ClustonenThread
 {
@@ -35,6 +38,7 @@ class SocketTestServerThread : public ClustonenThread
 				
 				server->bind(TESTPORT);
 				server->listen();
+				readyMutex.unlock();
 				server->waitForConnection();
 				server->write(TESTMSG, strlen(TESTMSG));
 			}
@@ -94,13 +98,11 @@ void SocketTest::tearDown(void)
 void SocketTest::connectTest(void)
 {
 	SocketTestServerThread thrS;
-	
+
+	readyMutex.lock();
 	thrS.start(server);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	readyMutex.lock();
+	readyMutex.unlock();
 	
 	CPPUNIT_ASSERT(client->isConnected() == false);
 	client->connect("localhost", TESTPORT);
@@ -118,13 +120,11 @@ void SocketTest::connectTest(void)
 void SocketTest::existingHandleTest1(void)
 {
 	SocketTestServerThread thrS;
-	
+
+	readyMutex.lock();
 	thrS.start(server);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	readyMutex.lock();
+	readyMutex.unlock();
 	
 	client2 = new Socket(socket(AF_INET, SOCK_STREAM, 0));
 	
@@ -146,13 +146,11 @@ void SocketTest::existingHandleTest1(void)
 void SocketTest::existingHandleTest2(void)
 {
 	SocketTestServerThread thrS;
-	
+
+	readyMutex.lock();
 	thrS.start(server);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	readyMutex.lock();
+	readyMutex.unlock();
 	
 	struct sockaddr_in host_addr;
 	struct hostent *hostinfo;
@@ -197,13 +195,11 @@ void SocketTest::bufferSizeTest(void)
 void SocketTest::bufferAccumulationTest(void)
 {
 	SocketTestServerThread thrS;
-	
+
+	readyMutex.lock();
 	thrS.start(server);
-	
-	//FIXME: Actually, this point should be synchronized with the server thread
-	//We have a lot of potential race conditions here and the test might even fail
-	//because of bad timings...
-	sleep(1);
+	readyMutex.lock();
+	readyMutex.unlock();
 	
 	CPPUNIT_ASSERT(client->isConnected() == false);
 	client->connect("localhost", TESTPORT);
