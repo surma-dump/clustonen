@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2007  Alexander Surma <crock@drebesium.org>
+ * Copyright (C) 2007  Andi Drebes <hackbert@drebesium.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as published
@@ -15,14 +15,22 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#include "ClustonenModule.h"
-#include "MessageManager.h"
+#include "PluginEnvironment.h"
+#include "Server.h"
 
-ClustonenModule::ClustonenModule(PluginEnvironment *pe)
-	: pe(pe)
+/**
+ * Constructor.
+ * @param server The server instance
+ */
+PluginEnvironment::PluginEnvironment(Server* server)
+	: server(server)
 {
 }
 
-ClustonenModule::~ClustonenModule()
+/**
+ * Return's the server instance
+ */
+Server* PluginEnvironment::getServer()
 {
+	return server;
 }

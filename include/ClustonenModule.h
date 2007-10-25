@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include "ClustonenMessage.h"
+#include "PluginEnvironment.h"
 
 // Forward-Declaration to prevent circular dependencies from screwing everything up
 class MessageManager;
@@ -31,7 +32,7 @@ class MessageManager;
 class ClustonenModule
 {
 public:
-	ClustonenModule(MessageManager *_mm);
+	ClustonenModule(PluginEnvironment* pe);
 	virtual ~ClustonenModule();
 
 	// TODO Module information methods
@@ -44,7 +45,7 @@ public:
 	virtual int processMessage(ClustonenMessage* msg) = 0;
 
 protected:
-	MessageManager *mm ;
+	PluginEnvironment *pe ;
 } ;
 
 enum {

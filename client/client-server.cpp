@@ -26,6 +26,7 @@
 #include "MessageTransfer.h"
 #include "Server.h"
 #include "ConfigFileParser.h"
+#include "PluginEnvironment.h"
 
 const char* program_name;
 enum EXIT_STATUS
@@ -81,6 +82,7 @@ int main(int argc, char* argv[])
 	
 	//The local server
 	Server srv("ClustonenClient");
+	PluginEnvironment pe(&srv);
 	MessageDistributorThread mdt;
 	mdt.start(&srv.getMessageManager());
 
@@ -132,16 +134,16 @@ int main(int argc, char* argv[])
 				switch(it->second)
 				{
 					case MODULE_SIDE_CLIENT:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &pe);
 						break;
 
 					case MODULE_SIDE_SERVER:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &pe);
 						break;
 
 					case MODULE_SIDE_SERVER | MODULE_SIDE_CLIENT:
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &srv.getMessageManager());
-						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &srv.getMessageManager());
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_CLIENT, &pe);
+						mod = srv.getModuleManager().getModule(module_identifier, MODULE_SIDE_SERVER, &pe);
 						break;
 				}
 			}

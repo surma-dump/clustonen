@@ -24,13 +24,14 @@
 #include <dlfcn.h> // Dynamical loading of shared libraries
 #include <map> 
 #include "ClustonenModule.h"
+#include "PluginEnvironment.h"
 
 /** 
  * Function pointer types to obtain from the library
  */
 
 // will return an instance of the module
-typedef ClustonenModule* (*get_module_func)(MessageManager*) ;
+typedef ClustonenModule* (*get_module_func)(PluginEnvironment*) ;
 
 // will return an unique identifer
 typedef const char* (*get_identifier_func)() ; 
@@ -60,7 +61,7 @@ public:
 	std::string getLastError();
 
 	// hands over a module
-	ClustonenModule* getModule(std::string identifier, enum module_side side, MessageManager *_mm) ; 
+	ClustonenModule* getModule(std::string identifier, enum module_side side, PluginEnvironment *pe) ;
 protected:
 private:
 	// Keeps the references to the modules

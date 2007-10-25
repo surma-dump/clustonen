@@ -19,12 +19,13 @@
 #include "NodeInfoGathererModule.h"
 #include "MessageManager.h"
 #include "strhelper.h"
+#include "Server.h"
 
 /**
  * Standard Constructor
  */
-NodeInfoGathererModule::NodeInfoGathererModule(MessageManager *_mm)
-	: ClustonenModule(_mm)
+NodeInfoGathererModule::NodeInfoGathererModule(PluginEnvironment *pe)
+	: ClustonenModule(pe)
 {
 }
 
@@ -63,7 +64,7 @@ int NodeInfoGathererModule::processMessage (ClustonenMessage* msg)
 		else if (attr == "NumInterfaces")
 			ret.addField("NumInterfaces", numberToString(getNumInterfaces()));
 	}
-	mm->sendMessage(&ret);
+	pe->getServer()->getMessageManager().sendMessage(&ret);
 	// No need to kill the message or obtain it again
 	return CHAIN_PROCEED ; 
 }

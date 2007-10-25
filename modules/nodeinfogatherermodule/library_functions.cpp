@@ -22,12 +22,12 @@ extern "C" const char* get_identifier() // >extern "C"< is needed to prevent sym
 	return "NodeInfoGathererModule-v0.0.1-beta" ; // just return the modulename
 }
 
-extern "C" ClustonenModule* get_client_module(MessageManager *_mm) // s.a.
+extern "C" ClustonenModule* get_client_module(PluginEnvironment *pe) // s.a.
 {
-	return (ClustonenModule*)(new NodeInfoGathererModule(_mm)) ; // just return an initialize module
+	return (ClustonenModule*)(new NodeInfoGathererModule(pe)) ; // just return an initialize module
 }
 
-extern "C" ClustonenModule* get_server_module(MessageManager *_mm)
+extern "C" ClustonenModule* get_server_module(PluginEnvironment *pe)
 {
 	return NULL;
 }

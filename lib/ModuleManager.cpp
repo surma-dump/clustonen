@@ -84,7 +84,7 @@ std::string ModuleManager::loadModule(std::string filename)
  * @param side Specifies wether the server part or the client part of the module should be returned
  * @return an instance of the module
  */
-ClustonenModule* ModuleManager::getModule(std::string identifier, enum module_side side, MessageManager *_mm)
+ClustonenModule* ModuleManager::getModule(std::string identifier, enum module_side side, PluginEnvironment *pe)
 {
 	if (module_handles[identifier] == NULL) // Is there a module with that identifier?
 	{
@@ -102,7 +102,7 @@ ClustonenModule* ModuleManager::getModule(std::string identifier, enum module_si
 	if (get_module == NULL) // if the function was not found
 		return NULL ; // Error handling is done by libdl, so just return null
 	
-	return (*get_module)(_mm) ; //everything is fine, return the instance
+	return (*get_module)(pe) ; //everything is fine, return the instance
 }
 
 /**
