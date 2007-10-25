@@ -5,6 +5,7 @@ What still has to be implemented:
 - Take a closer look on the socket class. I experienced mysterious
   disconnects from time to time
 - Notify other threads when a client gets deleted.
+- Make the network name configurable via a configfile parameter
 
 Well, basically everything, but here are the things which came to mind:
 
