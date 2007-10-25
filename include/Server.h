@@ -32,6 +32,7 @@ class Server {
 		MessageManager& getMessageManager();
 		ModuleManager& getModuleManager();
 		Client* getClientByName(const std::string& name);
+		std::list<Client*> getAllClients();
 		void addClient(Client* client);
 		void removeClient(Client* client);
 		

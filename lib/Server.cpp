@@ -70,6 +70,18 @@ Client* Server::getClientByName(const std::string& name)
 }
 
 /**
+ * Returns a list with all the clients currently connected
+ */
+std::list<Client*> Server::getAllClients()
+{
+	clientlist_mutex.lock();
+		std::list<Client*> clients_copy(clients);
+	clientlist_mutex.unlock();
+
+	return clients_copy;
+}
+
+/**
  * Adds a client to the list of clients
  * @param client the client to be added
  */
