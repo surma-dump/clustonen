@@ -27,7 +27,7 @@
 class TestModule : ClustonenModule
 {
 public:
-  TestModule(MessageManager *_mm, bool server_mode) ;
+  TestModule(PluginEnvironment *pe, bool server_mode) ;
 	virtual ~TestModule() ;
 	
 	// returns plugin's name

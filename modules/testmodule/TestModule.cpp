@@ -21,9 +21,16 @@
 #include "ClustonenThread.h"
 #include "MessageManager.h"
 #include <unistd.h>
+#include "Server.h"
 
 class TestMessageSenderThread : public ClustonenThread
 {
+public:
+	explicit TestMessageSenderThread(PluginEnvironment* pe)
+		: pe(pe)
+	{
+	}
+
 	void run(void* param)
 	{
 		MessageManager* mmgr = (MessageManager*)param;
@@ -33,9 +40,21 @@ class TestMessageSenderThread : public ClustonenThread
 			try {
 				ClustonenMessage m;
 				m.setName("TestRequest");
-				m.setDestination("127.0.0.1-ClustonenClient");
-				mmgr->sendMessage(&m);
-				std::cout << "TestModule: Message sent..." << std::endl;
+
+				std::list<Client*> clients = pe->getServer()->getAllClients();
+
+				if(clients.empty())
+					continue;
+
+				for(std::list<Client*>::iterator it = clients.begin();
+				    it != clients.end();
+				    ++it)
+				{
+					m.setDestination((*it)->getName());
+					mmgr->sendMessage(&m);
+
+					std::cout << "TestModule: Message sent to " << (*it)->getName() << "..." << std::endl;
+				}
 			}
 			catch(Exception& e)
 			{
@@ -45,21 +64,26 @@ class TestMessageSenderThread : public ClustonenThread
 			sleep(1);
 		}
 	}
+
+protected:
+	PluginEnvironment *pe;
 };
 
-TestModule::TestModule(MessageManager *_mm, bool server_mode)
-	: ClustonenModule(_mm), server_mode(server_mode)
+TestModule::TestModule(PluginEnvironment *pe, bool server_mode)
+	: ClustonenModule(pe), server_mode(server_mode)
 {
-	if(server_mode) {
-		TestMessageSenderThread* tmst = new TestMessageSenderThread();
-		tmst->start(_mm, true);
+	MessageManager* mm = &pe->getServer()->getMessageManager();
+	
+	if(!server_mode) {
+		TestMessageSenderThread* tmst = new TestMessageSenderThread(pe);
+		tmst->start(mm, true);
 		mm->addModuleHook("TestReply", this);
 		
-		std::cout << "TestModule: started in server mode..." << std::endl;
+		std::cout << "TestModule: started in serverclient mode..." << std::endl;
 		return;
 	}
 
-	std::cout << "TestModule: started in client mode..." << std::endl;
+	std::cout << "TestModule: started in client server mode..." << std::endl;
 	mm->addModuleHook("TestRequest", this);
 }
 
@@ -77,7 +101,7 @@ std::string TestModule::getName()
 
 int TestModule::processMessage (ClustonenMessage* msg)
 {
-	if(server_mode)
+	if(!server_mode)
 	{
 		if (msg->getName() != "TestReply") 
 			return CHAIN_PROCEED;
@@ -99,7 +123,7 @@ int TestModule::processMessage (ClustonenMessage* msg)
 		ret.setDestination(msg->getOrigin());
 
 		try {
-			mm->sendMessage(&ret);
+			pe->getServer()->getMessageManager().sendMessage(&ret);
 		}
 		catch(Exception& e)
 		{

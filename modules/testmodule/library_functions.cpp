@@ -23,14 +23,14 @@ extern "C" const char* get_identifier()
 	return "TestModule" ;
 }
 
-extern "C" ClustonenModule* get_client_module(MessageManager *_mm)
+extern "C" ClustonenModule* get_client_module(PluginEnvironment* pe)
 {
 	std::cout << "TestModule: get_client_module() called..." << std::endl;
-	return (ClustonenModule*)(new TestModule(_mm, false)) ;
+	return (ClustonenModule*)(new TestModule(pe, false)) ;
 }
 
-extern "C" ClustonenModule* get_server_module(MessageManager *_mm)
+extern "C" ClustonenModule* get_server_module(PluginEnvironment* pe)
 {
 	std::cout << "TestModule: get_server_module() called..." << std::endl;
-	return (ClustonenModule*)(new TestModule(_mm, true)) ;
+	return (ClustonenModule*)(new TestModule(pe, true)) ;
 }
