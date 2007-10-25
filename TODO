@@ -1,4 +1,3 @@
-
 What still has to be implemented:
 - Move existing code in lib/ and include/ to new comment style
   (see commit b61e53d82a81163f8156613a615b19d554435339 for an example)
@@ -11,5 +10,4 @@ Well, basically everything, but here are the things which came to mind:
 
 - Transfer of required modules via direct connection, not other protocols.
 - Write basic modules (Protocolsupport, Clientinformation,...)
-- Mapping of Clients to IP
 - Maybe write an own LibArgtabe? For performance and dependecie struggle reasons?
