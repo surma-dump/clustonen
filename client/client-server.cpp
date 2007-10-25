@@ -44,6 +44,7 @@ int main(int argc, char* argv[])
 	arguments	<< arguments.createFlagOption("h","help",	"Shows this help") 
 			<< arguments.createFlagOption("v","version",	"Shows version information")
 			<< arguments.createStringOption("f","config-file","The configuration file")
+			<< arguments.createStringOption("n","name",	"The network name of the client instance")
 			<< arguments.createFlagOption("d","daemon",	"Start as daemon")
 			<< arguments.createStringOption("s","server",	"Specify the server to connect to")
 			<< arguments.createIntegerOption("p","port",	"The server port to connect to") ;
@@ -76,12 +77,16 @@ int main(int argc, char* argv[])
 	std::string server = arguments.getStringValue("server");
 	if(server == "")
 		server = "localhost";
+
+	std::string networkname = arguments.getStringValue("name");
+	if(networkname == "")
+		networkname = "ClustonenClient";
 	
 	Socket sendSocket;
 	Socket receiveSocket;
 	
 	//The local server
-	Server srv("ClustonenClient");
+	Server srv(networkname);
 	PluginEnvironment pe(&srv);
 	MessageDistributorThread mdt;
 	mdt.start(&srv.getMessageManager());

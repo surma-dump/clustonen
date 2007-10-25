@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
 	arguments	<< arguments.createFlagOption("h","help",	"Shows this help") 
 			<< arguments.createFlagOption("v","version",	"Shows version information")
 			<< arguments.createStringOption("f","config-file","The configuration file")
+			<< arguments.createStringOption("n","name",	"The network name of the server instance")
 			<< arguments.createFlagOption("d","daemon",	"Start as daemon")
 			<< arguments.createIntegerOption("p","port",	"Bind daemon to listen to this port[=23505]") ;
 
@@ -58,8 +59,12 @@ int main(int argc, char* argv[])
 	int port = arguments.getIntegerValue("port") ; // get port number
 	if(port < 0) // if there was no port specified...
 		port = DEFAULT_SERVER_PORT ; // ...use standard port
+
+	std::string networkname = arguments.getStringValue("name");
+	if(networkname == "")
+		networkname = "ClustonenServer";
 	
-	Server srv("ClustonenServer");
+	Server srv(networkname);
 	PluginEnvironment pe(&srv);
 	MessageDistributorThread mdt;
 	mdt.start(&srv.getMessageManager());
